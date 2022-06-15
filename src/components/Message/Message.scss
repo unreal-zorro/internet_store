@@ -1,0 +1,25 @@
+@import "../../sass/base/variables.scss";
+
+.message {
+  &.active {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    position: fixed;
+    top: 70px;
+    right: 70px;
+    background-color: $auth-color;
+    border: none;
+    border-radius: 1000px;
+    padding: 10px 25px;
+    min-width: 100px;
+    max-width: 300px;
+    min-height: 30px;
+    font-size: 16px;
+    color: #fff;
+  }
+  &.active.error {
+    background-color: $store-color;
+  }
+  display: none;
+}

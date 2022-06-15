@@ -1,0 +1,19 @@
+.btn {
+  border: 2px solid $main-color;
+  border-radius: 1000px;
+  font-size: 14px;
+  font-weight: 900;
+  height: 30px;
+  padding: 0 10px;
+  color: $main-color;
+  &-delete {
+    background-color: $cart-color;
+    border: 2px solid $burger-color;
+    color: $burger-color;
+  }
+  &:hover {
+    border: 2px solid $auth-color;
+    color: $auth-color;
+    cursor: pointer;
+  }
+}

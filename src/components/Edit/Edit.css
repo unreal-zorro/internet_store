@@ -1,0 +1,354 @@
+.edit {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  margin: 10px 0;
+}
+.edit__empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 20px;
+}
+.edit__empty.active {
+  display: none;
+}
+.edit__content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+}
+.edit__cards {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  border: 1px solid #000;
+  border-radius: 10px;
+  margin: 20px 10px 10px 0;
+}
+.edit__cards :last-child {
+  border-bottom: none;
+}
+.edit__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 35px;
+  text-align: center;
+  border-bottom: 1px solid #000;
+  font-size: 12px;
+}
+.edit__header_id {
+  min-width: 50px;
+  max-width: 50px;
+  min-height: 100%;
+  border-right: 1px solid #000;
+  padding: 5px;
+  font-weight: 900;
+  line-height: 25px;
+}
+.edit__header_img {
+  min-width: 60px;
+  max-width: 60px;
+  min-height: 100%;
+  border-right: 1px solid #000;
+  padding: 5px;
+  font-weight: 900;
+  line-height: 25px;
+}
+.edit__header_info {
+  width: 100%;
+  min-height: 100%;
+  border-right: 1px solid #000;
+  padding: 5px;
+  font-weight: 900;
+  line-height: 25px;
+}
+.edit__header_category {
+  min-width: 90px;
+  max-width: 90px;
+  min-height: 100%;
+  border-right: 1px solid #000;
+  padding: 5px;
+  font-weight: 900;
+  line-height: 25px;
+}
+.edit__header_count {
+  min-width: 60px;
+  max-width: 60px;
+  min-height: 100%;
+  border-right: 1px solid #000;
+  padding: 5px;
+  font-weight: 900;
+  line-height: 1;
+}
+.edit__header_price {
+  min-width: 50px;
+  max-width: 50px;
+  min-height: 100%;
+  border-right: 1px solid #000;
+  padding: 5px;
+  font-weight: 900;
+  line-height: 1;
+}
+.edit__header_actions {
+  min-width: 70px;
+  max-width: 70px;
+  min-height: 100%;
+  font-weight: 900;
+  line-height: 25px;
+  padding: 5px;
+}
+.edit__card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-height: 70px;
+  border-bottom: 1px solid #000;
+}
+.edit-id {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 50px;
+  max-width: 50px;
+  height: 70px;
+  font-size: 10px;
+  text-align: center;
+  border-right: 1px solid #000;
+}
+.edit-img {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 60px;
+  max-width: 60px;
+  height: 70px;
+  border-right: 1px solid #000;
+}
+.edit-img img {
+  padding: 2px;
+  max-width: 60px;
+  max-height: 70px;
+}
+.edit-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+  min-height: 70px;
+  border-right: 1px solid #000;
+  padding: 0 3px;
+}
+.edit-name {
+  font-size: 12px;
+  line-height: 1;
+  color: #53852e;
+}
+.edit-rating {
+  font-size: 10px;
+  color: #f19621;
+}
+.edit-rating span {
+  font-weight: 900;
+}
+.edit-descr {
+  font-size: 10px;
+  line-height: 1;
+  color: #164107;
+}
+.edit-descr span {
+  color: #ff0000;
+}
+.edit-category {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 90px;
+  max-width: 90px;
+  height: 70px;
+  border-right: 1px solid #000;
+  font-size: 12px;
+  color: #164107;
+  text-align: center;
+}
+.edit-count {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 60px;
+  max-width: 60px;
+  height: 70px;
+  border-right: 1px solid #000;
+  font-size: 12px;
+  color: #164107;
+  text-align: center;
+}
+.edit-count span {
+  font-weight: 900;
+}
+.edit-price {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 50px;
+  max-width: 50px;
+  height: 70px;
+  border-right: 1px solid #000;
+  font-size: 12px;
+  color: #8f1515;
+  text-align: center;
+}
+.edit-price span {
+  font-weight: 900;
+}
+.edit-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-width: 70px;
+  max-width: 70px;
+  height: 70px;
+}
+.edit-actions__link img {
+  max-width: 20px;
+  max-height: 20px;
+  margin: 5px;
+}
+.edit-actions :hover {
+  cursor: pointer;
+  background: #f19621;
+}
+.edit-add {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+.edit-add__link {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.edit-add__link img {
+  max-width: 35px;
+  max-height: 35px;
+  padding: 5px;
+}
+.edit-add__link :hover {
+  cursor: pointer;
+  background: #f19621;
+}
+.edit__menu {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  padding: 0 10px 10px 10px;
+  height: 330px;
+  width: 100%;
+}
+.edit__menu-form {
+  width: 1320px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  border: 1px solid #000;
+  border-radius: 20px;
+  padding: 10px 0;
+}
+.edit__menu-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  font-size: 14px;
+}
+.edit__menu-row span {
+  font-size: 16px;
+  font-weight: 900;
+}
+.edit__menu-str {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin: 10px 20px;
+}
+.edit__menu-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin: 10px 20px;
+}
+.edit__menu-label {
+  min-width: 80px;
+  margin-right: 10px;
+}
+.edit__menu-input {
+  width: 100%;
+  min-height: 30px;
+  border: 1px solid #000;
+  border-radius: 1000px;
+  padding: 0 10px;
+}
+.edit__menu-textarea {
+  width: 100%;
+  border: 1px solid #000;
+  border-radius: 15px;
+  padding: 5px 10px;
+}
+.edit__menu-select {
+  width: 100%;
+  min-height: 30px;
+  border: 1px solid #000;
+  border-radius: 1000px;
+  padding: 0 10px;
+}
+.edit__menu-option {
+  min-height: 30px;
+}
+.edit__menu-link {
+  max-height: 40px;
+  max-width: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.edit__menu-link img {
+  width: 100%;
+  height: 100%;
+}
+.edit__menu-ok {
+  width: 100px;
+}
+
+@media screen and (max-width: 991px) {
+  .edit-name {
+    font-size: 6px;
+    line-height: 1;
+  }
+  .edit-rating {
+    font-size: 6px;
+    line-height: 1;
+  }
+  .edit-descr {
+    font-size: 6px;
+    line-height: 1;
+  }
+}
+
+/*# sourceMappingURL=Edit.css.map */

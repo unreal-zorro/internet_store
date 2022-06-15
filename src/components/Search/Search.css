@@ -1,0 +1,33 @@
+.search {
+  margin: 50px auto 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  width: 100%;
+  border-bottom: 2px solid #53852e;
+  font-size: 16px;
+}
+.search__wrapper {
+  width: 1320px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.search__label {
+  margin-right: 10px;
+  font-size: 16px;
+}
+.search__input {
+  width: 500px;
+  margin-right: 10px;
+  border: 2px solid #53852e;
+  border-radius: 1000px;
+  padding: 0 20px;
+  height: 30px;
+}
+.search__btn {
+  font-size: 16px;
+}
+
+/*# sourceMappingURL=Search.css.map */

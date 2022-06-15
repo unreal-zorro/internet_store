@@ -1,0 +1,33 @@
+@import "../../sass/base/variables.scss";
+
+.sort {
+  min-width: 250px;
+  height: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 auto;
+  padding: 0 10px;
+  &__label {
+    font-size: 16px;
+    margin-right: 10px;
+  }
+  &__select {
+    padding: 5px;
+    border: 1px solid $burger-color;
+    border-radius: 1000px;
+  }
+  &__item {
+  }
+}
+
+@media screen and (max-width: 991px) {
+  .sort {
+    &__label {
+      font-size: 12px;
+    }
+    &__select {
+      font-size: 14px;
+    }
+  }
+}
