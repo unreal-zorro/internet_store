@@ -1,4 +1,4 @@
-import categoriesStore from "../../../redux/categoriesStore";
+import {useSelector} from "react-redux";
 
 import Promo from "../../../components/Promo/Promo";
 import Navigation from "../../../components/Navigation/Navigation";
@@ -9,8 +9,7 @@ import Catalog from "../../../components/Catalog/Catalog";
 import CatalogItem from "../../../components/Catalog/CatalogItem/CatalogItem";
 
 function CatalogPage() {
-  const state = categoriesStore.getState()
-  const categories = state.categories
+  const categories = useSelector(state => state.categories.categories)
 
   return (
     <Promo>

@@ -2,7 +2,6 @@ import {useLocation} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect} from "react";
 
-import categoriesStore from "../../../redux/categoriesStore";
 import {sortMap} from "../../../redux/sortMap";
 import {
   currentCategoryTitleChange,
@@ -25,15 +24,15 @@ import Card from "../../../components/Card/Card";
 import Pagination from "../../../components/Pagination/Pagination";
 
 function CategoryPage() {
-  const state = categoriesStore.getState();
+  const categories = useSelector(state => state.categories.categories)
   const location = useLocation()
   const sortValue = useSelector(state => state.main.sortValue)
   const visibleValue = useSelector(state => state.main.visibleValue)
   const dispatch = useDispatch()
   const categoryTitle = location.pathname.slice(location.pathname.lastIndexOf('/') + 1)
-  const category = state.categories.find((item) => item.title === categoryTitle)
+  const category = categories.find((item) => item.title === categoryTitle)
 
-  let goods = category.goods
+  let goods = [].concat(category.goods)
   goods.sort(sortMap[sortValue])
 
   let currentPage = useSelector(state => state.main.currentPage)

@@ -1,7 +1,7 @@
 import React from "react";
 import {Outlet, Navigate} from "react-router-dom";
 
-import categoriesStore from "../../redux/categoriesStore";
+import mainStore from "../../redux/mainStore";
 
 import Bg from "../../components/Bg/Bg";
 import Navbar from "../../components/Navbar/Navbar";
@@ -19,11 +19,13 @@ class MainLayout extends React.Component {
     this.state = {
       sidebarActive: true,
       searchValue: '',
-      searchActive: false
+      searchActive: false,
+      categories: mainStore.getState().categories.categories
     }
     this.burgerClickHandler = this.burgerClickHandler.bind(this)
     this.searchClickHandler = this.searchClickHandler.bind(this)
     this.searchChangeHandler = this.searchChangeHandler.bind(this)
+    this.searchOnKeyDownHandler = this.searchOnKeyDownHandler.bind(this)
   }
 
   async burgerClickHandler() {
@@ -65,9 +67,6 @@ class MainLayout extends React.Component {
   }
 
   render() {
-    const catState = categoriesStore.getState()
-    const categories = catState.categories
-
     const searchValue = this.state.searchValue
     const searchActive = this.state.searchActive
 
@@ -84,13 +83,11 @@ class MainLayout extends React.Component {
           onClick={() => this.searchClickHandler()}
           onKeyDown={(event) => this.searchOnKeyDownHandler(event.key)}
         />
-        <Container
-          className=""
-        >
+        <Container>
           <Sidebar
             className={this.state.sidebarActive ? 'active' : ''}
           >
-            {categories.map((item, index, array) => {
+            {this.state.categories.map(item => {
               return (
                 <SidebarItem
                   key={item.id}

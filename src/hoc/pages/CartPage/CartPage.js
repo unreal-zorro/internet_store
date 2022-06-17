@@ -1,5 +1,3 @@
-import categoriesStore from "../../../redux/categoriesStore";
-
 import {useDispatch, useSelector} from "react-redux";
 
 import CartEmpty from "../../../components/Cart/CartEmpty/CartEmpty";
@@ -10,7 +8,7 @@ import {cartAddNewCount, cartDeleteGood} from "../../../redux/mainSlice";
 
 function CartPage() {
   const cart = useSelector(state => state.main.cart)
-  const categories = categoriesStore.getState().categories
+  const categories = useSelector(state => state.categories.categories)
 
   let count = cart.reduce((sum, item) => {
     return sum + item.count

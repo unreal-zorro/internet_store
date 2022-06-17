@@ -2,7 +2,6 @@ import {useSearchParams} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect} from "react";
 
-import categoriesStore from "../../../redux/categoriesStore";
 import {sortMap} from "../../../redux/sortMap";
 import {
   currentSearchValueChange,
@@ -22,7 +21,7 @@ import Promo from "../../../components/Promo/Promo";
 import Text from "../../../components/Text/Text";
 
 function SearchPage() {
-  const state = categoriesStore.getState();
+  const categories = useSelector(state => state.categories.categories)
   const sortValue = useSelector(state => state.main.sortValue)
   const visibleValue = useSelector(state => state.main.visibleValue)
   const dispatch = useDispatch()
@@ -32,7 +31,7 @@ function SearchPage() {
   const searchValue = searchParams.get("value")
 
   let goods = []
-  state.categories.map(item => {
+  categories.map(item => {
       item.goods.map(goodItem => {
         if (goodItem.name.toLowerCase().includes(searchValue.trim().toLowerCase())) {
           goods.push({...goodItem, categoryTitle: item.title})

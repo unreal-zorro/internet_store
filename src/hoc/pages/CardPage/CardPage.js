@@ -1,5 +1,4 @@
-import categoriesStore from "../../../redux/categoriesStore";
-
+import {useSelector} from "react-redux";
 import {useLocation} from "react-router-dom";
 
 import Navigation from "../../../components/Navigation/Navigation";
@@ -10,7 +9,7 @@ import Description from "../../../components/Description/Description";
 import Promo from "../../../components/Promo/Promo";
 
 function CardPage() {
-  const catState = categoriesStore.getState();
+  const categories = useSelector(state => state.categories.categories)
   const location = useLocation()
 
   const categoryTitleAndGoodId = location.pathname.slice(location.pathname.indexOf('/catalog/') + 1)
@@ -18,7 +17,7 @@ function CardPage() {
 
   const categoryTitle = categoryTitleAndGoodId.slice("catalog/".length, categoryTitleAndGoodId.length - goodId.length - 1)
 
-  const category = catState.categories.find((item, index, array) => {
+  const category = categories.find((item, index, array) => {
     return item.title === categoryTitle
   })
 
