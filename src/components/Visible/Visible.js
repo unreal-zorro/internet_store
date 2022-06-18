@@ -3,7 +3,9 @@ import './Visible.scss'
 function Visible(props) {
   return (
     <div className="visible">
-      <label htmlFor="visible" className="visible__label">Отображать по:</label>
+      <label htmlFor="visible" className="visible__label">
+        Отображать по:
+      </label>
       <select
         name="visible"
         id="visible"

@@ -11,7 +11,13 @@ export const mainSlice = createSlice({
     currentPage: 1,
     pages: 10,
     currentCategoryTitle: '',
-    currentSearchValue: ''
+    currentSearchValue: '',
+    ordering: {
+      delivery: "removal",
+      payment: "cash",
+      phone: "",
+      comment: ""
+    }
   },
   reducers: {
     login: state => {
@@ -51,6 +57,22 @@ export const mainSlice = createSlice({
     },
     currentSearchValueChange: (state, action) => {
       state.currentSearchValue = action.payload
+    },
+    orderingChange: (state, action) => {
+      if (action.payload.delivery) {
+        state.ordering.delivery = action.payload.delivery
+      }
+      if (action.payload.payment) {
+        state.ordering.payment = action.payload.payment
+      }
+      if (action.payload.phone) {
+        state.ordering.phone = action.payload.phone
+      }
+      if (action.payload.comment) {
+        state.ordering.comment = action.payload.comment
+      } else {
+        state.ordering.comment = undefined
+      }
     }
   }
 })
@@ -67,7 +89,8 @@ export const {
   currentPageChange,
   pagesChange,
   currentCategoryTitleChange,
-  currentSearchValueChange
+  currentSearchValueChange,
+  orderingChange
 } = mainSlice.actions
 
 export default mainSlice.reducer
