@@ -5,26 +5,13 @@ import CartContent from "../../../components/Cart/CartContent/CartContent";
 import CartCard from "../../../components/Cart/CartCard/CartCard";
 import Cart from "../../../components/Cart/Cart";
 import {cartAddNewCount, cartDeleteGood} from "../../../redux/mainSlice";
+import cartCountAndAmount from "../../../utils/cartCountAndAmount";
 
 function CartPage() {
   const cart = useSelector(state => state.main.cart)
   const categories = useSelector(state => state.categories.categories)
 
-  let count = cart.reduce((sum, item) => {
-    return sum + item.count
-  }, 0)
-
-  let amount = cart.reduce((sum, item) => {
-    let cat = categories.find((catItem) => {
-      return catItem.id === item.categoryId
-    })
-
-    let good = cat.goods.find((goodItem) => {
-      return goodItem.id === item.id
-    })
-
-    return sum + item.count * +(good.price)
-  }, 0)
+  const {count, amount} = cartCountAndAmount(cart, categories)
 
   const dispatch = useDispatch()
 

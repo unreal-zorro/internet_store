@@ -16,8 +16,22 @@ export const mainSlice = createSlice({
       delivery: "removal",
       payment: "cash",
       phone: "",
-      comment: ""
-    }
+      comment: "",
+      isOrdering: false
+    },
+    orders: [
+      {
+        date: 0,
+        number: 0,
+        goods: [],
+        orderingInfo: {
+          delivery: '',
+          payment: '',
+          phone: '',
+          comment: ''
+        }
+      }
+    ]
   },
   reducers: {
     login: state => {
@@ -39,6 +53,9 @@ export const mainSlice = createSlice({
     },
     cartDeleteGood: (state, action) => {
       state.cart.splice(action.payload.goodIndex, 1)
+    },
+    cartClear: state => {
+      state.cart.splice(0, state.cart.length)
     },
     sortChange: (state, action) => {
       state.sortValue = action.payload
@@ -73,6 +90,12 @@ export const mainSlice = createSlice({
       } else {
         state.ordering.comment = undefined
       }
+      if (action.payload.isOrdering) {
+        state.ordering.isOrdering = action.payload.isOrdering
+      }
+    },
+    addOrder: (state, action) => {
+      state.orders.push({...action.payload})
     }
   }
 })
@@ -84,13 +107,15 @@ export const {
   cartAddNewGood,
   cartAddNewCount,
   cartDeleteGood,
+  cartClear,
   sortChange,
   visibleChange,
   currentPageChange,
   pagesChange,
   currentCategoryTitleChange,
   currentSearchValueChange,
-  orderingChange
+  orderingChange,
+  addOrder
 } = mainSlice.actions
 
 export default mainSlice.reducer

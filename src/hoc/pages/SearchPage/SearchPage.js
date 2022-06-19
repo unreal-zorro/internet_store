@@ -1,6 +1,6 @@
 import {useSearchParams} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import {useEffect} from "react";
+import React, {useEffect} from "react";
 
 import {sortMap} from "../../../redux/sortMap";
 import {
@@ -93,7 +93,7 @@ function SearchPage() {
     <Promo>
       {
         goods.length !== 0
-        ? (<div>
+          ? <React.Fragment>
             <Visual>
               <Sort
                 value={sortValue}
@@ -140,10 +140,8 @@ function SearchPage() {
               onClickPrevButton={prevButtonClickHandler}
               onClickNextButton={nextButtonClickHandler}
             />
-          </div>)
-        : <Text
-            text="Ничего не найдено."
-          />
+          </React.Fragment>
+          : <Text text="Ничего не найдено."/>
       }
     </Promo>
   )

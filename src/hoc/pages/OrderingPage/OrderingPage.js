@@ -1,30 +1,32 @@
+import React from "react";
 import {useDispatch, useSelector} from "react-redux";
 
+import {addOrder, cartClear, orderingChange} from "../../../redux/mainSlice";
+import cartCountAndAmount from "../../../utils/cartCountAndAmount";
+
 import Ordering from "../../../components/Ordering/Ordering";
-import {orderingChange} from "../../../redux/mainSlice";
+import Modal from "../../../components/Modal/Modal";
 
 function OrderingPage() {
   const cart = useSelector(state => state.main.cart)
   const categories = useSelector(state => state.categories.categories)
 
-  let count = cart.reduce((sum, item) => {
-    return sum + item.count
-  }, 0)
-
-  let amount = cart.reduce((sum, item) => {
-    let cat = categories.find((catItem) => {
-      return catItem.id === item.categoryId
-    })
-
-    let good = cat.goods.find((goodItem) => {
-      return goodItem.id === item.id
-    })
-
-    return sum + item.count * +(good.price)
-  }, 0)
+  const {count, amount} = cartCountAndAmount(cart, categories)
 
   const ordering = useSelector(state => state.main.ordering)
   const dispatch = useDispatch()
+
+  let isOrdering = useSelector(state => state.main.ordering.isOrdering)
+
+  const orders = useSelector(state => state.main.orders)
+  const orderNumber =  orders.length === 0
+    ? orders[orders.length - 1].number
+    : ''
+  const orderPhone =  orders.length === 0
+    ? orders[orders.length - 1].orderingInfo.phone
+    : ''
+
+  let currentOrder = {}
 
   function inputChangeDeliveryHandler(event) {
     const delivery = event.target.value
@@ -48,10 +50,33 @@ function OrderingPage() {
 
   function submitOrderingHandler(event) {
     event.preventDefault()
+    dispatch(orderingChange({isOrdering: true}))
+    currentOrder = {
+      date: new Date().getTime(),
+      number: (Math.random().toFixed(5)) * 100000,
+      goods: cart,
+      orderingInfo: {
+        delivery: ordering.delivery,
+        payment: ordering.payment,
+        phone: ordering.phone,
+        comment: ordering.comment
+      }
+    }
+    dispatch(addOrder(currentOrder))
+    dispatch(orderingChange({isOrdering: false}))
+    dispatch(cartClear())
+    dispatch(orderingChange({
+      delivery: "removal",
+      payment: "cash",
+      phone: "",
+      comment: "",
+      isOrdering: false
+    }))
   }
 
   return (
-    <Ordering
+    <React.Fragment>
+      <Ordering
       count={count}
       amount={amount}
       deliveryValue={ordering.delivery}
@@ -63,7 +88,13 @@ function OrderingPage() {
       comment={ordering.comment}
       onChangeComment={inputChangeCommentHandler}
       onSubmit={submitOrderingHandler}
-    />
+      />
+      <Modal
+        className={isOrdering ? 'active' : ''}
+        order={orderNumber}
+        phone={orderPhone}
+      />
+    </React.Fragment>
   )
 }
 

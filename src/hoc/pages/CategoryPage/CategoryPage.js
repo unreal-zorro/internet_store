@@ -1,6 +1,6 @@
 import {useLocation} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import {useEffect} from "react";
+import React, {useEffect} from "react";
 
 import {sortMap} from "../../../redux/sortMap";
 import {
@@ -22,6 +22,7 @@ import Visible from "../../../components/Visible/Visible";
 import Cards from "../../../components/Cards/Cards";
 import Card from "../../../components/Card/Card";
 import Pagination from "../../../components/Pagination/Pagination";
+import Text from "../../../components/Text/Text";
 
 function CategoryPage() {
   const categories = useSelector(state => state.categories.categories)
@@ -30,7 +31,10 @@ function CategoryPage() {
   const visibleValue = useSelector(state => state.main.visibleValue)
   const dispatch = useDispatch()
   const categoryTitle = location.pathname.slice(location.pathname.lastIndexOf('/') + 1)
-  const category = categories.find((item) => item.title === categoryTitle)
+  const category =
+    categories.find((item) => item.title === categoryTitle)
+      ? categories.find((item) => item.title === categoryTitle)
+      : {id: 0, title: '', name: '', goods: []}
 
   let goods = [].concat(category.goods)
   goods.sort(sortMap[sortValue])
@@ -82,66 +86,72 @@ function CategoryPage() {
 
   return (
     <Promo>
-      <Navigation>
-        <NavigationTitle>
-          <NavigationLink
-            link="/catalog"
-            linkName="Каталог"
-          />
-        </NavigationTitle>
-        <NavigationDivider />
-        <NavigationTitle>
-          <NavigationLink
-            link={"/catalog/" + category.title}
-            linkName={category.name}
-          />
-        </NavigationTitle>
-        <NavigationDivider />
-      </Navigation>
-      <Visual>
-        <Sort
-          value={sortValue}
-          onChange={sortSelectChangeHandler}
-        />
-        <Visible
-          value={visibleValue}
-          onChange={visibleSelectChangeHandler}
-        />
-      </Visual>
-      <Cards>
-        {goods
-          .sort(sortMap[sortValue])
-          .slice(
-            (currentPage - 1) * visibleValue,
-            currentPage === 1 && pages === 1
-              ? goods.length
-              : currentPage === pages
-                ? goods.length < pages * visibleValue
-                  ? goods.length
-                  : pages * visibleValue
-                : currentPage * visibleValue
-          )
-          .map((item) => {
-            return (
-              <Card
-                key={item.id}
-                url={item.url}
-                name={item.name}
-                categoryTitle={category.title}
-                id={item.id}
-                rating={item.rating}
-                price={item.price}
+      {
+        category.title
+          ? <React.Fragment>
+            <Navigation>
+              <NavigationTitle>
+                <NavigationLink
+                  link="/catalog"
+                  linkName="Каталог"
+                />
+              </NavigationTitle>
+              <NavigationDivider />
+              <NavigationTitle>
+                <NavigationLink
+                  link={"/catalog/" + category.title}
+                  linkName={category.name}
+                />
+              </NavigationTitle>
+              <NavigationDivider />
+            </Navigation>
+            <Visual>
+              <Sort
+                value={sortValue}
+                onChange={sortSelectChangeHandler}
               />
-            )
-          })
-        }
-      </Cards>
-      <Pagination
-        currentPage={currentPage}
-        pages={pages}
-        onClickPrevButton={prevButtonClickHandler}
-        onClickNextButton={nextButtonClickHandler}
-      />
+              <Visible
+                value={visibleValue}
+                onChange={visibleSelectChangeHandler}
+              />
+            </Visual>
+            <Cards>
+              {goods
+                .sort(sortMap[sortValue])
+                .slice(
+                  (currentPage - 1) * visibleValue,
+                  currentPage === 1 && pages === 1
+                    ? goods.length
+                    : currentPage === pages
+                      ? goods.length < pages * visibleValue
+                        ? goods.length
+                        : pages * visibleValue
+                      : currentPage * visibleValue
+                )
+                .map((item) => {
+                  return (
+                    <Card
+                      key={item.id}
+                      url={item.url}
+                      name={item.name}
+                      categoryTitle={category.title}
+                      id={item.id}
+                      rating={item.rating}
+                      price={item.price}
+                    />
+                  )
+                })
+              }
+            </Cards>
+            <Pagination
+              currentPage={currentPage}
+              pages={pages}
+              onClickPrevButton={prevButtonClickHandler}
+              onClickNextButton={nextButtonClickHandler}
+            />
+          </React.Fragment>
+          : <Text text="Нет такой категории."/>
+      }
     </Promo>
   )
 }

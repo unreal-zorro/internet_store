@@ -1,9 +1,9 @@
 import './Modal.scss'
 import {Link} from "react-router-dom";
 
-function Modal() {
+function Modal(props) {
   return (
-    <div className="modal active">
+    <div className={"modal " + props.className}>
       <div className="modal-form">
 
         <div className="modal-form__row">
@@ -11,11 +11,17 @@ function Modal() {
         </div>
 
         <div className="modal-form__row">
-          <div className="modal-form__label">Заказ № <span>123457890</span> успешно оформлен!</div>
+          <div className="modal-form__label">
+            Заказ № <span>{props.order}</span> успешно оформлен!
+          </div>
         </div>
 
         <div className="modal-form__row">
-          <div className="modal-form__label">При готовности заказа <br />на ваш номер телефона <span>+7-123-456-7890</span> <br />придёт SMS сообщение.</div>
+          <div className="modal-form__label">
+            При готовности заказа <br />на ваш номер телефона
+            <span> {props.phone}</span>
+            <br />придёт SMS сообщение.
+          </div>
         </div>
 
         <Link to="/">
