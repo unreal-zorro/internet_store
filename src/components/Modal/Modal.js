@@ -25,7 +25,10 @@ function Modal(props) {
         </div>
 
         <Link to="/">
-          <button className="btn modal-form__btn">На главную</button>
+          <button
+            className="btn modal-form__btn"
+            onClick={props.onClick}
+          >На главную</button>
         </Link>
       </div>
     </div>

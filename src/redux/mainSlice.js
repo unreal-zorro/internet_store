@@ -12,26 +12,7 @@ export const mainSlice = createSlice({
     pages: 10,
     currentCategoryTitle: '',
     currentSearchValue: '',
-    ordering: {
-      delivery: "removal",
-      payment: "cash",
-      phone: "",
-      comment: "",
-      isOrdering: false
-    },
-    orders: [
-      {
-        date: 0,
-        number: 0,
-        goods: [],
-        orderingInfo: {
-          delivery: '',
-          payment: '',
-          phone: '',
-          comment: ''
-        }
-      }
-    ]
+    orders: []
   },
   reducers: {
     login: state => {
@@ -75,25 +56,6 @@ export const mainSlice = createSlice({
     currentSearchValueChange: (state, action) => {
       state.currentSearchValue = action.payload
     },
-    orderingChange: (state, action) => {
-      if (action.payload.delivery) {
-        state.ordering.delivery = action.payload.delivery
-      }
-      if (action.payload.payment) {
-        state.ordering.payment = action.payload.payment
-      }
-      if (action.payload.phone) {
-        state.ordering.phone = action.payload.phone
-      }
-      if (action.payload.comment) {
-        state.ordering.comment = action.payload.comment
-      } else {
-        state.ordering.comment = undefined
-      }
-      if (action.payload.isOrdering) {
-        state.ordering.isOrdering = action.payload.isOrdering
-      }
-    },
     addOrder: (state, action) => {
       state.orders.push({...action.payload})
     }
@@ -114,7 +76,6 @@ export const {
   pagesChange,
   currentCategoryTitleChange,
   currentSearchValueChange,
-  orderingChange,
   addOrder
 } = mainSlice.actions
 

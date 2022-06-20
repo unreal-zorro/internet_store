@@ -2,7 +2,7 @@ import {useSearchParams} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import React, {useEffect} from "react";
 
-import {sortMap} from "../../../redux/sortMap";
+import {sortMap} from "../../../utils/sortMap";
 import {
   currentSearchValueChange,
   currentPageChange,
