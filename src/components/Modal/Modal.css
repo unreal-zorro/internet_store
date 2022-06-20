@@ -33,17 +33,29 @@
   width: 100%;
   margin: 0 auto;
   padding: 10px 20px;
+  text-align: left;
 }
 .modal-form__label {
   color: #fff;
   text-align: center;
+  min-width: 220px;
   margin: 0 auto;
 }
 .modal-form__label span {
   color: #f19621;
 }
+.modal-form__label-left {
+  text-align: left;
+}
+.modal-form__input {
+  min-width: 220px;
+  padding: 5px 15px;
+  border: 1px solid #53852e;
+  border-radius: 1000px;
+  font-size: 14px;
+}
 .modal-form__btn {
-  margin: 10px auto;
+  margin: 10px;
   font-size: 20px;
   height: 40px;
   background-color: #f19621;

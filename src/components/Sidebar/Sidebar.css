@@ -69,13 +69,6 @@
   align-items: center;
   margin-right: 5px;
 }
-.sidebar__edit-input {
-  border-radius: 1000px;
-  width: 100%;
-  margin-left: 10px;
-  font-size: 14px;
-  padding: 3px 10px;
-}
 .sidebar__edit-ok {
   max-width: 30px;
   min-width: 30px;

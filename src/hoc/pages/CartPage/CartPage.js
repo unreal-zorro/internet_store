@@ -4,7 +4,7 @@ import CartEmpty from "../../../components/Cart/CartEmpty/CartEmpty";
 import CartContent from "../../../components/Cart/CartContent/CartContent";
 import CartCard from "../../../components/Cart/CartCard/CartCard";
 import Cart from "../../../components/Cart/Cart";
-import {cartAddNewCount, cartDeleteGood} from "../../../redux/mainSlice";
+import {cartAddNewCount, cartDeleteGood, isOrderingChange} from "../../../redux/mainSlice";
 import cartCountAndAmount from "../../../utils/cartCountAndAmount";
 
 function CartPage() {
@@ -49,6 +49,10 @@ function CartPage() {
     dispatch(cartDeleteGood({goodIndex}))
   }
 
+  function cartOrderingClickHandler() {
+    dispatch(isOrderingChange(true))
+  }
+
   return (
     <Cart>
       <CartEmpty
@@ -58,6 +62,7 @@ function CartPage() {
         className={count > 0 ? "active" : ""}
         count={count}
         amount={amount}
+        onClick={cartOrderingClickHandler}
       >
         {cart.map((item, index, array) => {
           const category = categories.find((catItem, index, array) => {

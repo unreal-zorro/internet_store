@@ -33,7 +33,8 @@ import EditSidebarItem from "../../../components/EditSidebar/EditSidebarItem/Edi
 import EditSidebarLink from "../../../components/EditSidebar/EditSidebarLink/EditSidebarLink";
 import EditSidebarEdit from "../../../components/EditSidebar/EditSidebarEdit/EditSidebarEdit";
 import EditSidebarLinkEdit from "../../../components/EditSidebar/EditSidebarLinkEdit/EditSidebarLinkEdit";
-import EditSidebarInput from "../../../components/EditSidebar/EditSidebarInput/EditSidebarInput";
+import Modal from "../../../components/Modal/Modal";
+import ModalEditCategory from "../../../components/Modal/ModalEditCategory/ModalEditCategory";
 
 class EditPage extends React.Component {
   constructor(props) {
@@ -179,21 +180,6 @@ class EditPage extends React.Component {
             })}
 
             <EditSidebarItem>
-              <EditSidebarInput
-                value="Техника для дома"
-              />
-              <EditSidebarEdit>
-                <EditSidebarLinkEdit
-                  link=""
-                  linkText=""
-                  className="sidebar__edit-ok"
-                  url="/icons/ok.png"
-                  alt="ok"
-                />
-              </EditSidebarEdit>
-            </EditSidebarItem>
-
-            <EditSidebarItem>
               <EditSidebarLink
                 link=""
                 linkText=""
@@ -283,6 +269,22 @@ class EditPage extends React.Component {
           </Edit>
         </Container>
         <EditMenu />
+
+        <Modal
+          className='active'
+        >
+          <ModalEditCategory
+            onSumbit=''
+            onReset=''
+            categoryName=''
+            onChangeCategoryName=''
+            categoryTitle=''
+            onChangeCategoryTitle=''
+            categoryId=''
+            onChangeCategoryId=''
+          />
+        </Modal>
+
         <Footer />
       </div>
     )

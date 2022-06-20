@@ -1,6 +1,7 @@
 import './App.scss';
 
 import {Routes, Route} from "react-router-dom";
+import {useSelector} from "react-redux";
 
 import IndexPage from "./hoc/pages/IndexPage/IndexPage";
 import AuthPage from "./hoc/pages/AuthPage/AuthPage";
@@ -18,6 +19,8 @@ import NotFoundPage from "./hoc/pages/NotFoundPage/NotFoundPage";
 import SearchPage from "./hoc/pages/SearchPage/SearchPage";
 
 function App() {
+  const isOrdering = useSelector(state => state.main.isOrdering)
+
   return (
     <Routes>
       <Route path="/" element={<MainLayout />}>
@@ -31,7 +34,12 @@ function App() {
         <Route path="delivery-payment" element={<DeliveryPaymentPage />} />
         <Route path="contacts" element={<ContactsPage />} />
         <Route path="cart" element={<CartPage />} />
-        <Route path="ordering" element={<OrderingPage />} />
+
+        {
+          isOrdering
+          ? <Route path="ordering" element={<OrderingPage />} />
+          : undefined
+        }
 
         <Route path="*" element={<NotFoundPage />} />
       </Route>

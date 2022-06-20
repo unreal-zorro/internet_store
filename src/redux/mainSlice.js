@@ -6,6 +6,9 @@ export const mainSlice = createSlice({
     isAuth: false,
     isAdmin: false,
     cart: [],
+    isOrdering: false,
+    currentOrderNumber: 0,
+    currentOrderPhone: '',
     sortValue: 'price-incr',
     visibleValue: "1",
     currentPage: 1,
@@ -37,6 +40,15 @@ export const mainSlice = createSlice({
     },
     cartClear: state => {
       state.cart.splice(0, state.cart.length)
+    },
+    isOrderingChange: (state, action) => {
+      state.isOrdering = action.payload
+    },
+    currentOrderNumberChange: (state, action) => {
+      state.currentOrderNumber = action.payload
+    },
+    currentOrderPhoneChange: (state, action) => {
+      state.currentOrderPhone = action.payload
     },
     sortChange: (state, action) => {
       state.sortValue = action.payload
@@ -70,6 +82,9 @@ export const {
   cartAddNewCount,
   cartDeleteGood,
   cartClear,
+  isOrderingChange,
+  currentOrderNumberChange,
+  currentOrderPhoneChange,
   sortChange,
   visibleChange,
   currentPageChange,

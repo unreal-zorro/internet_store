@@ -19,6 +19,7 @@ function CartContent(props) {
       <CartTotal
         count={props.count}
         amount={props.amount}
+        onClick={props.onClick}
       />
     </div>
   )

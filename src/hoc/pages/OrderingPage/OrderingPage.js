@@ -1,13 +1,18 @@
 import React, {Component} from "react";
 
-import {addOrder, cartClear} from "../../../redux/mainSlice";
+import {
+  addOrder,
+  cartClear,
+  currentOrderNumberChange,
+  currentOrderPhoneChange,
+  isOrderingChange
+} from "../../../redux/mainSlice";
 import mainStore from "../../../redux/mainStore";
 import cartCountAndAmount from "../../../utils/cartCountAndAmount";
 
 import Ordering from "../../../components/Ordering/Ordering";
 import Modal from "../../../components/Modal/Modal";
-import Text from "../../../components/Text/Text";
-import Promo from "../../../components/Promo/Promo";
+import ModalOrdering from "../../../components/Modal/ModalOrdering/ModalOrdering";
 
 class OrderingPage extends Component {
   constructor(props) {
@@ -17,7 +22,9 @@ class OrderingPage extends Component {
       payment: "cash",
       phone: "",
       comment: "",
-      isOrdering: false,
+      isOrdering:
+        (mainStore.getState().main.isOrdering &&
+        mainStore.getState().main.cart.length === 0),
       currentOrder: {
         date: 0,
         number: 0,
@@ -73,9 +80,22 @@ class OrderingPage extends Component {
   async submitOrderingHandler(event) {
     event.preventDefault()
     const cart = mainStore.getState().main.cart
+    if (cart.length === 0) {
+      mainStore.dispatch(isOrderingChange(false))
+      await this.setState(prevState => ({
+        ...prevState,
+        delivery: "removal",
+        payment: "cash",
+        phone: "",
+        comment: "",
+        isOrdering: false,
+        currentOrder: {}
+      }))
+      return undefined
+    }
     const currentOrder = {
       date: new Date().getTime(),
-      number: (Math.random().toFixed(5)) * 100000,
+      number: Math.round((Math.random().toFixed(5) * 100000)),
       goods: cart,
       orderingInfo: {
         delivery: this.state.delivery,
@@ -89,6 +109,17 @@ class OrderingPage extends Component {
       currentOrder
     }))
     mainStore.dispatch(addOrder(currentOrder))
+    mainStore.dispatch(currentOrderNumberChange(currentOrder.number))
+    mainStore.dispatch(currentOrderPhoneChange(currentOrder.orderingInfo.phone))
+    mainStore.dispatch(cartClear())
+    await this.setState(prevState => ({
+      ...prevState,
+      delivery: "removal",
+      payment: "cash",
+      phone: "",
+      comment: "",
+      currentOrder: {}
+    }))
     await this.setState(prevState => ({
       ...prevState,
       isOrdering: true
@@ -98,18 +129,11 @@ class OrderingPage extends Component {
   async modalClickHandler() {
     await this.setState(prevState => ({
       ...prevState,
-      delivery: "removal",
-      payment: "cash",
-      phone: "",
-      comment: "",
       isOrdering: false,
-      currentOrder: {}
     }))
-    mainStore.dispatch(cartClear())
-    await this.setState(prevState => ({
-      ...prevState,
-      isOrdering: false
-    }))
+    mainStore.dispatch(isOrderingChange(false))
+    mainStore.dispatch(currentOrderNumberChange(0))
+    mainStore.dispatch(currentOrderPhoneChange(''))
   }
 
   render() {
@@ -118,31 +142,30 @@ class OrderingPage extends Component {
     const {count, amount} = cartCountAndAmount(cart, categories)
 
     return (
-      cart.length !== 0
-        ? <React.Fragment>
-          <Ordering
-            count={count}
-            amount={amount}
-            deliveryValue={this.state.delivery}
-            onChangeDelivery={this.inputChangeDeliveryHandler}
-            paymentValue={this.state.payment}
-            onChangePayment={this.inputChangePaymentHandler}
-            phone={this.state.phone}
-            onChangePhone={this.inputChangePhoneHandler}
-            comment={this.state.comment}
-            onChangeComment={this.inputChangeCommentHandler}
-            onSubmit={this.submitOrderingHandler}
-          />
-          <Modal
-            className={this.state.isOrdering ? 'active' : ''}
-            order={this.state.currentOrder.number}
-            phone={this.state.currentOrder.orderingInfo.phone}
+      <React.Fragment>
+        <Ordering
+          count={count}
+          amount={amount}
+          deliveryValue={this.state.delivery}
+          onChangeDelivery={this.inputChangeDeliveryHandler}
+          paymentValue={this.state.payment}
+          onChangePayment={this.inputChangePaymentHandler}
+          phone={this.state.phone}
+          onChangePhone={this.inputChangePhoneHandler}
+          comment={this.state.comment}
+          onChangeComment={this.inputChangeCommentHandler}
+          onSubmit={this.submitOrderingHandler}
+        />
+        <Modal
+          className={this.state.isOrdering ? 'active' : ''}
+        >
+          <ModalOrdering
+            order={mainStore.getState().main.currentOrderNumber}
+            phone={mainStore.getState().main.currentOrderPhone}
             onClick={this.modalClickHandler}
           />
-        </React.Fragment>
-        : <Promo>
-          <Text text="Сначала добавьте товары в корзину." />
-        </Promo>
+        </Modal>
+      </React.Fragment>
     )
   }
 }

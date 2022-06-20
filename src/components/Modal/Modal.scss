@@ -33,17 +33,29 @@
       width: 100%;
       margin: 0 auto;
       padding: 10px 20px;
+      text-align: left;
     }
     &__label {
       color: #fff;
       text-align: center;
+      min-width: 220px;
       margin: 0 auto;
       span {
         color: $menu-color;
       }
+      &-left {
+        text-align: left;
+      }
+    }
+    &__input {
+      min-width: 220px;
+      padding: 5px 15px;
+      border: 1px solid $main-color;
+      border-radius: 1000px;
+      font-size: 14px;
     }
     &__btn {
-      margin: 10px auto;
+      margin: 10px;
       font-size: 20px;
       height: 40px;
       background-color: $menu-color;
