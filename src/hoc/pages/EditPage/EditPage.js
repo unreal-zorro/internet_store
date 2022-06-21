@@ -6,6 +6,7 @@ import {
   sortChange,
   visibleChange
 } from "../../../redux/mainSlice";
+import {deleteCategory} from "../../../redux/categoriesSlice";
 import mainStore from "../../../redux/mainStore";
 
 import Navigation from "../../../components/Navigation/Navigation";
@@ -40,14 +41,24 @@ class EditPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      sidebarActive: true,
+      isSidebarActive: true,
       categories: mainStore.getState().categories.categories,
+      currentCategory: '',
+      editAction: '',
+      editedCategoryId: '',
+      editedCategoryName: '',
+      editedCategoryTitle: '',
       searchValue: '',
       searchActive: false,
       currentPage: mainStore.getState().main.currentPage,
       pages: mainStore.getState().main.pages
     }
     this.burgerClickHandler = this.burgerClickHandler.bind(this)
+    this.allCategoriesClickHandler = this.allCategoriesClickHandler.bind(this)
+    this.categoryClickHandler = this.categoryClickHandler.bind(this)
+    this.editCategoryClickHandler = this.editCategoryClickHandler.bind(this)
+    this.deleteCategoryClickHandler = this.deleteCategoryClickHandler.bind(this)
+    this.addCategoryClickHandler = this.addCategoryClickHandler.bind(this)
     this.searchClickHandler = this.searchClickHandler.bind(this)
     this.searchChangeHandler = this.searchChangeHandler.bind(this)
     this.searchOnKeyDownHandler = this.searchOnKeyDownHandler.bind(this)
@@ -60,7 +71,51 @@ class EditPage extends React.Component {
   async burgerClickHandler() {
     await this.setState(prevState => ({
       ...prevState,
-      sidebarActive: !prevState.sidebarActive
+      isSidebarActive: !prevState.isSidebarActive
+    }))
+  }
+
+  async allCategoriesClickHandler() {
+    await this.setState(prevState => ({
+      ...prevState,
+      currentCategory: "all"
+    }))
+  }
+
+  async categoryClickHandler(name) {
+    await this.setState(prevState => ({
+      ...prevState,
+      currentCategory: name
+    }))
+  }
+
+  async editCategoryClickHandler(id) {
+    const category = this.state.categories.find(item => item.id === +id)
+    await this.setState(prevState => ({
+      ...prevState,
+      editAction: "edit",
+      editedCategoryId: category.id,
+      editedCategoryName: category.name,
+      editedCategoryTitle: category.title,
+    }))
+  }
+
+  async deleteCategoryClickHandler(id) {
+    const categoryIndex = this.state.categories.findIndex(item => item.id === id)
+    await mainStore.dispatch(deleteCategory({categoryIndex}))
+    await this.setState(prevState => ({
+      ...prevState,
+      categories: mainStore.getState().categories.categories
+    }))
+  }
+
+  async addCategoryClickHandler() {
+    await this.setState(prevState => ({
+      ...prevState,
+      editAction: 'add',
+      editedCategoryId: '',
+      editedCategoryName: '',
+      editedCategoryTitle: '',
     }))
   }
 
@@ -130,7 +185,7 @@ class EditPage extends React.Component {
       <div>
         <Bg />
         <Navbar
-          className={this.state.sidebarActive ? 'active' : ''}
+          className={this.state.isSidebarActive ? 'active' : ''}
           onClick={this.burgerClickHandler}
         />
         <Search
@@ -143,12 +198,13 @@ class EditPage extends React.Component {
           className="edited"
         >
           <EditSidebar
-            className={this.state.sidebarActive ? 'active' : ''}
+            className={this.state.isSidebarActive ? 'active' : ''}
           >
             <EditSidebarItem>
               <EditSidebarLink
-                link=""
-                linkText="Все категории"
+                className={this.state.currentCategory === "all" ? "active" : ""}
+                text="Все категории"
+                onClick={this.allCategoriesClickHandler}
               />
             </EditSidebarItem>
 
@@ -158,21 +214,20 @@ class EditPage extends React.Component {
                   key={item.id}
                 >
                   <EditSidebarLink
-                    link={"catalog/" + item.title}
-                    linkText={item.name}
+                    className={this.state.currentCategory === item.name ? "active" : ""}
+                    text={item.name}
+                    onClick={() => this.categoryClickHandler(item.name)}
                   />
                   <EditSidebarEdit>
                     <EditSidebarLinkEdit
-                      link=""
-                      linkText=""
                       url="/icons/edit.png"
                       alt="edit"
+                      onClick={() => this.editCategoryClickHandler(item.id)}
                     />
                     <EditSidebarLinkEdit
-                      link=""
-                      linkText=""
                       url="/icons/delete.png"
                       alt="delete"
+                      onClick={() => this.deleteCategoryClickHandler(item.id)}
                     />
                   </EditSidebarEdit>
                 </EditSidebarItem>
@@ -181,11 +236,10 @@ class EditPage extends React.Component {
 
             <EditSidebarItem>
               <EditSidebarLink
-                link=""
-                linkText=""
                 className="sidebar__link-add"
                 url="/icons/add.png"
                 alt="add"
+                onClick={this.addCategoryClickHandler}
               />
             </EditSidebarItem>
           </EditSidebar>
@@ -271,16 +325,21 @@ class EditPage extends React.Component {
         <EditMenu />
 
         <Modal
-          className=''
+          className={
+          (this.state.editAction === "edit" ||
+          this.state.editAction === "add")
+            ? "active"
+            : ""
+        }
         >
           <ModalEditCategory
             onSumbit=''
             onReset=''
-            categoryName=''
+            categoryName={this.state.editedCategoryName}
             onChangeCategoryName=''
-            categoryTitle=''
+            categoryTitle={this.state.editedCategoryTitle}
             onChangeCategoryTitle=''
-            categoryId=''
+            categoryId={this.state.editedCategoryId}
             onChangeCategoryId=''
           />
         </Modal>

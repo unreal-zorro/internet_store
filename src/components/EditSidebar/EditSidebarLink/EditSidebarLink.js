@@ -1,13 +1,14 @@
 import '../../Sidebar/Sidebar.scss'
 
-import {Link} from "react-router-dom";
-
 function EditSidebarLink(props) {
   return (
-    <Link to={props.link} className={"sidebar__link " + props.className}>
-      {props.linkText}
+    <div
+      className={"sidebar__link " + props.className}
+      onClick={props.onClick}
+    >
+      {props.text}
       <img src={props.url} alt={props.alt} />
-    </Link>
+    </div>
   )
 }
 
