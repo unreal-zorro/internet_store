@@ -152,7 +152,7 @@ class EditPage extends React.Component {
               />
             </EditSidebarItem>
 
-            {this.state.categories.map((item, index, array) => {
+            {this.state.categories.map(item => {
               return (
                 <EditSidebarItem
                   key={item.id}
@@ -271,7 +271,7 @@ class EditPage extends React.Component {
         <EditMenu />
 
         <Modal
-          className='active'
+          className=''
         >
           <ModalEditCategory
             onSumbit=''

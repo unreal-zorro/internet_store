@@ -2,7 +2,7 @@ import '../Sidebar/Sidebar.scss'
 
 function EditSidebar(props) {
   return (
-    <div className="sidebar active">
+    <div className={"sidebar " + props.className}>
       <ul className="sidebar__content">
         {props.children}
       </ul>
