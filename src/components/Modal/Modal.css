@@ -19,6 +19,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding-top: 5px;
   margin: 10px;
   min-width: 100px;
   min-height: 100px;
@@ -32,7 +33,7 @@
   align-items: center;
   width: 100%;
   margin: 0 auto;
-  padding: 10px 20px;
+  padding: 5px 20px;
   text-align: left;
 }
 .modal-form__label {
@@ -45,6 +46,12 @@
   color: #f19621;
 }
 .modal-form__label-left {
+  text-align: left;
+}
+.modal-form__label.error {
+  width: 100%;
+  font-size: 14px;
+  color: #f19621;
   text-align: left;
 }
 .modal-form__input {

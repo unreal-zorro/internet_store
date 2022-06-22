@@ -20,6 +20,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding-top: 5px;
     margin: 10px;
     min-width: 100px;
     min-height: 100px;
@@ -32,7 +33,7 @@
       align-items: center;
       width: 100%;
       margin: 0 auto;
-      padding: 10px 20px;
+      padding: 5px 20px;
       text-align: left;
     }
     &__label {
@@ -44,6 +45,12 @@
         color: $menu-color;
       }
       &-left {
+        text-align: left;
+      }
+      &.error {
+        width: 100%;
+        font-size: 14px;
+        color: $menu-color;
         text-align: left;
       }
     }

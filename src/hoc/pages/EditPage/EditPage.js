@@ -45,9 +45,12 @@ class EditPage extends React.Component {
       categories: mainStore.getState().categories.categories,
       currentCategory: '',
       editAction: '',
-      editedCategoryId: '',
       editedCategoryName: '',
+      errorEditedCategoryName: '',
       editedCategoryTitle: '',
+      errorEditedCategoryTitle: '',
+      editedCategoryId: '',
+      errorEditedCategoryId: '',
       searchValue: '',
       searchActive: false,
       currentPage: mainStore.getState().main.currentPage,
@@ -59,6 +62,11 @@ class EditPage extends React.Component {
     this.editCategoryClickHandler = this.editCategoryClickHandler.bind(this)
     this.deleteCategoryClickHandler = this.deleteCategoryClickHandler.bind(this)
     this.addCategoryClickHandler = this.addCategoryClickHandler.bind(this)
+    this.categoryNameChangeHandler = this.categoryNameChangeHandler.bind(this)
+    this.categoryTitleChangeHandler = this.categoryTitleChangeHandler.bind(this)
+    this.categoryIdChangeHandler = this.categoryIdChangeHandler.bind(this)
+    this.submitEditCategoryHandler = this.submitEditCategoryHandler.bind(this)
+    this.resetEditCategoryHandler = this.submitEditCategoryHandler.bind(this)
     this.searchClickHandler = this.searchClickHandler.bind(this)
     this.searchChangeHandler = this.searchChangeHandler.bind(this)
     this.searchOnKeyDownHandler = this.searchOnKeyDownHandler.bind(this)
@@ -117,6 +125,55 @@ class EditPage extends React.Component {
       editedCategoryName: '',
       editedCategoryTitle: '',
     }))
+  }
+
+  async categoryNameChangeHandler(event) {
+    if (event.target.value === '' && event.touch()) {
+      await this.setState(prevState => ({
+        ...prevState,
+        errorEditedCategoryName: 'Имя категории не должно быть пустым.'
+      }))
+    }
+    await this.setState(prevState => ({
+      ...prevState,
+      editedCategoryName: event.target.value
+    }))
+  }
+
+  async categoryTitleChangeHandler(event) {
+    if (event.target.value === '' && event.touch()) {
+      await this.setState(prevState => ({
+        ...prevState,
+        errorEditedCategoryTitle: 'Заголовок категории не должен быть пустым.'
+      }))
+    }
+    await this.setState(prevState => ({
+      ...prevState,
+      editedCategoryTitle: event.target.value
+    }))
+  }
+
+  async categoryIdChangeHandler(event) {
+    console.log("event: ", event)
+    if (event.target.value === '' && event.touch()) {
+      await this.setState(prevState => ({
+        ...prevState,
+        errorEditedCategoryId: 'Идентификатор категории не должен быть пустым.'
+      }))
+    }
+    await this.setState(prevState => ({
+      ...prevState,
+      editedCategoryId: +event.target.value
+    }))
+    console.log("editedCategoryId: ", this.state.editedCategoryId)
+  }
+
+  async submitEditCategoryHandler(event) {
+    event.preventDefault()
+  }
+
+  async resetEditCategoryHandler(event) {
+    event.preventDefault()
   }
 
   async searchChangeHandler(value) {
@@ -190,9 +247,9 @@ class EditPage extends React.Component {
         />
         <Search
           value={searchValue}
-          onChange={(event) => this.searchChangeHandler(event.target.value)}
+          onChange={event => this.searchChangeHandler(event.target.value)}
           onClick={() => this.searchClickHandler()}
-          onKeyDown={(event) => this.searchOnKeyDownHandler(event.key)}
+          onKeyDown={event => this.searchOnKeyDownHandler(event.key)}
         />
         <Container
           className="edited"
@@ -333,14 +390,17 @@ class EditPage extends React.Component {
         }
         >
           <ModalEditCategory
-            onSumbit=''
-            onReset=''
+            onSumbit={this.submitEditCategoryHandler}
+            onReset={this.resetEditCategoryHandler}
             categoryName={this.state.editedCategoryName}
-            onChangeCategoryName=''
+            errorCategoryName={this.state.errorEditedCategoryName}
+            onChangeCategoryName={this.state.categoryNameChangeHandler}
             categoryTitle={this.state.editedCategoryTitle}
-            onChangeCategoryTitle=''
+            errorCategoryTitle={this.state.errorEditedCategoryTitle}
+            onChangeCategoryTitle={this.state.categoryTitleChangeHandler}
             categoryId={this.state.editedCategoryId}
-            onChangeCategoryId=''
+            errorCategoryId={this.state.errorEditedCategoryId}
+            onChangeCategoryId={this.state.categoryIdChangeHandler}
           />
         </Modal>
 
