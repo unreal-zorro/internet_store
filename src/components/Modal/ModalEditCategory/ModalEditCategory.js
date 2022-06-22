@@ -6,7 +6,6 @@ function ModalEditCategory(props) {
     <form
       className="modal-form"
       onSubmit={props.onSubmit}
-      onReset={props.onReset}
     >
       <div className="modal-form__row">
         <label className="modal-form__label modal-form__label-left" htmlFor="name">
@@ -72,7 +71,7 @@ function ModalEditCategory(props) {
         >Готово</button>
         <button
           className="btn modal-form__btn"
-          type="reset"
+          onClick={props.onCancelClick}
         >Отмена</button>
       </Link>
     </form>
