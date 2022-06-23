@@ -12,7 +12,7 @@ function ModalEditCategory(props) {
           className="modal-form__input"
           type="text"
           id="name"
-          defaultValue={props.categoryName}
+          value={props.categoryName}
           onChange={props.onChangeCategoryName}
           required />
       </div>
@@ -31,7 +31,7 @@ function ModalEditCategory(props) {
           className="modal-form__input"
           type="text"
           id="title"
-          defaultValue={props.categoryTitle}
+          value={props.categoryTitle}
           onChange={props.onChangeCategoryTitle}
           required />
       </div>
@@ -50,7 +50,7 @@ function ModalEditCategory(props) {
           className="modal-form__input"
           type="text"
           id="id"
-          defaultValue={props.categoryId}
+          value={props.categoryId}
           onChange={props.onChangeCategoryId}
           required />
       </div>

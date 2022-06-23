@@ -155,36 +155,21 @@ export const categoriesSlice = createSlice({
   },
   reducers: {
     addCategory: (state, action) => {
-      if (state.categories.find(item =>
-        item.id === action.payload.newCategory.id ||
-        item.title === action.payload.newCategory.title ||
-        item.name === action.payload.newCategory.name
-      )) {
-        return undefined
-      } else {
-        state.categories[state.categories.length] = action.payload.newCategory
+      state.categories[state.categories.length] = {
+        id: +action.payload.categoryId,
+        title: action.payload.categoryTitle,
+        name: action.payload.categoryName,
+        goods: []
       }
     },
     deleteCategory: (state, action) => {
       state.categories.splice(action.payload.categoryIndex,1)
     },
     editCategory: (state, action) => {
-      let categoryIndex = undefined
-      if (state.categories.find((item, index) => {
-        if (item.id === action.payload.categoryId) {
-          categoryIndex = index
-          return true
-        } else {
-          return false
-        }
-      })) {
-        state.categories[categoryIndex] = {
-          id: action.payload.categoryId,
-          title: action.payload.categoryTitle,
-          name: action.payload.categoryName
-        }
-      } else {
-        return undefined
+      state.categories[action.payload.index] = {
+        id: +action.payload.completeCategory.categoryId,
+        title: action.payload.completeCategory.categoryTitle,
+        name: action.payload.completeCategory.categoryName
       }
     }
   }

@@ -6,7 +6,7 @@ import {
   sortChange,
   visibleChange
 } from "../../../redux/mainSlice";
-import {deleteCategory} from "../../../redux/categoriesSlice";
+import {addCategory, deleteCategory, editCategory} from "../../../redux/categoriesSlice";
 import mainStore from "../../../redux/mainStore";
 
 import Navigation from "../../../components/Navigation/Navigation";
@@ -99,11 +99,9 @@ class EditPage extends React.Component {
   }
 
   async editCategoryClickHandler(id) {
-    const categories = mainStore.getState().categories.categories
-    const category = categories.find(item => item.id === +id)
+    const category = this.state.categories.find(item => item.id === +id)
     await this.setState(prevState => ({
       ...prevState,
-      categories: mainStore.getState().categories.categories,
       editAction: "edit",
       currentEditedCategoryId: category.id,
       editedCategoryId: category.id,
@@ -137,50 +135,41 @@ class EditPage extends React.Component {
 
   async categoryNameChangeHandler(value) {
     const name = value
+    let error = ''
     if (!name) {
-      await this.setState(prevState => ({
-        ...prevState,
-        errorEditedCategoryName: 'Имя категории не должно быть пустым.'
-      }))
-    } else {
-      await this.setState(prevState => ({
-        ...prevState,
-        editedCategoryName: name,
-        errorEditedCategoryName: ''
-      }))
+      error = 'Имя категории не должно быть пустым.'
     }
+    await this.setState(prevState => ({
+      ...prevState,
+      editedCategoryName: name,
+      errorEditedCategoryName: error
+    }))
   }
 
   async categoryTitleChangeHandler(value) {
     const title = value
+    let error = ''
     if (!title) {
-      await this.setState(prevState => ({
-        ...prevState,
-        errorEditedCategoryTitle: 'Заголовок категории не должен быть пустым.'
-      }))
-    } else {
-      await this.setState(prevState => ({
-        ...prevState,
-        editedCategoryTitle: title,
-        errorEditedCategoryTitle: ''
-      }))
+      error = 'Заголовок категории не должен быть пустым.'
     }
+    await this.setState(prevState => ({
+      ...prevState,
+      editedCategoryTitle: title,
+      errorEditedCategoryTitle: error
+    }))
   }
 
   async categoryIdChangeHandler(value) {
     const id = value
+    let error = ''
     if (!id) {
-      await this.setState(prevState => ({
-        ...prevState,
-        errorEditedCategoryId: 'Идентификатор категории не должен быть пустым.'
-      }))
-    } else {
-      await this.setState(prevState => ({
-        ...prevState,
-        editedCategoryId: +id,
-        errorEditedCategoryId: ''
-      }))
+      error = 'Идентификатор категории не должен быть пустым.'
     }
+    await this.setState(prevState => ({
+      ...prevState,
+      editedCategoryId: id,
+      errorEditedCategoryId: error
+    }))
   }
 
   async okClickEditCategoryHandler(event) {
@@ -190,12 +179,24 @@ class EditPage extends React.Component {
     const currentCategoryId = +this.state.currentEditedCategoryId
     const categoryName = this.state.editedCategoryName
     const categoryTitle = this.state.editedCategoryTitle
-    const categoryId = +this.state.editedCategoryId
+    const categoryId = this.state.editedCategoryId
     const categories = mainStore.getState().categories.categories
 
     let errorName = ''
     let errorTitle = ''
     let errorId = ''
+
+    if (categoryName === '') {
+      errorName = 'Имя категории не должно быть пустым.'
+    }
+
+    if (categoryTitle === '') {
+      errorTitle = 'Заголовок категории не должен быть пустым.'
+    }
+
+    if (categoryId === '') {
+      errorId = 'Идентификатор категории не должен быть пустым.'
+    }
 
     if (action === 'add') {
       if (categories.find(item => item.name === categoryName)) {
@@ -206,7 +207,7 @@ class EditPage extends React.Component {
         errorTitle = 'Категория с таким заголовком уже существует.'
       }
 
-      if (categories.find(item => item.id === categoryId)) {
+      if (categories.find(item => item.id === +categoryId)) {
         errorId = 'Категория с таким идентификатором уже существует.'
       }
     } else if (action === 'edit') {
@@ -229,8 +230,8 @@ class EditPage extends React.Component {
       }
 
       if (categories.find(item =>
-        currentCategory.id !== categoryId
-          ? item.id === categoryId
+        currentCategory.id !== +categoryId
+          ? item.id === +categoryId
           : undefined
       )) {
         errorId = 'Категория с таким идентификатором уже существует.'
@@ -245,20 +246,33 @@ class EditPage extends React.Component {
         errorEditedCategoryId: errorId
       }))
       return undefined
-    }
+    } else {
+      const completeCategory = {
+        categoryId,
+        categoryTitle,
+        categoryName
+      }
 
-    await this.setState(prevState => ({
-      ...prevState,
-      categories: mainStore.getState().categories.categories,
-      editAction: '',
-      currentEditedCategoryId: '',
-      editedCategoryName: '',
-      errorEditedCategoryName: '',
-      editedCategoryTitle: '',
-      errorEditedCategoryTitle: '',
-      editedCategoryId: '',
-      errorEditedCategoryId: ''
-    }))
+      if (action === 'add') {
+        await mainStore.dispatch(addCategory(completeCategory))
+      } else if (action === 'edit') {
+        const index = categories.findIndex(item => item.id === currentCategoryId)
+        await mainStore.dispatch(editCategory({index, completeCategory}))
+      }
+
+      await this.setState(prevState => ({
+        ...prevState,
+        categories: mainStore.getState().categories.categories,
+        editAction: '',
+        currentEditedCategoryId: '',
+        editedCategoryName: '',
+        errorEditedCategoryName: '',
+        editedCategoryTitle: '',
+        errorEditedCategoryTitle: '',
+        editedCategoryId: '',
+        errorEditedCategoryId: ''
+      }))
+    }
   }
 
   async cancelClickEditCategoryHandler(event) {
@@ -275,8 +289,6 @@ class EditPage extends React.Component {
       editedCategoryId: '',
       errorEditedCategoryId: ''
     }))
-
-    console.log("id: ", this.state.currentEditedCategoryId)
   }
 
   async searchChangeHandler(value) {
