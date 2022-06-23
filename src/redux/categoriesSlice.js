@@ -166,7 +166,6 @@ export const categoriesSlice = createSlice({
       }
     },
     deleteCategory: (state, action) => {
-      console.log("delete: ")
       state.categories.splice(action.payload.categoryIndex,1)
     },
     editCategory: (state, action) => {

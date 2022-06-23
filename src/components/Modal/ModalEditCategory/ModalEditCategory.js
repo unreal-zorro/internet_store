@@ -3,10 +3,7 @@ import {Link} from "react-router-dom";
 
 function ModalEditCategory(props) {
   return (
-    <form
-      className="modal-form"
-      onSubmit={props.onSubmit}
-    >
+    <form className="modal-form">
       <div className="modal-form__row">
         <label className="modal-form__label modal-form__label-left" htmlFor="name">
           Имя категории:
@@ -67,7 +64,7 @@ function ModalEditCategory(props) {
       <Link to="/">
         <button
           className="btn modal-form__btn"
-          type="submit"
+          onClick={props.onOkClick}
         >Готово</button>
         <button
           className="btn modal-form__btn"
