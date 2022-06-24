@@ -2,7 +2,7 @@ import './Promo.scss'
 
 function Promo(props) {
   return (
-    <div className="promo">
+    <div className={"promo " + props.className}>
       {props.children}
     </div>
   )

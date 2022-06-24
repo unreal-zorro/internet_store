@@ -24,7 +24,7 @@ function CatalogPage() {
       </Navigation>
 
       <Catalog>
-        {categories.map((item, index, array) => {
+        {categories.map(item => {
           return (
             <CatalogItem
               key={item.id}

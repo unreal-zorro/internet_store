@@ -6,6 +6,7 @@
   flex-wrap: wrap;
 }
 .navigation__link {
+  cursor: pointer;
   text-decoration: none;
   font-size: 14px;
   color: #000;

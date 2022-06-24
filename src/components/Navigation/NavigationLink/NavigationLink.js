@@ -1,6 +1,6 @@
-import {Link} from "react-router-dom";
-
 import '../Navigation.scss'
+
+import {Link} from "react-router-dom";
 
 function NavigationLink(props) {
   return (

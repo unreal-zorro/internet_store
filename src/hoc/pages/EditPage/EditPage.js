@@ -11,7 +11,6 @@ import mainStore from "../../../redux/mainStore";
 
 import Navigation from "../../../components/Navigation/Navigation";
 import NavigationTitle from "../../../components/Navigation/NavigationTitle/NavigationTitle";
-import NavigationLink from "../../../components/Navigation/NavigationLink/NavigationLink";
 import NavigationDivider from "../../../components/Navigation/NavigationDiveder/NavigationDivider";
 import Visual from "../../../components/Visual/Visual";
 import Sort from "../../../components/Sort/Sort";
@@ -36,6 +35,10 @@ import EditSidebarEdit from "../../../components/EditSidebar/EditSidebarEdit/Edi
 import EditSidebarLinkEdit from "../../../components/EditSidebar/EditSidebarLinkEdit/EditSidebarLinkEdit";
 import Modal from "../../../components/Modal/Modal";
 import ModalEditCategory from "../../../components/Modal/ModalEditCategory/ModalEditCategory";
+import Catalog from "../../../components/Catalog/Catalog";
+import EditCatalogItem from "../../../components/Catalog/EditCatalogItem/EditCatalogItem";
+import Promo from "../../../components/Promo/Promo";
+import EditNavigationLink from "../../../components/Navigation/EditNavigationLink/EditNavigationLink";
 
 class EditPage extends React.Component {
   constructor(props) {
@@ -54,10 +57,13 @@ class EditPage extends React.Component {
       errorEditedCategoryId: '',
       searchValue: '',
       searchActive: false,
+      sortValue: 'price-incr',
+      visibleValue: "1",
       currentPage: mainStore.getState().main.currentPage,
       pages: mainStore.getState().main.pages
     }
     this.burgerClickHandler = this.burgerClickHandler.bind(this)
+    this.catalogClickHandler = this.catalogClickHandler.bind(this)
     this.allCategoriesClickHandler = this.allCategoriesClickHandler.bind(this)
     this.categoryClickHandler = this.categoryClickHandler.bind(this)
     this.editCategoryClickHandler = this.editCategoryClickHandler.bind(this)
@@ -81,6 +87,13 @@ class EditPage extends React.Component {
     await this.setState(prevState => ({
       ...prevState,
       isSidebarActive: !prevState.isSidebarActive
+    }))
+  }
+
+  async catalogClickHandler() {
+    await this.setState(prevState => ({
+      ...prevState,
+      currentCategory: ""
     }))
   }
 
@@ -350,9 +363,6 @@ class EditPage extends React.Component {
   }
 
   render() {
-    const searchValue = this.state.searchValue
-    const searchActive = this.state.searchActive
-
     return (
       <div>
         <Bg />
@@ -361,7 +371,7 @@ class EditPage extends React.Component {
           onClick={this.burgerClickHandler}
         />
         <Search
-          value={searchValue}
+          value={this.state.searchValue}
           onChange={event => this.searchChangeHandler(event.target.value)}
           onClick={() => this.searchClickHandler()}
           onKeyDown={event => this.searchOnKeyDownHandler(event.key)}
@@ -417,83 +427,110 @@ class EditPage extends React.Component {
           </EditSidebar>
 
           <Edit>
-            <Navigation>
-              <NavigationTitle>
-                <NavigationLink
-                  link="/catalog"
-                  linkName="Каталог"
-                />
-              </NavigationTitle>
-              <NavigationDivider />
-              <NavigationTitle>
-                <NavigationLink
-                  link={"/catalog/"}
-                  linkName={''}
-                />
-              </NavigationTitle>
-              <NavigationDivider />
-            </Navigation>
+            <Promo
+              className="edit"
+            >
+              <Navigation>
+                <NavigationTitle>
+                  <EditNavigationLink
+                    linkName="Каталог"
+                    onClick={this.catalogClickHandler}
+                  />
+                </NavigationTitle>
+                <NavigationDivider />
+                {
+                  this.state.currentCategory
+                    ? this.state.currentCategory === "all"
+                      ? <React.Fragment>
+                        <NavigationTitle>
+                          <EditNavigationLink
+                            linkName="Все категории"
+                            onClick={this.allCategoriesClickHandler}
+                          />
+                        </NavigationTitle>
+                        <NavigationDivider />
+                      </React.Fragment>
+                      : <React.Fragment>
+                        <NavigationTitle>
+                          <EditNavigationLink
+                            linkName={this.state.currentCategory}
+                            onClick={() => this.categoryClickHandler(this.state.currentCategory)}
+                          />
+                        </NavigationTitle>
+                        <NavigationDivider />
+                      </React.Fragment>
+                      : undefined
+                }
+              </Navigation>
 
-            <Visual>
-              <Sort
-                value={this.sortValue}
-                onChange={this.sortSelectChangeHandler}
-              />
-              <Visible
-                value={this.visibleValue}
-                onChange={this.visibleSelectChangeHandler}
-              />
-            </Visual>
+              {
+                !this.state.currentCategory
+                  ? <Catalog>
+                    <EditCatalogItem
+                      linkText="Все категории"
+                      onClick={this.allCategoriesClickHandler}
+                    />
+                    {
+                      this.state.categories.map(item => {
+                        return (
+                          <EditCatalogItem
+                            key={item.id}
+                            linkText={item.name}
+                            onClick={() => this.categoryClickHandler(item.name)}
+                          />
+                        )
+                      })
+                    }
+                  </Catalog>
+                  : undefined
+              }
+            </Promo>
 
-            <EditEmpty />
+            {
+              this.state.currentCategory
+                ? <React.Fragment>
+                  <Visual>
+                    <Sort
+                      value={this.state.sortValue}
+                      onChange={this.sortSelectChangeHandler}
+                    />
+                    <Visible
+                      value={this.state.visibleValue}
+                      onChange={this.visibleSelectChangeHandler}
+                    />
+                  </Visual>
 
-            <EditContent>
-              <EditCards>
-                <EditCard
-                  id="111522"
-                  url="/img/Auto_1.jpg"
-                  name="Автопроигрыватель Soundmax SM-CCR3057F"
-                  rating="3.0"
-                  descr="1 DIN, 160 Вт, AUX, USB"
-                  category="Автотовары"
-                  amount="1000"
-                  price="1 099"
-                />
+                  <EditEmpty />
 
-                <EditCard
-                  id="33334"
-                  url="/img/Home_2.jpg"
-                  name="Водонагреватель газовый Zanussi GWH 10 Fonte"
-                  rating="3.1"
-                  descr="проточный, эмалированная сталь, 18.5 кВт, 10 л/мин, до - 50 °C, управление - механическое, газ-контроль"
-                  category="Техника для дома"
-                  amount="500"
-                  price="10 499"
-                />
+                  <EditContent>
+                    <EditCards>
+                      <EditCard
+                        id="111522"
+                        url="/img/Auto_1.jpg"
+                        name="Автопроигрыватель Soundmax SM-CCR3057F"
+                        rating="3.0"
+                        descr="1 DIN, 160 Вт, AUX, USB"
+                        category="Автотовары"
+                        amount="1000"
+                        price="1 099"
+                      />
 
-                <EditCard
-                  id="545454"
-                  url="/img/Computers_1.jpg"
-                  name="ПК ZET Gaming NEO M017"
-                  rating="4.7"
-                  descr="Intel Core i5-11400F, 6x2.6 ГГц, 16 ГБ DDR4, GeForce RTX 3050, SSD 512 ГБ, без ОС"
-                  category="Компьютеры"
-                  amount="300"
-                  price="77 299"
-                />
+                      <EditCardAdd />
+                    </EditCards>
+                  </EditContent>
 
-                <EditCardAdd />
-              </EditCards>
-            </EditContent>
-
-            <Pagination
-              currentPage={this.state.currentPage}
-              pages={this.state.pages}
-              onClickPrevButton={this.prevButtonClickHandler}
-              onClickNextButton={this.nextButtonClickHandler}
-            />
+                  <Pagination
+                    currentPage={this.state.currentPage}
+                    pages={this.state.pages}
+                    onClickPrevButton={this.prevButtonClickHandler}
+                    onClickNextButton={this.nextButtonClickHandler}
+                  />
+                </React.Fragment>
+                : undefined
+            }
           </Edit>
         </Container>
+
         <EditMenu />
 
         <Modal
