@@ -57,8 +57,8 @@ class EditPage extends React.Component {
       errorEditedCategoryId: '',
       searchValue: '',
       searchActive: false,
-      sortValue: 'price-incr',
-      visibleValue: "1",
+      sortValue: mainStore.getState().main.sortValue,
+      visibleValue: mainStore.getState().main.visibleValue,
       currentPage: mainStore.getState().main.currentPage,
       pages: mainStore.getState().main.pages
     }
@@ -336,29 +336,29 @@ class EditPage extends React.Component {
   }
 
   sortSelectChangeHandler(value) {
-    sortChange(value.target.value)
+    mainStore.dispatch(sortChange(value.target.value))
   }
 
   visibleSelectChangeHandler(value) {
-    currentPageChange(1)
-    visibleChange(value.target.value)
+    mainStore.dispatch(currentPageChange(1))
+    mainStore.dispatch(visibleChange(value.target.value))
   }
 
   prevButtonClickHandler() {
-    pagesChange(this.state.pages)
+    mainStore.dispatch(pagesChange(this.state.pages))
     if (this.state.currentPage === 1) {
       return undefined
     } else {
-      currentPageChange(this.state.currentPage - 1)
+      mainStore.dispatch(currentPageChange(this.state.currentPage - 1))
     }
   }
 
   nextButtonClickHandler() {
-    pagesChange(this.state.pages)
+    mainStore.dispatch(pagesChange(this.state.pages))
     if (this.state.currentPage === this.state.pages) {
       return undefined
     } else {
-      currentPageChange(this.state.currentPage + 1)
+      mainStore.dispatch(currentPageChange(this.state.currentPage + 1))
     }
   }
 
@@ -500,7 +500,9 @@ class EditPage extends React.Component {
                     />
                   </Visual>
 
-                  <EditEmpty />
+                  <EditEmpty
+                    className="active"
+                  />
 
                   <EditContent>
                     <EditCards>
@@ -531,7 +533,9 @@ class EditPage extends React.Component {
           </Edit>
         </Container>
 
-        <EditMenu />
+        <EditMenu
+          className="active"
+        />
 
         <Modal
           className={

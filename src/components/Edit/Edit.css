@@ -7,13 +7,13 @@
   margin: 10px 0;
 }
 .edit__empty {
+  display: none;
+}
+.edit__empty.active {
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 10px 20px;
-}
-.edit__empty.active {
-  display: none;
 }
 .edit__content {
   display: flex;
@@ -249,6 +249,9 @@
   background: #f19621;
 }
 .edit__menu {
+  display: none;
+}
+.edit__menu.active {
   display: flex;
   justify-content: center;
   align-items: center;

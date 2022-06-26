@@ -8,12 +8,12 @@
   width: 100%;
   margin: 10px 0;
   &__empty {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 10px 20px;
+    display: none;
     &.active {
-      display: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 10px 20px;
     }
   }
   &__content {
@@ -252,13 +252,16 @@
     }
   }
   &__menu {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0 auto;
-    padding: 0 10px 10px 10px;
-    height: $edit__menu-height;
-    width: 100%;
+    display: none;
+    &.active {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto;
+      padding: 0 10px 10px 10px;
+      height: $edit__menu-height;
+      width: 100%;
+    }
     &-form {
       width: 1320px;
       display: flex;

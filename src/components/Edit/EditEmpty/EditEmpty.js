@@ -1,8 +1,10 @@
 import '../Edit.scss'
 
-function EditEmpty() {
+function EditEmpty(props) {
   return (
-    <div className="edit__empty active">Товаров пока нет. Добавьте их.</div>
+    <div className={"edit__empty " + props.className}>
+      Товаров пока нет. Добавьте их.
+    </div>
   )
 }
 
