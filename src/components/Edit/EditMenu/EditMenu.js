@@ -2,7 +2,10 @@ import '../Edit.scss'
 
 function EditMenu(props) {
   return (
-    <section className={"edit__menu " + props.className}>
+    <section
+      id="edit__menu"
+      className={"edit__menu " + props.className}
+    >
       <form action="" className="edit__menu-form">
         <div className="edit__menu-row"><span>Форма редактирования товара</span></div>
 

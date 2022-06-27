@@ -8,6 +8,7 @@ import {
 } from "../../../redux/mainSlice";
 import {addCategory, deleteCategory, editCategory} from "../../../redux/categoriesSlice";
 import mainStore from "../../../redux/mainStore";
+import {sortMap} from "../../../utils/sortMap";
 
 import Navigation from "../../../components/Navigation/Navigation";
 import NavigationTitle from "../../../components/Navigation/NavigationTitle/NavigationTitle";
@@ -363,6 +364,15 @@ class EditPage extends React.Component {
   }
 
   render() {
+    const category =
+      this.state.categories.find(item => item.name === this.state.currentCategory)
+        ? this.state.categories.find(item => item.name === this.state.currentCategory)
+        : {id: 0, title: '', name: '', goods: []}
+
+    const goods = []
+      .concat(category.goods)
+      .sort(sortMap[this.state.sortValue])
+
     return (
       <div>
         <Bg />
@@ -506,17 +516,36 @@ class EditPage extends React.Component {
 
                   <EditContent>
                     <EditCards>
-                      <EditCard
-                        id="111522"
-                        url="/img/Auto_1.jpg"
-                        name="Автопроигрыватель Soundmax SM-CCR3057F"
-                        rating="3.0"
-                        descr="1 DIN, 160 Вт, AUX, USB"
-                        category="Автотовары"
-                        amount="1000"
-                        price="1 099"
-                      />
-
+                      <EditCard>
+                        {goods
+                          .sort(sortMap[this.state.sortValue])
+                          .slice(
+                            (this.state.currentPage - 1) * this.state.visibleValue,
+                            this.state.currentPage === 1 && this.state.pages === 1
+                              ? goods.length
+                              : this.state.currentPage === this.state.pages
+                                ? goods.length < this.state.pages * this.state.visibleValue
+                                  ? goods.length
+                                  : this.state.pages * this.state.visibleValue
+                                : this.state.currentPage * this.state.visibleValue
+                          )
+                          .map(item => {
+                            return (
+                              <EditCard
+                                key={item.id}
+                                id={item.id}
+                                url={item.url}
+                                name={item.name}
+                                rating={item.rating}
+                                descr={item.descr}
+                                category={category.name}
+                                amount={item.amount}
+                                price={item.price}
+                              />
+                            )
+                          })
+                        }
+                      </EditCard>
                       <EditCardAdd />
                     </EditCards>
                   </EditContent>
