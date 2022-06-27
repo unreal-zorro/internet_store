@@ -1,6 +1,7 @@
 import React from "react";
 
 import {
+  currentCategoryTitleChange,
   currentPageChange,
   pagesChange,
   sortChange,
@@ -58,10 +59,11 @@ class EditPage extends React.Component {
       errorEditedCategoryId: '',
       searchValue: '',
       searchActive: false,
-      sortValue: mainStore.getState().main.sortValue,
-      visibleValue: mainStore.getState().main.visibleValue,
-      currentPage: mainStore.getState().main.currentPage,
-      pages: mainStore.getState().main.pages
+      sortValue: 'price-incr',
+      visibleValue: '1',
+      currentPage: 1,
+      pages: 10,
+      currentCategoryTitle: mainStore.getState().main.currentCategoryTitle
     }
     this.burgerClickHandler = this.burgerClickHandler.bind(this)
     this.catalogClickHandler = this.catalogClickHandler.bind(this)
@@ -336,42 +338,99 @@ class EditPage extends React.Component {
     }
   }
 
-  sortSelectChangeHandler(value) {
-    mainStore.dispatch(sortChange(value.target.value))
+  async sortSelectChangeHandler(value) {
+    await this.setState(prevState => ({
+      ...prevState,
+      sortValue: value.target.value
+    }))
   }
 
-  visibleSelectChangeHandler(value) {
-    mainStore.dispatch(currentPageChange(1))
-    mainStore.dispatch(visibleChange(value.target.value))
+  async visibleSelectChangeHandler(value) {
+    await this.setState(prevState => ({
+      ...prevState,
+      currentPage: 1
+    }))
+
+    await this.setState(prevState => ({
+      ...prevState,
+      visibleChange: value.target.value
+    }))
   }
 
-  prevButtonClickHandler() {
-    mainStore.dispatch(pagesChange(this.state.pages))
+  async prevButtonClickHandler() {
     if (this.state.currentPage === 1) {
       return undefined
     } else {
-      mainStore.dispatch(currentPageChange(this.state.currentPage - 1))
+      await this.setState(prevState => ({
+        ...prevState,
+        currentPage: this.state.currentPage - 1
+      }))
     }
   }
 
-  nextButtonClickHandler() {
-    mainStore.dispatch(pagesChange(this.state.pages))
+  async nextButtonClickHandler() {
     if (this.state.currentPage === this.state.pages) {
       return undefined
     } else {
-      mainStore.dispatch(currentPageChange(this.state.currentPage + 1))
+      await this.setState(prevState => ({
+        ...prevState,
+        currentPage: this.state.currentPage + 1
+      }))
     }
   }
 
   render() {
-    const category =
-      this.state.categories.find(item => item.name === this.state.currentCategory)
+    const category = this.state.categories.find(item => item.name === this.state.currentCategory)
         ? this.state.categories.find(item => item.name === this.state.currentCategory)
-        : {id: 0, title: '', name: '', goods: []}
+        : this.state.currentCategory === 'all'
+          ? this.state.categories
+          : {id: 0, title: '', name: '', goods: []}
 
-    const goods = []
-      .concat(category.goods)
-      .sort(sortMap[this.state.sortValue])
+    const goods = category.length
+        ? [].concat(...this.state.categories.map(item => item.goods))
+        : category.goods.length === 0
+          ? []
+          : [].concat(category.goods)
+
+    goods.sort(sortMap[this.state.sortValue])
+
+    goods.slice(
+        (this.state.currentPage - 1) * this.state.visibleValue,
+        this.state.currentPage === 1 && this.state.pages === 1
+          ? goods.length
+          : this.state.currentPage === this.state.pages
+            ? goods.length < this.state.pages * this.state.visibleValue
+              ? goods.length
+              : this.state.pages * this.state.visibleValue
+            : this.state.currentPage * this.state.visibleValue
+      )
+
+    const categoryTitle = category.length
+      ? "all"
+      : category.title
+
+    // if (this.state.currentCategoryTitle !== categoryTitle) {
+    //   this.setState(prevState => ({
+    //     ...prevState,
+    //     currentPage: 1
+    //   }))
+    // }
+    // if (this.state.visibleValue === "all") {
+    //   this.setState(prevState => ({
+    //     ...prevState,
+    //     pages: 1
+    //   }))
+    // } else {
+    //   let pagesValue = Math.ceil(goods.length / this.state.visibleValue)
+    //   this.setState(prevState => ({
+    //     ...prevState,
+    //     pages: pagesValue
+    //   }))
+    // }
+
+    // console.log("pages: ", this.state.pages)
+    // console.log("sortValue: ", this.state.sortValue)
+    // console.log("visibleValue: ", this.state.visibleValue)
 
     return (
       <div>
@@ -511,41 +570,31 @@ class EditPage extends React.Component {
                   </Visual>
 
                   <EditEmpty
-                    className="active"
+                    className={goods.length === 0 ? "active" : ""}
                   />
 
                   <EditContent>
                     <EditCards>
-                      <EditCard>
-                        {goods
-                          .sort(sortMap[this.state.sortValue])
-                          .slice(
-                            (this.state.currentPage - 1) * this.state.visibleValue,
-                            this.state.currentPage === 1 && this.state.pages === 1
-                              ? goods.length
-                              : this.state.currentPage === this.state.pages
-                                ? goods.length < this.state.pages * this.state.visibleValue
-                                  ? goods.length
-                                  : this.state.pages * this.state.visibleValue
-                                : this.state.currentPage * this.state.visibleValue
+                      {
+                        goods.map(item => {
+                          return (
+                            <EditCard
+                              key={item.id}
+                              id={item.id}
+                              url={item.url}
+                              name={item.name}
+                              rating={item.rating}
+                              descr={item.descr}
+                              category={category.length
+                                ? category.find(itemCategories => itemCategories.goods.find(itemGood => itemGood.id === item.id)).name
+                                : category.name
+                              }
+                              amount={item.amount}
+                              price={item.price}
+                            />
                           )
-                          .map(item => {
-                            return (
-                              <EditCard
-                                key={item.id}
-                                id={item.id}
-                                url={item.url}
-                                name={item.name}
-                                rating={item.rating}
-                                descr={item.descr}
-                                category={category.name}
-                                amount={item.amount}
-                                price={item.price}
-                              />
-                            )
-                          })
-                        }
-                      </EditCard>
+                        })
+                      }
                       <EditCardAdd />
                     </EditCards>
                   </EditContent>

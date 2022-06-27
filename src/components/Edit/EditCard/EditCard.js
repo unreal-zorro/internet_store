@@ -33,9 +33,9 @@ function EditCard(props) {
         <a href="#edit__menu" className="edit-actions__link">
           <img src="/icons/edit.png" alt="edit" />
         </a>
-        <a href="#" className="edit-actions__link">
+        <div className="edit-actions__link">
           <img src="/icons/delete.png" alt="delete" />
-        </a>
+        </div>
       </div>
     </div>
   )
