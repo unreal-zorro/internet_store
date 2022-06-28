@@ -1,12 +1,5 @@
 import React from "react";
 
-import {
-  currentCategoryTitleChange,
-  currentPageChange,
-  pagesChange,
-  sortChange,
-  visibleChange
-} from "../../../redux/mainSlice";
 import {addCategory, deleteCategory, editCategory} from "../../../redux/categoriesSlice";
 import mainStore from "../../../redux/mainStore";
 import {sortMap} from "../../../utils/sortMap";
@@ -49,6 +42,9 @@ class EditPage extends React.Component {
       isSidebarActive: true,
       categories: mainStore.getState().categories.categories,
       currentCategory: '',
+      category: {id: 0, title: '', name: '', goods: []},
+      goods: [],
+      categoryTitle: '',
       editAction: '',
       currentEditedCategoryId: '',
       editedCategoryName: '',
@@ -60,10 +56,10 @@ class EditPage extends React.Component {
       searchValue: '',
       searchActive: false,
       sortValue: 'price-incr',
-      visibleValue: '1',
+      visibleValue: '5',
       currentPage: 1,
       pages: 10,
-      currentCategoryTitle: mainStore.getState().main.currentCategoryTitle
+      editGoodAction: ''
     }
     this.burgerClickHandler = this.burgerClickHandler.bind(this)
     this.catalogClickHandler = this.catalogClickHandler.bind(this)
@@ -324,11 +320,7 @@ class EditPage extends React.Component {
     await this.setState(prevState => ({
       ...prevState,
       searchActive: true,
-    }))
-    await this.setState(prevState => ({
-      ...prevState,
-      searchValue: '',
-      searchActive: false
+      currentCategory: 'search'
     }))
   }
 
@@ -348,13 +340,22 @@ class EditPage extends React.Component {
   async visibleSelectChangeHandler(value) {
     await this.setState(prevState => ({
       ...prevState,
-      currentPage: 1
+      currentPage: 1,
+      visibleValue: value.target.value
     }))
 
-    await this.setState(prevState => ({
-      ...prevState,
-      visibleChange: value.target.value
-    }))
+    if (this.state.visibleValue === "all") {
+      await this.setState(prevState => ({
+        ...prevState,
+        pages: 1
+      }))
+    } else {
+      let pagesValue = Math.ceil(this.state.goods.length / this.state.visibleValue)
+      await this.setState(prevState => ({
+        ...prevState,
+        pages: pagesValue
+      }))
+    }
   }
 
   async prevButtonClickHandler() {
@@ -379,22 +380,43 @@ class EditPage extends React.Component {
     }
   }
 
-  render() {
-    const category = this.state.categories.find(item => item.name === this.state.currentCategory)
+  async componentDidUpdate(prevProps, prevState, snapshot) {
+    if (this.state.currentCategory !== prevState.currentCategory || this.state.searchActive !== prevState.searchActive) {
+      const category = this.state.categories.find(item => item.name === this.state.currentCategory)
         ? this.state.categories.find(item => item.name === this.state.currentCategory)
-        : this.state.currentCategory === 'all'
+        : this.state.currentCategory === 'all' || this.state.currentCategory === 'search'
           ? this.state.categories
           : {id: 0, title: '', name: '', goods: []}
 
-    const goods = category.length
-        ? [].concat(...this.state.categories.map(item => item.goods))
-        : category.goods.length === 0
-          ? []
-          : [].concat(category.goods)
+      let goods = []
 
-    goods.sort(sortMap[this.state.sortValue])
+      if (this.state.searchActive) {
+        this.state.categories.map(item => {
+          item.goods.map(goodItem => {
+            if (goodItem.name.toLowerCase().includes(this.state.searchValue.trim().toLowerCase())) {
+              goods.push({...goodItem})
+            }
+            return undefined
+          })
+          return undefined
+        })
 
-    goods.slice(
+        await this.setState(prevState => ({
+          ...prevState,
+          searchValue: '',
+          searchActive: false
+        }))
+      } else {
+        goods = category.length
+          ? [].concat(...this.state.categories.map(item => item.goods))
+          : category.goods.length === 0
+            ? []
+            : [].concat(category.goods)
+      }
+
+      goods.sort(sortMap[this.state.sortValue])
+
+      goods.slice(
         (this.state.currentPage - 1) * this.state.visibleValue,
         this.state.currentPage === 1 && this.state.pages === 1
           ? goods.length
@@ -405,33 +427,70 @@ class EditPage extends React.Component {
             : this.state.currentPage * this.state.visibleValue
       )
 
-    const categoryTitle = category.length
-      ? "all"
-      : category.title
+      const categoryTitle = category.length
+        ? "all"
+        : category.title
 
-    // if (this.state.currentCategoryTitle !== categoryTitle) {
-    //   this.setState(prevState => ({
-    //     ...prevState,
-    //     currentPage: 1
-    //   }))
-    // }
-    // if (this.state.visibleValue === "all") {
-    //   this.setState(prevState => ({
-    //     ...prevState,
-    //     pages: 1
-    //   }))
-    // } else {
-    //   let pagesValue = Math.ceil(goods.length / this.state.visibleValue)
-    //   this.setState(prevState => ({
-    //     ...prevState,
-    //     pages: pagesValue
-    //   }))
-    // }
+      let pages = 1
 
-    // console.log("pages: ", this.state.pages)
-    // console.log("sortValue: ", this.state.sortValue)
-    // console.log("visibleValue: ", this.state.visibleValue)
+      if (this.state.visibleValue !== "all") {
+        pages = Math.ceil(goods.length / this.state.visibleValue)
+      } else {
+        pages = 1
+      }
 
+      await this.setState(prevState => ({
+        ...prevState,
+        currentPage: 1,
+        pages,
+        category,
+        goods,
+        categoryTitle
+      }))
+    }
+
+    if (this.state.visibleValue !== prevState.visibleValue ||
+      this.state.sortValue !== prevState.sortValue) {
+
+      if (this.state.visibleValue !== prevState.visibleValue) {
+        let pages = 1
+
+        if (this.state.visibleValue !== "all") {
+          pages = Math.ceil(this.state.goods.length / this.state.visibleValue)
+        } else {
+          pages = 1
+        }
+
+        await this.setState(prevState => ({
+          ...prevState,
+          currentPage: 1,
+          pages
+        }))
+      }
+
+      const goods = this.state.goods
+
+      goods.sort(sortMap[this.state.sortValue])
+
+      goods.slice(
+        (this.state.currentPage - 1) * this.state.visibleValue,
+        this.state.currentPage === 1 && this.state.pages === 1
+          ? goods.length
+          : this.state.currentPage === this.state.pages
+            ? goods.length < this.state.pages * this.state.visibleValue
+              ? goods.length
+              : this.state.pages * this.state.visibleValue
+            : this.state.currentPage * this.state.visibleValue
+      )
+
+      await this.setState(prevState => ({
+        ...prevState,
+        goods
+      }))
+    }
+  }
+
+  render() {
     return (
       <div>
         <Bg />
@@ -446,7 +505,7 @@ class EditPage extends React.Component {
           onKeyDown={event => this.searchOnKeyDownHandler(event.key)}
         />
         <Container
-          className="edited"
+          className={this.state.editGoodAction ? "edited" : ""}
         >
           <EditSidebar
             className={this.state.isSidebarActive ? 'active' : ''}
@@ -570,13 +629,25 @@ class EditPage extends React.Component {
                   </Visual>
 
                   <EditEmpty
-                    className={goods.length === 0 ? "active" : ""}
+                    className={this.state.goods.length === 0 ? "active" : ""}
                   />
 
                   <EditContent>
                     <EditCards>
                       {
-                        goods.map(item => {
+                        this.state.goods
+                          .sort(sortMap[this.state.sortValue])
+                          .slice(
+                            (this.state.currentPage - 1) * this.state.visibleValue,
+                            this.state.currentPage === 1 && this.state.pages === 1
+                            ? this.state.goods.length
+                            : this.state.currentPage === this.state.pages
+                            ? this.state.goods.length < this.state.pages * this.state.visibleValue
+                            ? this.state.goods.length
+                            : this.state.pages * this.state.visibleValue
+                            : this.state.currentPage * this.state.visibleValue
+                          )
+                          .map(item => {
                           return (
                             <EditCard
                               key={item.id}
@@ -585,9 +656,9 @@ class EditPage extends React.Component {
                               name={item.name}
                               rating={item.rating}
                               descr={item.descr}
-                              category={category.length
-                                ? category.find(itemCategories => itemCategories.goods.find(itemGood => itemGood.id === item.id)).name
-                                : category.name
+                              category={this.state.category.length
+                                ? this.state.category.find(itemCategories => itemCategories.goods.find(itemGood => itemGood.id === item.id)).name
+                                : this.state.category.name
                               }
                               amount={item.amount}
                               price={item.price}
@@ -612,7 +683,7 @@ class EditPage extends React.Component {
         </Container>
 
         <EditMenu
-          className="active"
+          className={this.state.editGoodAction ? "active" : ""}
         />
 
         <Modal

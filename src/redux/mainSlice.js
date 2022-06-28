@@ -10,7 +10,7 @@ export const mainSlice = createSlice({
     currentOrderNumber: 0,
     currentOrderPhone: '',
     sortValue: 'price-incr',
-    visibleValue: "1",
+    visibleValue: "5",
     currentPage: 1,
     pages: 10,
     currentCategoryTitle: '',
