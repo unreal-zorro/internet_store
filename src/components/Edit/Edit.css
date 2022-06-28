@@ -335,6 +335,9 @@
   width: 100%;
   height: 100%;
 }
+.edit__menu-link :hover {
+  cursor: pointer;
+}
 .edit__menu-ok {
   width: 100px;
 }

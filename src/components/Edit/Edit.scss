@@ -336,6 +336,9 @@
         width: 100%;
         height: 100%;
       }
+      :hover {
+        cursor: pointer;
+      }
     }
     &-ok {
       width: 100px;

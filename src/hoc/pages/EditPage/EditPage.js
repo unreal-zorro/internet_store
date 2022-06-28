@@ -34,6 +34,7 @@ import Catalog from "../../../components/Catalog/Catalog";
 import EditCatalogItem from "../../../components/Catalog/EditCatalogItem/EditCatalogItem";
 import Promo from "../../../components/Promo/Promo";
 import EditNavigationLink from "../../../components/Navigation/EditNavigationLink/EditNavigationLink";
+import Text from "../../../components/Text/Text";
 
 class EditPage extends React.Component {
   constructor(props) {
@@ -80,6 +81,11 @@ class EditPage extends React.Component {
     this.visibleSelectChangeHandler = this.visibleSelectChangeHandler.bind(this)
     this.prevButtonClickHandler = this.prevButtonClickHandler.bind(this)
     this.nextButtonClickHandler = this.nextButtonClickHandler.bind(this)
+    this.editGoodClickHandler = this.editGoodClickHandler.bind(this)
+    this.deleteGoodClickHandler = this.deleteGoodClickHandler.bind(this)
+    this.addGoodClickHandler = this.addGoodClickHandler.bind(this)
+    this.okGoodClickHandler = this.okGoodClickHandler.bind(this)
+    this.cancelGoodClickHandler = this.cancelGoodClickHandler.bind(this)
   }
 
   async burgerClickHandler() {
@@ -380,6 +386,38 @@ class EditPage extends React.Component {
     }
   }
 
+  async editGoodClickHandler(id) {
+    await this.setState(prevState => ({
+      ...prevState,
+      editGoodAction: 'edit'
+    }))
+  }
+
+  async deleteGoodClickHandler(id) {
+
+  }
+
+  async addGoodClickHandler() {
+    await this.setState(prevState => ({
+      ...prevState,
+      editGoodAction: 'add'
+    }))
+  }
+
+  async okGoodClickHandler() {
+    await this.setState(prevState => ({
+      ...prevState,
+      editGoodAction: ''
+    }))
+  }
+
+  async cancelGoodClickHandler() {
+    await this.setState(prevState => ({
+      ...prevState,
+      editGoodAction: ''
+    }))
+  }
+
   async componentDidUpdate(prevProps, prevState, snapshot) {
     if (this.state.currentCategory !== prevState.currentCategory || this.state.searchActive !== prevState.searchActive) {
       const category = this.state.categories.find(item => item.name === this.state.currentCategory)
@@ -445,7 +483,8 @@ class EditPage extends React.Component {
         pages,
         category,
         goods,
-        categoryTitle
+        categoryTitle,
+        editGoodAction: ''
       }))
     }
 
@@ -578,6 +617,15 @@ class EditPage extends React.Component {
                         </NavigationTitle>
                         <NavigationDivider />
                       </React.Fragment>
+                      : this.state.currentCategory === "search"
+                        ? <React.Fragment>
+                          <NavigationTitle>
+                            <EditNavigationLink
+                              linkName="Поиск по всем категориям"
+                            />
+                          </NavigationTitle>
+                          <NavigationDivider />
+                        </React.Fragment>
                       : <React.Fragment>
                         <NavigationTitle>
                           <EditNavigationLink
@@ -587,7 +635,7 @@ class EditPage extends React.Component {
                         </NavigationTitle>
                         <NavigationDivider />
                       </React.Fragment>
-                      : undefined
+                    : undefined
                 }
               </Navigation>
 
@@ -610,73 +658,87 @@ class EditPage extends React.Component {
                       })
                     }
                   </Catalog>
-                  : undefined
+                  : this.state.currentCategory === 'search' && this.state.goods.length === 0
+                    ? <Text
+                      text="Ничего не найдено."
+                    />
+                    : undefined
               }
             </Promo>
 
             {
               this.state.currentCategory
-                ? <React.Fragment>
-                  <Visual>
-                    <Sort
-                      value={this.state.sortValue}
-                      onChange={this.sortSelectChangeHandler}
+                ? !(this.state.currentCategory === 'search' && this.state.goods.length === 0)
+                  ? <React.Fragment>
+                    <Visual>
+                      <Sort
+                        value={this.state.sortValue}
+                        onChange={this.sortSelectChangeHandler}
+                      />
+                      <Visible
+                        value={this.state.visibleValue}
+                        onChange={this.visibleSelectChangeHandler}
+                      />
+                    </Visual>
+
+                    <EditEmpty
+                      className={this.state.goods.length === 0 ? "active" : ""}
                     />
-                    <Visible
-                      value={this.state.visibleValue}
-                      onChange={this.visibleSelectChangeHandler}
+
+                    <EditContent>
+                      <EditCards>
+                        {
+                          this.state.goods
+                            .sort(sortMap[this.state.sortValue])
+                            .slice(
+                              (this.state.currentPage - 1) * this.state.visibleValue,
+                              this.state.currentPage === 1 && this.state.pages === 1
+                                ? this.state.goods.length
+                                : this.state.currentPage === this.state.pages
+                                  ? this.state.goods.length < this.state.pages * this.state.visibleValue
+                                    ? this.state.goods.length
+                                    : this.state.pages * this.state.visibleValue
+                                  : this.state.currentPage * this.state.visibleValue
+                            )
+                            .map(item => {
+                              return (
+                                <EditCard
+                                  key={item.id}
+                                  id={item.id}
+                                  url={item.url}
+                                  name={item.name}
+                                  rating={item.rating}
+                                  descr={item.descr}
+                                  category={this.state.category.length
+                                    ? this.state.category.find(
+                                      itemCategories => itemCategories.goods.find(
+                                        itemGood => itemGood.id === item.id
+                                      )
+                                    ).name
+                                    : this.state.category.name
+                                  }
+                                  amount={item.amount}
+                                  price={item.price}
+                                  onEditClick={() => this.editGoodClickHandler(item.id)}
+                                  onDeleteClick={() => this.deleteGoodClickHandler(item.id)}
+                                />
+                              )
+                            })
+                        }
+                        <EditCardAdd
+                          onClick={this.addGoodClickHandler}
+                        />
+                      </EditCards>
+                    </EditContent>
+
+                    <Pagination
+                      currentPage={this.state.currentPage}
+                      pages={this.state.pages}
+                      onClickPrevButton={this.prevButtonClickHandler}
+                      onClickNextButton={this.nextButtonClickHandler}
                     />
-                  </Visual>
-
-                  <EditEmpty
-                    className={this.state.goods.length === 0 ? "active" : ""}
-                  />
-
-                  <EditContent>
-                    <EditCards>
-                      {
-                        this.state.goods
-                          .sort(sortMap[this.state.sortValue])
-                          .slice(
-                            (this.state.currentPage - 1) * this.state.visibleValue,
-                            this.state.currentPage === 1 && this.state.pages === 1
-                            ? this.state.goods.length
-                            : this.state.currentPage === this.state.pages
-                            ? this.state.goods.length < this.state.pages * this.state.visibleValue
-                            ? this.state.goods.length
-                            : this.state.pages * this.state.visibleValue
-                            : this.state.currentPage * this.state.visibleValue
-                          )
-                          .map(item => {
-                          return (
-                            <EditCard
-                              key={item.id}
-                              id={item.id}
-                              url={item.url}
-                              name={item.name}
-                              rating={item.rating}
-                              descr={item.descr}
-                              category={this.state.category.length
-                                ? this.state.category.find(itemCategories => itemCategories.goods.find(itemGood => itemGood.id === item.id)).name
-                                : this.state.category.name
-                              }
-                              amount={item.amount}
-                              price={item.price}
-                            />
-                          )
-                        })
-                      }
-                      <EditCardAdd />
-                    </EditCards>
-                  </EditContent>
-
-                  <Pagination
-                    currentPage={this.state.currentPage}
-                    pages={this.state.pages}
-                    onClickPrevButton={this.prevButtonClickHandler}
-                    onClickNextButton={this.nextButtonClickHandler}
-                  />
-                </React.Fragment>
+                  </React.Fragment>
+                  : undefined
                 : undefined
             }
           </Edit>
@@ -684,6 +746,8 @@ class EditPage extends React.Component {
 
         <EditMenu
           className={this.state.editGoodAction ? "active" : ""}
+          onOkClick={this.okGoodClickHandler}
+          onCancelClick={this.cancelGoodClickHandler}
         />
 
         <Modal

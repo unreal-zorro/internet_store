@@ -1,7 +1,5 @@
 import '../Edit.scss'
 
-import {Link} from "react-router-dom";
-
 function EditCard(props) {
   return (
     <div className="edit__card">
@@ -32,10 +30,16 @@ function EditCard(props) {
         <span>{props.price}</span>
       </div>
       <div className="edit-actions">
-        <Link to="#edit__menu" className="edit-actions__link">
+        <div
+          className="edit-actions__link"
+          onClick={props.onEditClick}
+        >
           <img src="/icons/edit.png" alt="edit" />
-        </Link>
-        <div className="edit-actions__link">
+        </div>
+        <div
+          className="edit-actions__link"
+          onClick={props.onDeleteClick}
+        >
           <img src="/icons/delete.png" alt="delete" />
         </div>
       </div>
