@@ -185,6 +185,19 @@ export const categoriesSlice = createSlice({
         title: action.payload.completeCategory.categoryTitle,
         name: action.payload.completeCategory.categoryName
       }
+    },
+    addGood: (state, action) => {
+      state.categories[action.payload.categoryIndex].goods[state.categories[action.payload.categoryIndex].goods.length] = {
+        ...action.payload.good
+      }
+    },
+    deleteGood: (state, action) => {
+      state.categories[action.payload.categoryIndex].goods.splice(action.payload.goodIndex,1)
+    },
+    editGood: (state, action) => {
+      state.categories[action.payload.categoryIndex].goods[action.payload.goodIndex] = {
+        ...action.payload.good
+      }
     }
   }
 })
@@ -192,7 +205,10 @@ export const categoriesSlice = createSlice({
 export const {
   addCategory,
   deleteCategory,
-  editCategory
+  editCategory,
+  addGood,
+  deleteGood,
+  editGood
 } = categoriesSlice.actions
 
 export default categoriesSlice.reducer
