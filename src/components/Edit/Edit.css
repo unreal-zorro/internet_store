@@ -287,7 +287,7 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  margin: 10px 20px;
+  margin: 5px 20px;
 }
 .edit__menu-col {
   display: flex;
@@ -348,6 +348,10 @@
 }
 .edit__menu-ok {
   width: 100px;
+}
+.edit__menu-error {
+  font-size: 16px;
+  color: #ff0000;
 }
 
 @media screen and (max-width: 991px) {

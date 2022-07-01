@@ -289,7 +289,7 @@
       justify-content: space-between;
       align-items: center;
       width: 100%;
-      margin: 10px 20px;
+      margin: 5px 20px;
     }
     &-col {
       display: flex;
@@ -350,6 +350,10 @@
     }
     &-ok {
       width: 100px;
+    }
+    &-error {
+      font-size: 16px;
+      color: $cart-color;
     }
   }
 }

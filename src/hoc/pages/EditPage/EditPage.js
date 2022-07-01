@@ -1,6 +1,6 @@
 import React from "react";
 
-import {addCategory, deleteCategory, editCategory} from "../../../redux/categoriesSlice";
+import {addCategory, deleteCategory, deleteGood, editCategory} from "../../../redux/categoriesSlice";
 import mainStore from "../../../redux/mainStore";
 import {sortMap} from "../../../utils/sortMap";
 
@@ -60,7 +60,18 @@ class EditPage extends React.Component {
       visibleValue: '5',
       currentPage: 1,
       pages: 10,
-      editGoodAction: ''
+      editGoodAction: '',
+      currentEditedGoodId: '',
+      editedGoodId: '',
+      errorEditedGoodId: '',
+      editedGoodRating: '',
+      editedGoodCategory: '',
+      editedGoodUrl: '',
+      editedGoodName: '',
+      errorEditedGoodName: '',
+      editedGoodDescr: '',
+      editedGoodAmount: '',
+      editedGoodPrice: ''
     }
     this.burgerClickHandler = this.burgerClickHandler.bind(this)
     this.catalogClickHandler = this.catalogClickHandler.bind(this)
@@ -84,6 +95,14 @@ class EditPage extends React.Component {
     this.editGoodClickHandler = this.editGoodClickHandler.bind(this)
     this.deleteGoodClickHandler = this.deleteGoodClickHandler.bind(this)
     this.addGoodClickHandler = this.addGoodClickHandler.bind(this)
+    this.goodIdChangeHandler = this.goodIdChangeHandler.bind(this)
+    this.goodRatingChangeHandler = this.goodRatingChangeHandler.bind(this)
+    this.goodCategoryChangeHandler = this.goodCategoryChangeHandler.bind(this)
+    this.goodUrlChangeHandler = this.goodUrlChangeHandler.bind(this)
+    this.goodNameChangeHandler = this.goodNameChangeHandler.bind(this)
+    this.goodDescrChangeHandler = this.goodDescrChangeHandler.bind(this)
+    this.goodAmountChangeHandler = this.goodAmountChangeHandler.bind(this)
+    this.goodPriceChangeHandler = this.goodPriceChangeHandler.bind(this)
     this.okGoodClickHandler = this.okGoodClickHandler.bind(this)
     this.cancelGoodClickHandler = this.cancelGoodClickHandler.bind(this)
   }
@@ -386,21 +405,89 @@ class EditPage extends React.Component {
     }
   }
 
-  async editGoodClickHandler(id) {
+  async editGoodClickHandler(goodId, categoryId) {
     await this.setState(prevState => ({
       ...prevState,
       editGoodAction: 'edit'
     }))
   }
 
-  async deleteGoodClickHandler(id) {
+  async deleteGoodClickHandler(goodId, categoryId) {
+    const categoryIndex = this.state.categories.findIndex(item => item.id === categoryId)
+    const goodIndex = this.state.categories[categoryIndex].goods.findIndex(item => item.id === goodId)
+    await mainStore.dispatch(deleteGood({categoryIndex, goodIndex}))
 
+    const goods = category.length
+      ? [].concat(...this.state.categories.map(item => item.goods))
+      : category.goods.length === 0
+        ? []
+        : [].concat(category.goods)
+    await this.setState(prevState => ({
+      ...prevState,
+      goods
+    }))
   }
 
   async addGoodClickHandler() {
     await this.setState(prevState => ({
       ...prevState,
       editGoodAction: 'add'
+    }))
+  }
+
+  async goodIdChangeHandler(value) {
+    await this.setState(prevState => ({
+      ...prevState,
+      editedGoodId: value
+    }))
+  }
+
+  async goodRatingChangeHandler(value) {
+    await this.setState(prevState => ({
+      ...prevState,
+      editedGoodRating: value
+    }))
+  }
+
+  async goodCategoryChangeHandler(value) {
+    await this.setState(prevState => ({
+      ...prevState,
+      editedGoodCategory: value
+    }))
+  }
+
+  async goodUrlChangeHandler(value) {
+    await this.setState(prevState => ({
+      ...prevState,
+      editedGoodUrl: value
+    }))
+  }
+
+  async goodNameChangeHandler(value) {
+    await this.setState(prevState => ({
+      ...prevState,
+      editedGoodName: value
+    }))
+  }
+
+  async goodDescrChangeHandler(value) {
+    await this.setState(prevState => ({
+      ...prevState,
+      editedGoodDescr: value
+    }))
+  }
+
+  async goodAmountChangeHandler(value) {
+    await this.setState(prevState => ({
+      ...prevState,
+      editedGoodAmount: value
+    }))
+  }
+
+  async goodPriceChangeHandler(value) {
+    await this.setState(prevState => ({
+      ...prevState,
+      editedGoodPrice: value
     }))
   }
 
@@ -719,8 +806,26 @@ class EditPage extends React.Component {
                                   }
                                   amount={item.amount}
                                   price={item.price}
-                                  onEditClick={() => this.editGoodClickHandler(item.id)}
-                                  onDeleteClick={() => this.deleteGoodClickHandler(item.id)}
+                                  onEditClick={() => this.editGoodClickHandler(
+                                    item.id,
+                                    this.state.category.length
+                                      ? this.state.category.find(
+                                        itemCategories => itemCategories.goods.find(
+                                          itemGood => itemGood.id === item.id
+                                        )
+                                      ).id
+                                      : this.state.category.id
+                                  )}
+                                  onDeleteClick={() => this.deleteGoodClickHandler(
+                                    item.id,
+                                    this.state.category.length
+                                      ? this.state.category.find(
+                                        itemCategories => itemCategories.goods.find(
+                                          itemGood => itemGood.id === item.id
+                                        )
+                                      ).id
+                                      : this.state.category.id
+                                  )}
                                 />
                               )
                             })
@@ -746,9 +851,25 @@ class EditPage extends React.Component {
 
         <EditMenu
           className={this.state.editGoodAction ? "active" : ""}
-          idClassName=''
-          nameClassName=''
           categories={this.state.categories}
+          goodId={this.state.editedGoodId}
+          onChangeGoodId={event => this.goodIdChangeHandler(event.target.value)}
+          goodRating={this.state.editedGoodRating}
+          onChangeGoodRating={event => this.goodRatingChangeHandler(event.target.value)}
+          goodCategory={this.state.editedGoodCategory}
+          onChangeGoodCategory={event => this.goodCategoryChangeHandler(event.target.value)}
+          goodUrl={this.state.editedGoodUrl}
+          onChangeGoodUrl={event => this.goodUrlChangeHandler(event.target.value)}
+          goodName={this.state.editedGoodName}
+          onChangeGoodName={event => this.goodNameChangeHandler(event.target.value)}
+          goodDescr={this.state.editedGoodDescr}
+          onChangeGoodDescr={event => this.goodDescrChangeHandler(event.target.value)}
+          goodAmount={this.state.editedGoodAmount}
+          onChangeGoodAmount={event => this.goodAmountChangeHandler(event.target.value)}
+          goodPrice={this.state.editedGoodPrice}
+          onChangeGoodPrice={event => this.goodPriceChangeHandler(event.target.value)}
+          errorGoodId={this.state.errorEditedGoodId}
+          errorGoodName={this.state.errorEditedGoodName}
           onOkClick={this.okGoodClickHandler}
           onCancelClick={this.cancelGoodClickHandler}
         />

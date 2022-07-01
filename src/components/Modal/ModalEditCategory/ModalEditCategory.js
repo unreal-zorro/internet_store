@@ -5,8 +5,10 @@ function ModalEditCategory(props) {
   return (
     <form className="modal-form">
       <div className="modal-form__row">
-        <label className="modal-form__label modal-form__label-left" htmlFor="name">
-          Имя категории:
+        <label
+          className="modal-form__label modal-form__label-left"
+          htmlFor="name"
+        >Имя категории:
         </label>
         <input
           className="modal-form__input"
@@ -24,8 +26,10 @@ function ModalEditCategory(props) {
       </div>
 
       <div className="modal-form__row">
-        <label className="modal-form__label modal-form__label-left" htmlFor="title">
-          Заголовок категории:
+        <label
+          className="modal-form__label modal-form__label-left"
+          htmlFor="title"
+        >Заголовок категории:
         </label>
         <input
           className="modal-form__input"
@@ -43,8 +47,10 @@ function ModalEditCategory(props) {
       </div>
 
       <div className="modal-form__row">
-        <label className="modal-form__label modal-form__label-left" htmlFor="id">
-          Идентификатор категории:
+        <label
+          className="modal-form__label modal-form__label-left"
+          htmlFor="id"
+        >Идентификатор категории:
         </label>
         <input
           className="modal-form__input"

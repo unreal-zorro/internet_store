@@ -20,8 +20,10 @@ function EditMenu(props) {
             <input
               type="number"
               id="id"
-              className={"edit__menu-input " + props.idClassName}
-              defaultValue="545454"
+              min="0"
+              className={"edit__menu-input " + (props.errorGoodId ? "error" : "")}
+              value={props.goodId}
+              onChange={props.onChangeGoodId}
               required
             />
           </div>
@@ -34,8 +36,10 @@ function EditMenu(props) {
             <input
               type="number"
               id="rating"
+              min="0"
               className="edit__menu-input"
-              defaultValue="4.7"
+              defaultValue={props.goodRating}
+              onChange={props.onChangeGoodRating}
               required
             />
           </div>
@@ -49,6 +53,8 @@ function EditMenu(props) {
               name="sort"
               id="category"
               className="edit__menu-select"
+              defaultValue={props.goodCategory}
+              onChange={props.onChangeGoodCategory}
             >
               {props.categories.map(item => (
                 <option
@@ -73,7 +79,8 @@ function EditMenu(props) {
               type="url"
               id="url"
               className="edit__menu-input"
-              defaultValue="./img/Computers_1.jpg"
+              value={props.goodUrl}
+              onChange={props.onChangeGoodUrl}
               required
             />
           </div>
@@ -90,8 +97,9 @@ function EditMenu(props) {
               id="name"
               cols="10"
               rows="3"
-              className={"edit__menu-textarea " + props.nameClassName}
-              defaultValue="ПК ZET Gaming NEO M017"
+              className={"edit__menu-textarea " + (props.errorGoodName ? "error" : "")}
+              defaultValue={props.goodName}
+              onChange={props.onChangeGoodName}
               required
             ></textarea>
           </div>
@@ -107,7 +115,8 @@ function EditMenu(props) {
               cols="10"
               rows="3"
               className="edit__menu-textarea"
-              defaultValue="Intel Core i5-11400F, 6x2.6 ГГц, 16 ГБ DDR4, GeForce RTX 3050, SSD 512 ГБ, без ОС"
+              defaultValue={props.goodDescr}
+              onChange={props.onChangeGoodDescr}
               required
             ></textarea>
           </div>
@@ -122,8 +131,10 @@ function EditMenu(props) {
             <input
               type="number"
               id="amount"
+              min="0"
               className="edit__menu-input"
-              defaultValue="300"
+              value={props.goodAmount}
+              onChange={props.onChangeGoodAmount}
               required
             />
           </div>
@@ -136,8 +147,10 @@ function EditMenu(props) {
             <input
               type="number"
               id="price"
+              min="0"
               className="edit__menu-input"
-              defaultValue="77299"
+              value={props.goodPrice}
+              onChange={props.onChangeGoodPrice}
               required
             />
           </div>
@@ -159,6 +172,12 @@ function EditMenu(props) {
             >
               <img src="/icons/cancel.png" alt="cancel" />
             </div>
+          </div>
+        </div>
+
+        <div className="edit__menu-row">
+          <div className="edit__menu-error">
+            {props.errorGoodId + ' ' + props.errorGoodName}
           </div>
         </div>
       </form>
