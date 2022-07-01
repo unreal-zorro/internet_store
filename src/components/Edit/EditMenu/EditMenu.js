@@ -6,7 +6,7 @@ function EditMenu(props) {
       id="edit__menu"
       className={"edit__menu " + props.className}
     >
-      <form action="" className="edit__menu-form">
+      <form className="edit__menu-form">
         <div className="edit__menu-row">
           <span>Форма редактирования товара</span>
         </div>
@@ -20,8 +20,9 @@ function EditMenu(props) {
             <input
               type="number"
               id="id"
-              className="edit__menu-input"
+              className={"edit__menu-input " + props.idClassName}
               defaultValue="545454"
+              required
             />
           </div>
 
@@ -35,6 +36,7 @@ function EditMenu(props) {
               id="rating"
               className="edit__menu-input"
               defaultValue="4.7"
+              required
             />
           </div>
 
@@ -48,26 +50,15 @@ function EditMenu(props) {
               id="category"
               className="edit__menu-select"
             >
-              <option value="computers" className="edit__menu-option"
-              >
-                Компьютеры
-              </option>
-              <option value="technics" className="edit__menu-option"
-              >
-                Техника для дома
-              </option>
-              <option value="auto" className="edit__menu-option"
-              >
-                Автотовары
-              </option>
-              <option value="garden" className="edit__menu-option"
-              >
-                Сад и огород
-              </option>
-              <option value="accessories" className="edit__menu-option"
-              >
-                Аксессуары
-              </option>
+              {props.categories.map(item => (
+                <option
+                  key={item.id}
+                  value={item.title}
+                  className="edit__menu-option"
+                >
+                  {item.name}
+                </option>
+              ))}
             </select>
           </div>
         </div>
@@ -83,6 +74,7 @@ function EditMenu(props) {
               id="url"
               className="edit__menu-input"
               defaultValue="./img/Computers_1.jpg"
+              required
             />
           </div>
         </div>
@@ -98,8 +90,9 @@ function EditMenu(props) {
               id="name"
               cols="10"
               rows="3"
-              className="edit__menu-textarea"
+              className={"edit__menu-textarea " + props.nameClassName}
               defaultValue="ПК ZET Gaming NEO M017"
+              required
             ></textarea>
           </div>
 
@@ -115,6 +108,7 @@ function EditMenu(props) {
               rows="3"
               className="edit__menu-textarea"
               defaultValue="Intel Core i5-11400F, 6x2.6 ГГц, 16 ГБ DDR4, GeForce RTX 3050, SSD 512 ГБ, без ОС"
+              required
             ></textarea>
           </div>
         </div>
@@ -130,6 +124,7 @@ function EditMenu(props) {
               id="amount"
               className="edit__menu-input"
               defaultValue="300"
+              required
             />
           </div>
 
@@ -143,6 +138,7 @@ function EditMenu(props) {
               id="price"
               className="edit__menu-input"
               defaultValue="77299"
+              required
             />
           </div>
 

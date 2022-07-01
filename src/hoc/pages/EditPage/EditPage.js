@@ -746,6 +746,9 @@ class EditPage extends React.Component {
 
         <EditMenu
           className={this.state.editGoodAction ? "active" : ""}
+          idClassName=''
+          nameClassName=''
+          categories={this.state.categories}
           onOkClick={this.okGoodClickHandler}
           onCancelClick={this.cancelGoodClickHandler}
         />

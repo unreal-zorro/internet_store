@@ -309,12 +309,18 @@
       border: 1px solid #000;
       border-radius: 1000px;
       padding: 0 10px;
+      &.error {
+        border: 2px solid $cart-color;
+      }
     }
     &-textarea {
       width: 100%;
       border: 1px solid #000;
       border-radius: 15px;
       padding: 5px 10px;
+      &.error {
+        border: 2px solid $cart-color;
+      }
     }
     &-select {
       width: 100%;
@@ -338,6 +344,8 @@
       }
       :hover {
         cursor: pointer;
+        border: 2px solid $main-color;
+        border-radius: 1000px;
       }
     }
     &-ok {

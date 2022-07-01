@@ -308,11 +308,17 @@
   border-radius: 1000px;
   padding: 0 10px;
 }
+.edit__menu-input.error {
+  border: 2px solid #ff0000;
+}
 .edit__menu-textarea {
   width: 100%;
   border: 1px solid #000;
   border-radius: 15px;
   padding: 5px 10px;
+}
+.edit__menu-textarea.error {
+  border: 2px solid #ff0000;
 }
 .edit__menu-select {
   width: 100%;
@@ -337,6 +343,8 @@
 }
 .edit__menu-link :hover {
   cursor: pointer;
+  border: 2px solid #53852e;
+  border-radius: 1000px;
 }
 .edit__menu-ok {
   width: 100px;

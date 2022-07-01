@@ -52,7 +52,8 @@ function ModalEditCategory(props) {
           id="id"
           value={props.categoryId}
           onChange={props.onChangeCategoryId}
-          required />
+          required
+        />
       </div>
 
       <div className="modal-form__row">
