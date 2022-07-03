@@ -417,13 +417,18 @@ class EditPage extends React.Component {
     const goodIndex = this.state.categories[categoryIndex].goods.findIndex(item => item.id === goodId)
     await mainStore.dispatch(deleteGood({categoryIndex, goodIndex}))
 
+    const category = this.state.currentCategory === 'all'
+      ? mainStore.getState().categories.categories
+      : mainStore.getState().categories.categories.find(item => item.name === this.state.currentCategory)
     const goods = category.length
       ? [].concat(...this.state.categories.map(item => item.goods))
       : category.goods.length === 0
         ? []
         : [].concat(category.goods)
+
     await this.setState(prevState => ({
       ...prevState,
+      categories: mainStore.getState().categories.categories,
       goods
     }))
   }
@@ -506,7 +511,9 @@ class EditPage extends React.Component {
   }
 
   async componentDidUpdate(prevProps, prevState, snapshot) {
-    if (this.state.currentCategory !== prevState.currentCategory || this.state.searchActive !== prevState.searchActive) {
+    if (this.state.currentCategory !== prevState.currentCategory ||
+      this.state.searchActive !== prevState.searchActive
+    ) {
       const category = this.state.categories.find(item => item.name === this.state.currentCategory)
         ? this.state.categories.find(item => item.name === this.state.currentCategory)
         : this.state.currentCategory === 'all' || this.state.currentCategory === 'search'
