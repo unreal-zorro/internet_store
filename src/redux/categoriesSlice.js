@@ -188,7 +188,7 @@ export const categoriesSlice = createSlice({
     },
     addGood: (state, action) => {
       state.categories[action.payload.categoryIndex].goods[state.categories[action.payload.categoryIndex].goods.length] = {
-        ...action.payload.good
+        ...action.payload.completeGood
       }
     },
     deleteGood: (state, action) => {
@@ -196,7 +196,7 @@ export const categoriesSlice = createSlice({
     },
     editGood: (state, action) => {
       state.categories[action.payload.categoryIndex].goods[action.payload.goodIndex] = {
-        ...action.payload.good
+        ...action.payload.completeGood
       }
     }
   }

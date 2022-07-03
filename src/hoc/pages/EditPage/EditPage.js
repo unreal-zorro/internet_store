@@ -1,6 +1,6 @@
 import React from "react";
 
-import {addCategory, deleteCategory, deleteGood, editCategory} from "../../../redux/categoriesSlice";
+import {addCategory, addGood, deleteCategory, deleteGood, editCategory, editGood} from "../../../redux/categoriesSlice";
 import mainStore from "../../../redux/mainStore";
 import {sortMap} from "../../../utils/sortMap";
 
@@ -62,6 +62,7 @@ class EditPage extends React.Component {
       pages: 10,
       editGoodAction: '',
       currentEditedGoodId: '',
+      currentEditedGoodCategoryId: '',
       editedGoodId: '',
       errorEditedGoodId: '',
       editedGoodRating: '',
@@ -406,9 +407,23 @@ class EditPage extends React.Component {
   }
 
   async editGoodClickHandler(goodId, categoryId) {
+    const category = this.state.categories.find(item => item.id === +categoryId)
+    const good = category.goods.find(item => item.id === +goodId)
     await this.setState(prevState => ({
       ...prevState,
-      editGoodAction: 'edit'
+      editGoodAction: 'edit',
+      currentEditedGoodId: goodId,
+      currentEditedGoodCategoryId: categoryId,
+      editedGoodId: goodId,
+      errorEditedGoodId: '',
+      editedGoodRating: good.rating,
+      editedGoodCategory: category.title,
+      editedGoodUrl: good.url,
+      editedGoodName: good.name,
+      errorEditedGoodName: '',
+      editedGoodDescr: good.descr,
+      editedGoodAmount: good.amount,
+      editedGoodPrice: good.price
     }))
   }
 
@@ -433,10 +448,23 @@ class EditPage extends React.Component {
     }))
   }
 
-  async addGoodClickHandler() {
+  async addGoodClickHandler(categoryId) {
+    const category = this.state.categories.find(item => item.id === +categoryId)
     await this.setState(prevState => ({
       ...prevState,
-      editGoodAction: 'add'
+      editGoodAction: 'add',
+      currentEditedGoodId: '',
+      currentEditedGoodCategoryId: categoryId,
+      editedGoodId: '',
+      errorEditedGoodId: '',
+      editedGoodRating: '',
+      editedGoodCategory: category.title,
+      editedGoodUrl: '',
+      editedGoodName: '',
+      errorEditedGoodName: '',
+      editedGoodDescr: '',
+      editedGoodAmount: '',
+      editedGoodPrice: ''
     }))
   }
 
@@ -496,17 +524,138 @@ class EditPage extends React.Component {
     }))
   }
 
-  async okGoodClickHandler() {
-    await this.setState(prevState => ({
-      ...prevState,
-      editGoodAction: ''
-    }))
+  async okGoodClickHandler(event) {
+    event.preventDefault()
+
+    const action = this.state.editGoodAction
+    const currentGoodId = +this.state.currentEditedGoodId
+    const currentCategoryId = +this.state.currentEditedGoodCategoryId
+    const goodId = this.state.editedGoodId
+    const goodRating = this.state.editedGoodRating
+    const goodCategory = this.state.editedGoodCategory
+    const goodUrl = this.state.editedGoodUrl
+    const goodName = this.state.editedGoodName
+    const goodDescr = this.state.editedGoodDescr
+    const goodAmount = this.state.editedGoodAmount
+    const goodPrice = this.state.editedGoodPrice
+    const categories = mainStore.getState().categories.categories
+
+    let errorId = ''
+    let errorName = ''
+
+    console.log("action: ", action)
+    console.log("currentGoodId: ", currentGoodId)
+    console.log("currentCategoryId: ", currentCategoryId)
+    console.log("goodId: ", goodId)
+    console.log("goodRating: ", goodRating)
+    console.log("goodCategory: ", goodCategory)
+    console.log("goodUrl: ", goodUrl)
+    console.log("goodName: ", goodName)
+    console.log("goodDescr: ", goodDescr)
+    console.log("goodAmount: ", goodAmount)
+    console.log("goodPrice: ", goodPrice)
+
+    if (action === 'add') {
+      if (categories.find(item => item.title === goodCategory).goods
+        .find(itemGood => itemGood.id === +goodId)
+      ) {
+        errorId = 'Товар с таким идентификатором уже существует.'
+      }
+
+      if (categories.find(item => item.title === goodCategory).goods
+        .find(itemGood => itemGood.name === +goodName)
+      ) {
+        errorName = 'Товар с таким именем уже существует.'
+      }
+    } else if (action === 'edit') {
+      const currentGood = [].concat(categories.map(item => item.goods))
+        .find(itemGood => itemGood.id === currentGoodId)
+
+      if (categories.find(item => item.title === goodCategory).goods
+        .find(itemGood => currentGood.id !== +goodId
+          ? itemGood.id === +goodId
+          : undefined
+      )) {
+        errorName = 'Товар с таким идентификатором уже существует.'
+      }
+
+      if (categories.find(item => item.title === goodCategory).goods
+        .find(itemGood => currentGood.name !== goodName
+          ? itemGood.name === goodName
+          : undefined
+        )) {
+        errorName = 'Товар с таким именем уже существует.'
+      }
+    }
+
+    if (errorId || errorName) {
+      await this.setState(prevState => ({
+        ...prevState,
+        errorEditedGoodId: errorId,
+        errorEditedGoodName: errorName
+      }))
+      return undefined
+    } else {
+      const completeGood = {
+        url: goodUrl,
+        name: goodName,
+        descr: goodDescr,
+        id: +goodId,
+        rating: goodRating,
+        price: goodPrice,
+        amount: goodAmount
+      }
+
+      const categoryIndex = categories.findIndex(
+        item => item.title === goodCategory
+      )
+
+      if (action === 'add') {
+        await mainStore.dispatch(addGood(categoryIndex, completeGood))
+      } else if (action === 'edit') {
+        const goodIndex = categories
+          .find(item => item.title === goodCategory).goods
+          .findIndex(itemGood => itemGood.id === +goodId)
+        await mainStore.dispatch(editGood(categoryIndex, goodIndex, completeGood))
+      }
+
+      await this.setState(prevState => ({
+        ...prevState,
+        categories: mainStore.getState().categories.categories,
+        editGoodAction: '',
+        currentEditedGoodId: '',
+        currentEditedGoodCategoryId: '',
+        editedGoodId: '',
+        errorEditedGoodId: '',
+        editedGoodRating: '',
+        editedGoodCategory: '',
+        editedGoodUrl: '',
+        editedGoodName: '',
+        errorEditedGoodName: '',
+        editedGoodDescr: '',
+        editedGoodAmount: '',
+        editedGoodPrice: ''
+      }))
+    }
   }
 
-  async cancelGoodClickHandler() {
+  async cancelGoodClickHandler(event) {
+    event.preventDefault()
     await this.setState(prevState => ({
       ...prevState,
-      editGoodAction: ''
+      editGoodAction: '',
+      currentEditedGoodId: '',
+      currentEditedGoodCategoryId: '',
+      editedGoodId: '',
+      errorEditedGoodId: '',
+      editedGoodRating: '',
+      editedGoodCategory: '',
+      editedGoodUrl: '',
+      editedGoodName: '',
+      errorEditedGoodName: '',
+      editedGoodDescr: '',
+      editedGoodAmount: '',
+      editedGoodPrice: ''
     }))
   }
 
@@ -838,7 +987,11 @@ class EditPage extends React.Component {
                             })
                         }
                         <EditCardAdd
-                          onClick={this.addGoodClickHandler}
+                          onClick={() => this.addGoodClickHandler(
+                            this.state.category.length
+                              ? 1
+                              : this.state.category.id
+                          )}
                         />
                       </EditCards>
                     </EditContent>
@@ -877,8 +1030,8 @@ class EditPage extends React.Component {
           onChangeGoodPrice={event => this.goodPriceChangeHandler(event.target.value)}
           errorGoodId={this.state.errorEditedGoodId}
           errorGoodName={this.state.errorEditedGoodName}
-          onOkClick={this.okGoodClickHandler}
-          onCancelClick={this.cancelGoodClickHandler}
+          onOkClick={event => this.okGoodClickHandler(event)}
+          onCancelClick={event => this.cancelGoodClickHandler(event)}
         />
 
         <Modal

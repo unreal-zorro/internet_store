@@ -38,7 +38,7 @@ function EditMenu(props) {
               id="rating"
               min="0"
               className="edit__menu-input"
-              defaultValue={props.goodRating}
+              value={props.goodRating}
               onChange={props.onChangeGoodRating}
               required
             />
@@ -53,7 +53,7 @@ function EditMenu(props) {
               name="sort"
               id="category"
               className="edit__menu-select"
-              defaultValue={props.goodCategory}
+              value={props.goodCategory}
               onChange={props.onChangeGoodCategory}
             >
               {props.categories.map(item => (
@@ -98,7 +98,7 @@ function EditMenu(props) {
               cols="10"
               rows="3"
               className={"edit__menu-textarea " + (props.errorGoodName ? "error" : "")}
-              defaultValue={props.goodName}
+              value={props.goodName}
               onChange={props.onChangeGoodName}
               required
             ></textarea>
@@ -115,7 +115,7 @@ function EditMenu(props) {
               cols="10"
               rows="3"
               className="edit__menu-textarea"
-              defaultValue={props.goodDescr}
+              value={props.goodDescr}
               onChange={props.onChangeGoodDescr}
               required
             ></textarea>
