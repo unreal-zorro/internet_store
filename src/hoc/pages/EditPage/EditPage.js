@@ -532,7 +532,7 @@ class EditPage extends React.Component {
     const currentCategoryId = +this.state.currentEditedGoodCategoryId
     const goodId = this.state.editedGoodId
     const goodRating = this.state.editedGoodRating
-    const goodCategory = this.state.editedGoodCategory
+    const goodCategoryTitle = this.state.editedGoodCategory
     const goodUrl = this.state.editedGoodUrl
     const goodName = this.state.editedGoodName
     const goodDescr = this.state.editedGoodDescr
@@ -543,45 +543,31 @@ class EditPage extends React.Component {
     let errorId = ''
     let errorName = ''
 
-    // console.log("action: ", action)
-    // console.log("currentGoodId: ", currentGoodId)
-    // console.log("currentCategoryId: ", currentCategoryId)
-    // console.log("goodId: ", goodId)
-    // console.log("goodRating: ", goodRating)
-    // console.log("goodCategory: ", goodCategory)
-    // console.log("goodUrl: ", goodUrl)
-    // console.log("goodName: ", goodName)
-    // console.log("goodDescr: ", goodDescr)
-    // console.log("goodAmount: ", goodAmount)
-    // console.log("goodPrice: ", goodPrice)
+    const category = categories.find(item => item.title === goodCategoryTitle)
+
+    const currentCategory = categories.find(item => item.id === currentCategoryId)
+    const currentGood = currentCategory.goods.find(item => item.id === currentGoodId)
+
+    console.log("currentCategoryId: ", currentCategoryId)
+    console.log("currentGoodId: ", currentGoodId)
+
+    const goodWithLikeId = category.goods.find(itemGood => itemGood.id === +goodId)
+    const goodWithLikeName = category.goods.find(itemGood => itemGood.name === goodName)
 
     if (action === 'add') {
-      if ((categories.find(item => item.title === goodCategory).goods)
-        .find(itemGood => itemGood.id === +goodId)
-      ) {
+      if (goodWithLikeId) {
         errorId = 'Товар с таким идентификатором уже существует.'
       }
 
-      if ((categories.find(item => item.title === goodCategory).goods)
-        .find(itemGood => itemGood.name === goodName)
-      ) {
+      if (goodWithLikeName) {
         errorName = 'Товар с таким именем уже существует.'
       }
     } else if (action === 'edit') {
-      const currentGood = (categories.find(item => item.id === currentCategoryId).goods)
-        .find(itemGood => itemGood.id === currentGoodId)
-
-      if ((categories.find(item => item.title === goodCategory).goods)
-        .find(itemGood => itemGood.id === +goodId) &&
-        (currentGoodId !== +goodId)
-      ) {
+      if (goodWithLikeId && (currentGoodId !== +goodId)) {
         errorId = 'Товар с таким идентификатором уже существует.'
       }
 
-      if ((categories.find(item => item.title === goodCategory).goods)
-        .find(itemGood => itemGood.name !== goodName) &&
-        (currentGood.name !== goodName)
-      ) {
+      if (goodWithLikeName && (currentGood.name !== goodName)) {
         errorName = 'Товар с таким именем уже существует.'
       }
     }
@@ -604,28 +590,40 @@ class EditPage extends React.Component {
         amount: goodAmount
       }
 
-      console.log("good: ", completeGood)
-
-      const categoryIndex = categories.findIndex(
-        item => item.title === goodCategory
-      )
-
-      console.log("categoryIndex: ", categoryIndex)
+      const categoryIndex = categories.findIndex(item => item.title === goodCategoryTitle)
 
       if (action === 'add') {
         await mainStore.dispatch(addGood({categoryIndex, completeGood}))
       } else if (action === 'edit') {
         const goodIndex = categories[categoryIndex].goods
-            .findIndex(item => item.id === currentGoodId)
+          .findIndex(item => item.id === currentGoodId)
 
-        console.log("goodIndex: ", goodIndex)
-
-        await mainStore.dispatch(editGood({categoryIndex, goodIndex, completeGood}))
+        if (currentCategory.title === goodCategoryTitle) {
+          if (currentGood.id === +goodId) {
+            await mainStore.dispatch(editGood({categoryIndex, goodIndex, completeGood}))
+          }
+        } else {
+          await mainStore.dispatch(addGood({categoryIndex, completeGood}))
+          await mainStore.dispatch(deleteGood({categoryIndex, goodIndex}))
+        }
       }
+
+      const category = mainStore.getState().categories.categories.find(item => item.name === this.state.currentCategory)
+        ? mainStore.getState().categories.categories.find(item => item.name === this.state.currentCategory)
+        : this.state.currentCategory === 'all'
+          ? mainStore.getState().categories.categories
+          : {id: 0, title: '', name: '', goods: []}
+
+      const goods = category.length
+        ? [].concat(...mainStore.getState().categories.categories.map(item => item.goods))
+        : category.goods.length === 0
+          ? []
+          : [].concat(category.goods)
 
       await this.setState(prevState => ({
         ...prevState,
         categories: mainStore.getState().categories.categories,
+        goods,
         editGoodAction: '',
         currentEditedGoodId: '',
         currentEditedGoodCategoryId: '',
@@ -640,6 +638,9 @@ class EditPage extends React.Component {
         editedGoodAmount: '',
         editedGoodPrice: ''
       }))
+
+      console.log("category: ", category)
+      console.log("goods: ", goods)
     }
   }
 
