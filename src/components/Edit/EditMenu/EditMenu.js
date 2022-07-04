@@ -177,7 +177,7 @@ function EditMenu(props) {
 
         <div className="edit__menu-row">
           <div className="edit__menu-error">
-            {props.errorGoodId + ' ' + props.errorGoodName}
+            {(props.errorGoodId + ' ' + props.errorGoodName).trim()}
           </div>
         </div>
       </form>
