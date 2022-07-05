@@ -2,9 +2,10 @@ import './Navbar.scss'
 
 import {useSelector} from "react-redux";
 
-import {Link, NavLink} from "react-router-dom";
+import {Link, NavLink, Route} from "react-router-dom";
 
 import Burger from "./Burger/Burger";
+import EditPage from "../../hoc/pages/EditPage/EditPage";
 
 function Navbar(props) {
   const cart = useSelector(state => state.main.cart)
@@ -14,6 +15,9 @@ function Navbar(props) {
   count = cart.reduce((sum, item) => {
     return sum + item.count
   }, 0)
+
+  const isAuth = useSelector(state => state.main.isAuth)
+  const isAdmin = useSelector(state => state.main.isAdmin)
 
   return (
     <section className="navbar">
@@ -54,6 +58,16 @@ function Navbar(props) {
               Контакты
             </NavLink>
           </li>
+
+          {
+            isAuth && isAdmin
+              ? <li className="navbar__menu-item navbar__user">
+                <NavLink to="/edit" className="navbar__edit">
+                  <img src="/icons/edit.png" alt="edit" />
+                </NavLink>
+              </li>
+              : undefined
+          }
         </ul>
 
         <div className="navbar__user">

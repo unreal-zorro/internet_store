@@ -114,7 +114,7 @@
 .navbar__cart.active {
   max-width: 43px;
   max-height: 43px;
-  border: 2px solid #f19621;
+  border: 2px solid rgba(241, 150, 33, 0.7);
   border-radius: 10px;
   background-color: #dee3d0;
 }
@@ -147,6 +147,28 @@
 }
 .navbar__auth:hover {
   color: rgba(22, 65, 7, 0.7);
+}
+.navbar__edit {
+  max-width: 40px;
+  max-height: 40px;
+  position: relative;
+  border: 2px solid #53852e;
+  border-radius: 10px;
+}
+.navbar__edit:hover {
+  color: rgba(241, 150, 33, 0.7);
+  border: 2px solid rgba(241, 150, 33, 0.7);
+}
+.navbar__edit.active {
+  max-width: 43px;
+  max-height: 43px;
+  background-color: #dee3d0;
+  border: 2px solid rgba(241, 150, 33, 0.7);
+}
+.navbar__edit img {
+  width: 100%;
+  height: 100%;
+  padding: 5px;
 }
 
 /*# sourceMappingURL=Navbar.css.map */
