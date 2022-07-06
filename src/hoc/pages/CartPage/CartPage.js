@@ -64,14 +64,14 @@ function CartPage() {
         amount={amount}
         onClick={cartOrderingClickHandler}
       >
-        {cart.map((item, index, array) => {
-          const category = categories.find((catItem, index, array) => {
-            return catItem.id === item.categoryId
-          })
+        {cart.map(item => {
+          const category = categories.find(catItem =>
+            catItem.id === item.categoryId
+          )
 
-          const good = category.goods.find((goodItem, index, array) => {
-            return goodItem.id === item.id
-          })
+          const good = category.goods.find(goodItem =>
+            goodItem.id === item.id
+          )
 
           return (
             <CartCard

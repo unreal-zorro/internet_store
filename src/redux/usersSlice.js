@@ -19,12 +19,14 @@ export const usersSlice = createSlice({
     ]
   },
   reducers: {
-
+    addUser: (state, action) => {
+      state.users.push(action.payload.user)
+    }
   }
 })
 
 export const {
-
+  addUser
 } = usersSlice.actions
 
 export default usersSlice.reducer

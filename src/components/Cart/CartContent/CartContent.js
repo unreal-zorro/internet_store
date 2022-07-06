@@ -1,8 +1,13 @@
 import '../Cart.scss'
 
+import mainStore from "../../../redux/mainStore";
+
 import CartTotal from "../CartTotal/CartTotal";
+import CartAuth from "../CartAuth/CartAuth";
 
 function CartContent(props) {
+  const isAuth = mainStore.getState().main.isAuth
+
   return (
     <div className={"cart__content " + props.className}>
       <div className="cart__cards">
@@ -16,11 +21,15 @@ function CartContent(props) {
         {props.children}
       </div>
 
-      <CartTotal
-        count={props.count}
-        amount={props.amount}
-        onClick={props.onClick}
-      />
+      {
+        isAuth
+          ? <CartTotal
+            count={props.count}
+            amount={props.amount}
+            onClick={props.onClick}
+          />
+          : <CartAuth />
+      }
     </div>
   )
 }

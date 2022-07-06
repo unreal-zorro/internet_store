@@ -200,6 +200,20 @@
     height: 40px;
     font-size: 16px;
   }
+  &__auth {
+    font-size: 16px;
+    width: 100%;
+    text-align: center;
+  }
+  &__link {
+    font-weight: 900;
+    text-decoration: none;
+    cursor: pointer;
+    color: $main-color;
+    &:hover {
+      color: $cart-color;
+    }
+  }
 }
 
 @media screen and (max-width: 1199px) {
@@ -223,7 +237,7 @@
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
-        align-items: flex-start;
+        align-items: center;
         width: 100%;
       }
     }

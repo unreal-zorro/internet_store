@@ -4,7 +4,11 @@ import Register from "../../../components/Register/Register";
 function RegisterPage() {
   return (
     <AuthLayout>
-      <Register />
+      <Register
+        login=''
+        password=''
+        onSubmit=''
+      />
     </AuthLayout>
   )
 }

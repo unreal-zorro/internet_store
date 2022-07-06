@@ -4,7 +4,11 @@ import AuthLayout from "../../AuthLayout/AuthLayout";
 function AuthPage() {
   return (
     <AuthLayout>
-      <Auth />
+      <Auth
+        login=''
+        password=''
+        onSubmit=''
+      />
     </AuthLayout>
   )
 }

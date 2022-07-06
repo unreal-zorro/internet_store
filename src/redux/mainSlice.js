@@ -26,7 +26,6 @@ export const mainSlice = createSlice({
       state.isAdmin = false
     },
     adminAuth: state => {
-      state.isAuth = true
       state.isAdmin = true
     },
     cartAddNewGood: (state, action) => {

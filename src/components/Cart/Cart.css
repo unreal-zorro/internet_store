@@ -199,6 +199,20 @@
   height: 40px;
   font-size: 16px;
 }
+.cart__auth {
+  font-size: 16px;
+  width: 100%;
+  text-align: center;
+}
+.cart__link {
+  font-weight: 900;
+  text-decoration: none;
+  cursor: pointer;
+  color: #53852e;
+}
+.cart__link:hover {
+  color: #ff0000;
+}
 
 @media screen and (max-width: 1199px) {
   .cart-name {
@@ -216,7 +230,7 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    align-items: flex-start;
+    align-items: center;
     width: 100%;
   }
   .cart__header_count {
