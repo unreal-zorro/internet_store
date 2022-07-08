@@ -2,7 +2,6 @@ import './Auth.scss'
 
 import React from "react";
 import {Link} from "react-router-dom";
-import declensionSymbols from "../../utils/declensionSymbols";
 
 function Auth(props) {
   return (
@@ -51,18 +50,7 @@ function Auth(props) {
         <div
           className="auth-form__row auth-form__error"
         >
-          {
-            props.passwordError
-              ? <React.Fragment>
-                {"Пароль должен быть не менее " +
-                  props.passwordLength +
-                  (+props.passwordLength === 1 ? " символа" : " символов") +
-                  ". Сейчас длина пароля составляет " +
-                  props.password.length +
-                  declensionSymbols(props.password.length)}
-              </React.Fragment>
-              : undefined
-          }
+          {props.passwordError}
         </div>
 
         <button

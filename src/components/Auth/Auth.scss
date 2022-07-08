@@ -43,6 +43,7 @@
       font-size: 16px;
     }
     &__error {
+      max-width: 410px;
       font-size: 14px;
       color: $store-color;
       padding: 0 20px;

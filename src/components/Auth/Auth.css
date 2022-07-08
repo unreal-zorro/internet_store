@@ -43,6 +43,7 @@
   font-size: 16px;
 }
 .auth-form__error {
+  max-width: 410px;
   font-size: 14px;
   color: #8f1515;
   padding: 0 20px;
