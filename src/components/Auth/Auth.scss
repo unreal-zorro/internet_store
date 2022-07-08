@@ -42,6 +42,11 @@
       padding: 5px 10px;
       font-size: 16px;
     }
+    &__error {
+      font-size: 14px;
+      color: $store-color;
+      padding: 0 20px;
+    }
     &__btn {
       margin: 5px auto;
       font-size: 16px;
