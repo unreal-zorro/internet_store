@@ -1,16 +1,15 @@
 import AuthLayout from "../../AuthLayout/AuthLayout";
-import Register from "../../../components/Register/Register";
+import AuthOrRegister from "../../../components/AuthOrRegister/AuthOrRegister";
 
 function RegisterPage() {
   return (
     <AuthLayout>
-      <Register
-        login=''
-        password=''
-        onSubmit=''
+      <AuthOrRegister
+        type="register"
       />
     </AuthLayout>
   )
 }
 
 export default RegisterPage
+

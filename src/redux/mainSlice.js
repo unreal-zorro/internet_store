@@ -3,7 +3,7 @@ import {createSlice} from "@reduxjs/toolkit";
 export const mainSlice = createSlice({
   name: "main",
   initialState: {
-    isAuth: false,
+    isAuth: true,
     isAdmin: false,
     cart: [],
     isOrdering: false,
@@ -18,7 +18,7 @@ export const mainSlice = createSlice({
     orders: []
   },
   reducers: {
-    login: state => {
+    userAuth: state => {
       state.isAuth = true
     },
     logout: state => {
@@ -74,7 +74,7 @@ export const mainSlice = createSlice({
 })
 
 export const {
-  login,
+  userAuth,
   logout,
   adminAuth,
   cartAddNewGood,

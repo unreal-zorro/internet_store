@@ -1,11 +1,11 @@
 import './Navbar.scss'
 
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 
-import {Link, NavLink, Route} from "react-router-dom";
+import {Link, NavLink} from "react-router-dom";
 
 import Burger from "./Burger/Burger";
-import EditPage from "../../hoc/pages/EditPage/EditPage";
+import {logout} from "../../redux/mainSlice";
 
 function Navbar(props) {
   const cart = useSelector(state => state.main.cart)
@@ -18,6 +18,12 @@ function Navbar(props) {
 
   const isAuth = useSelector(state => state.main.isAuth)
   const isAdmin = useSelector(state => state.main.isAdmin)
+
+  const dispatch = useDispatch()
+
+  function onLogoutClickHandler() {
+    dispatch(logout())
+  }
 
   return (
     <section className="navbar">
@@ -60,7 +66,7 @@ function Navbar(props) {
           </li>
 
           {
-            isAuth && isAdmin
+            isAdmin
               ? <li className="navbar__menu-item navbar__user">
                 <NavLink to="/edit" className="navbar__edit">
                   <img src="/icons/edit.png" alt="edit" />
@@ -77,7 +83,16 @@ function Navbar(props) {
               {count}
             </div>
           </NavLink>
-          <Link to="/auth" className="navbar__auth">Вход/Регистрация</Link>
+          <div
+            onClick={isAuth || isAdmin ? onLogoutClickHandler : undefined}
+          >
+            <Link
+              to={isAuth || isAdmin ? "" : "/auth"}
+              className="navbar__auth"
+            >
+              {isAuth || isAdmin ? "Выйти" : "Вход/Регистрация"}
+            </Link>
+          </div>
         </div>
       </div>
     </section>
