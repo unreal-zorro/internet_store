@@ -1,8 +1,18 @@
 import './Message.scss'
 
-function Message() {
+import {useEffect} from "react";
+
+function Message(props) {
+  useEffect(() => {
+    let message = ''
+     if (props.text) {
+       message = props.text
+       setTimeout(() => message = '', 3000)
+     }
+  })
+
   return (
-    <div className="message active">Вы авторизованы</div>
+    <div className="message active">{message}</div>
   )
 }
 

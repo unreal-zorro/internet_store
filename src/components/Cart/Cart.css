@@ -24,6 +24,13 @@
   align-items: flex-start;
   width: 100%;
 }
+.cart__content.no_auth {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+}
 .cart__cards {
   display: flex;
   flex-direction: column;
@@ -203,6 +210,7 @@
   font-size: 16px;
   width: 100%;
   text-align: center;
+  margin-top: 10px;
 }
 .cart__link {
   font-weight: 900;
@@ -226,13 +234,6 @@
   }
 }
 @media screen and (max-width: 991px) {
-  .cart__content.active {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    width: 100%;
-  }
   .cart__header_count {
     min-width: 120px;
   }

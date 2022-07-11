@@ -24,6 +24,13 @@
       align-items: flex-start;
       width: 100%;
     }
+    &.no_auth {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      width: 100%;
+    }
   }
   &__cards {
     display: flex;
@@ -204,6 +211,7 @@
     font-size: 16px;
     width: 100%;
     text-align: center;
+    margin-top: 10px;
   }
   &__link {
     font-weight: 900;
@@ -232,15 +240,6 @@
 
 @media screen and (max-width: 991px) {
   .cart {
-    &__content {
-      &.active {
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: center;
-        width: 100%;
-      }
-    }
     &__header {
       &_count {
         min-width: 120px;

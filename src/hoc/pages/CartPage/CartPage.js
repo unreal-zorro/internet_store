@@ -1,5 +1,7 @@
 import {useDispatch, useSelector} from "react-redux";
 
+import mainStore from "../../../redux/mainStore";
+
 import CartEmpty from "../../../components/Cart/CartEmpty/CartEmpty";
 import CartContent from "../../../components/Cart/CartContent/CartContent";
 import CartCard from "../../../components/Cart/CartCard/CartCard";
@@ -14,6 +16,8 @@ function CartPage() {
   const {count, amount} = cartCountAndAmount(cart, categories)
 
   const dispatch = useDispatch()
+
+  const isAuth = mainStore.getState().main.isAuth
 
   function inputChangeHandler(value, id) {
     let goodIndex = -1
@@ -59,7 +63,11 @@ function CartPage() {
         className={count > 0 ? "active" : ""}
       />
       <CartContent
-        className={count > 0 ? "active" : ""}
+        className={count > 0
+          ? isAuth
+            ? "active"
+            : "no_auth"
+          : ""}
         count={count}
         amount={amount}
         onClick={cartOrderingClickHandler}

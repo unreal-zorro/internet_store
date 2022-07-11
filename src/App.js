@@ -20,7 +20,6 @@ import SearchPage from "./hoc/pages/SearchPage/SearchPage";
 
 function App() {
   const isOrdering = useSelector(state => state.main.isOrdering)
-  const isAuth = useSelector(state => state.main.isAuth)
   const isAdmin = useSelector(state => state.main.isAdmin)
 
   return (
@@ -50,7 +49,7 @@ function App() {
       <Route path="/register" element={<RegisterPage />} />
 
       {
-        isAuth && isAdmin
+        isAdmin
           ? <Route path="/edit" element={<EditPage />} />
           : undefined
       }
