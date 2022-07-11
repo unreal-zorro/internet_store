@@ -103,6 +103,11 @@ class AuthOrRegister extends Component {
             passwordError: 'Неверный пароль.'
           }))
         }
+      } else {
+        this.setState(prevState => ({
+          ...prevState,
+          loginError: 'Неверное имя пользователья.'
+        }))
       }
     } else if (this.state.type === 'register') {
       if (admin.login === login || user) {
