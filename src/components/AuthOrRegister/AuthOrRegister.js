@@ -5,7 +5,7 @@ import {Link, useNavigate} from "react-router-dom";
 
 import mainStore from "../../redux/mainStore";
 import {addUser} from "../../redux/usersSlice";
-import {adminAuth, userAuth} from "../../redux/mainSlice";
+import {addMessage, adminAuth, userAuth} from "../../redux/mainSlice";
 
 import declensionSymbols from "../../utils/declensionSymbols";
 
@@ -98,6 +98,8 @@ class AuthOrRegister extends Component {
       if (admin.login === login) {
         if (admin.password === password) {
           mainStore.dispatch(adminAuth())
+          mainStore.dispatch(addMessage("Вы авторизованы, администратор."))
+          console.log("message: ", mainStore.getState().main.message)
           this.props.navigate("/")
         } else {
           this.setState(prevState => ({
@@ -108,6 +110,7 @@ class AuthOrRegister extends Component {
       } else if (user) {
         if (user.password === password) {
           mainStore.dispatch(userAuth())
+          mainStore.dispatch(addMessage("Вы авторизованы."))
           this.props.navigate("/")
         } else {
           this.setState(prevState => ({
@@ -137,6 +140,7 @@ class AuthOrRegister extends Component {
 
       mainStore.dispatch(addUser(newUser))
       mainStore.dispatch(userAuth())
+      mainStore.dispatch(addMessage("Вы зарегистрированы."))
       this.props.navigate("/")
     }
   }

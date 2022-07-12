@@ -1,19 +1,41 @@
 import './Message.scss'
 
-import {useEffect} from "react";
+import {Component} from "react";
+import mainStore from "../../redux/mainStore";
 
-function Message(props) {
-  useEffect(() => {
-    let message = ''
-     if (props.text) {
-       message = props.text
-       setTimeout(() => message = '', 3000)
-     }
-  })
+class Message extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      message: mainStore.getState().main.message
+    }
+  }
 
-  return (
-    <div className="message active">{message}</div>
-  )
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (mainStore.getState().main.message !== "") {
+      this.setState(prev => ({
+        ...prev,
+        message: mainStore.getState().main.message
+      }))
+
+      console.log("message state: ", this.state.message)
+
+      setTimeout(() => {
+        this.setState(prev => ({
+          ...prev,
+          message: ""
+        }))
+      }, 3000)
+    }
+  }
+
+  render() {
+    return (
+      <div
+        className={"message " + this.state.message ? "active" : ""}
+      >{this.state.message}</div>
+    )
+  }
 }
 
 export default Message

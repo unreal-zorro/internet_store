@@ -15,7 +15,8 @@ export const mainSlice = createSlice({
     pages: 10,
     currentCategoryTitle: '',
     currentSearchValue: '',
-    orders: []
+    orders: [],
+    message: ''
   },
   reducers: {
     userAuth: state => {
@@ -69,6 +70,9 @@ export const mainSlice = createSlice({
     },
     addOrder: (state, action) => {
       state.orders.push({...action.payload})
+    },
+    addMessage: (state, action) => {
+      state.message = action.payload
     }
   }
 })
@@ -90,7 +94,8 @@ export const {
   pagesChange,
   currentCategoryTitleChange,
   currentSearchValueChange,
-  addOrder
+  addOrder,
+  addMessage
 } = mainSlice.actions
 
 export default mainSlice.reducer
