@@ -13,7 +13,9 @@ function Card(props) {
         <div className="card-rating">Рейтинг: <span>{props.rating}</span></div>
         <div className="card-price">Цена: <span>{props.price} руб.</span></div>
       </div>
-      <Link to={"/catalog/" + props.categoryTitle + "/" + props.id}><button className="btn card-btn">Открыть</button></Link>
+      <Link to={"/catalog/" + props.categoryTitle + "/" + props.id}>
+        <button className="btn card-btn">Открыть</button>
+      </Link>
     </div>
   )
 }

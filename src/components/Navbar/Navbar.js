@@ -1,18 +1,15 @@
 import './Navbar.scss'
 
 import {useDispatch, useSelector} from "react-redux";
-
 import {Link, NavLink} from "react-router-dom";
+import {addMessage, logout} from "../../redux/mainSlice";
 
 import Burger from "./Burger/Burger";
-import {logout} from "../../redux/mainSlice";
 
 function Navbar(props) {
   const cart = useSelector(state => state.main.cart)
 
-  let count = 0
-
-  count = cart.reduce((sum, item) => {
+  const count = cart.reduce((sum, item) => {
     return sum + item.count
   }, 0)
 
@@ -23,6 +20,7 @@ function Navbar(props) {
 
   function onLogoutClickHandler() {
     dispatch(logout())
+    dispatch(addMessage("Вы вышли из системы."))
   }
 
   return (

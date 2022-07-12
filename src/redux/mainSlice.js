@@ -16,7 +16,7 @@ export const mainSlice = createSlice({
     currentCategoryTitle: '',
     currentSearchValue: '',
     orders: [],
-    message: ''
+    message: 'Привет!'
   },
   reducers: {
     userAuth: state => {

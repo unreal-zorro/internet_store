@@ -99,7 +99,6 @@ class AuthOrRegister extends Component {
         if (admin.password === password) {
           mainStore.dispatch(adminAuth())
           mainStore.dispatch(addMessage("Вы авторизованы, администратор."))
-          console.log("message: ", mainStore.getState().main.message)
           this.props.navigate("/")
         } else {
           this.setState(prevState => ({

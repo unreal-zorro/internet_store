@@ -13,9 +13,10 @@
     border-radius: 1000px;
     padding: 10px 25px;
     min-width: 100px;
-    max-width: 300px;
+    max-width: 500px;
     min-height: 30px;
     font-size: 16px;
+    text-align: center;
     color: #fff;
     &.error {
       background-color: $store-color;

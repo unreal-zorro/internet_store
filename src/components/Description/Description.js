@@ -2,7 +2,7 @@ import './Description.scss'
 
 import {useDispatch, useSelector} from "react-redux";
 
-import {cartAddNewCount, cartAddNewGood} from "../../redux/mainSlice";
+import {addMessage, cartAddNewCount, cartAddNewGood} from "../../redux/mainSlice";
 
 function Description(props) {
   const cart = useSelector(state => state.main.cart)
@@ -44,6 +44,7 @@ function Description(props) {
         count: count
       }
       dispatch(cartAddNewGood({newGood}))
+      dispatch(addMessage("Товар добавлен в корзину."))
     }
   }
 

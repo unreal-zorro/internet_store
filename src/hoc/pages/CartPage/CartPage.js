@@ -1,12 +1,15 @@
 import {useDispatch, useSelector} from "react-redux";
 
-import mainStore from "../../../redux/mainStore";
-
 import CartEmpty from "../../../components/Cart/CartEmpty/CartEmpty";
 import CartContent from "../../../components/Cart/CartContent/CartContent";
 import CartCard from "../../../components/Cart/CartCard/CartCard";
 import Cart from "../../../components/Cart/Cart";
-import {cartAddNewCount, cartDeleteGood, isOrderingChange} from "../../../redux/mainSlice";
+import {
+  addMessage,
+  cartAddNewCount,
+  cartDeleteGood,
+  isOrderingChange
+} from "../../../redux/mainSlice";
 import cartCountAndAmount from "../../../utils/cartCountAndAmount";
 
 function CartPage() {
@@ -17,13 +20,12 @@ function CartPage() {
 
   const dispatch = useDispatch()
 
-  const isAuth = mainStore.getState().main.isAuth
+  const isAuth = useSelector(state => state.main.isAuth)
 
   function inputChangeHandler(value, id) {
     let goodIndex = -1
-    let good = undefined
 
-    good = cart.find((item, index) => {
+    const good = cart.find((item, index) => {
       if (item.id === id) {
         goodIndex = index
         return item
@@ -45,12 +47,14 @@ function CartPage() {
     }
 
     dispatch(cartAddNewCount({goodIndex, goodWithNewCount}))
+    dispatch(addMessage("Количество товаров изменено."))
   }
 
   function deleteButtonClickHandler(id) {
     let goodIndex = cart.findIndex((item) => item.id === id)
 
     dispatch(cartDeleteGood({goodIndex}))
+    dispatch(addMessage("Товар удалён из корзины."))
   }
 
   function cartOrderingClickHandler() {

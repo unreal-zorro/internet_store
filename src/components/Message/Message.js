@@ -1,29 +1,47 @@
 import './Message.scss'
 
 import {Component} from "react";
+
 import mainStore from "../../redux/mainStore";
+import {addMessage} from "../../redux/mainSlice";
 
 class Message extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      message: mainStore.getState().main.message
+      message: ''
     }
   }
 
+  componentDidMount() {
+    this.setState(prev => ({
+      ...prev,
+      message: mainStore.getState().main.message
+    }))
+
+    setTimeout(() => {
+      mainStore.dispatch(addMessage(''))
+
+      this.setState(prev => ({
+        ...prev,
+        message: ''
+      }))
+    }, 3000)
+  }
+
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (mainStore.getState().main.message !== "") {
+    if (prevState.message !== mainStore.getState().main.message) {
       this.setState(prev => ({
         ...prev,
         message: mainStore.getState().main.message
       }))
 
-      console.log("message state: ", this.state.message)
-
       setTimeout(() => {
+        mainStore.dispatch(addMessage(''))
+
         this.setState(prev => ({
           ...prev,
-          message: ""
+          message: ''
         }))
       }, 3000)
     }
@@ -32,7 +50,7 @@ class Message extends Component {
   render() {
     return (
       <div
-        className={"message " + this.state.message ? "active" : ""}
+        className={"message " + (this.state.message ? "active" : "")}
       >{this.state.message}</div>
     )
   }

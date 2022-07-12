@@ -14,10 +14,13 @@ function CardPage() {
   const categories = useSelector(state => state.categories.categories)
   const location = useLocation()
 
-  const categoryTitleAndGoodId = location.pathname.slice(location.pathname.indexOf('/catalog/') + 1)
+  const categoryTitleAndGoodId = location.pathname
+    .slice(location.pathname.indexOf('/catalog/') + 1)
+
   const goodId = location.pathname.slice(location.pathname.lastIndexOf('/') + 1)
 
-  const categoryTitle = categoryTitleAndGoodId.slice("catalog/".length, categoryTitleAndGoodId.length - goodId.length - 1)
+  const categoryTitle = categoryTitleAndGoodId
+    .slice("catalog/".length, categoryTitleAndGoodId.length - goodId.length - 1)
 
   const category =
     categories.find(item => item.title === categoryTitle)
