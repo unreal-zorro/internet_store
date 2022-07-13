@@ -21,16 +21,11 @@ class Message extends Component {
 
     setTimeout(() => {
       mainStore.dispatch(addMessage(''))
-
-      this.setState(prev => ({
-        ...prev,
-        message: ''
-      }))
     }, 3000)
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevState.message !== mainStore.getState().main.message) {
+    if (this.state.message !== mainStore.getState().main.message) {
       this.setState(prev => ({
         ...prev,
         message: mainStore.getState().main.message
@@ -38,11 +33,6 @@ class Message extends Component {
 
       setTimeout(() => {
         mainStore.dispatch(addMessage(''))
-
-        this.setState(prev => ({
-          ...prev,
-          message: ''
-        }))
       }, 3000)
     }
   }
