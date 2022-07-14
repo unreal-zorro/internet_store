@@ -37,6 +37,7 @@ function Description(props) {
         count: newCount
       }
       dispatch(cartAddNewCount({goodIndex, goodWithNewCount}))
+      dispatch(addMessage("Товар добавлен в корзину."))
     } else {
       const newGood = {
         categoryId: props.categoryId,

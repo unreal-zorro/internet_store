@@ -5,6 +5,7 @@ import {Link, NavLink} from "react-router-dom";
 import {addMessage, logout} from "../../redux/mainSlice";
 
 import Burger from "./Burger/Burger";
+import {addUserCart} from "../../redux/usersSlice";
 
 function Navbar(props) {
   const cart = useSelector(state => state.main.cart)
@@ -15,10 +16,16 @@ function Navbar(props) {
 
   const isAuth = useSelector(state => state.main.isAuth)
   const isAdmin = useSelector(state => state.main.isAdmin)
+  const userLogin = useSelector(state => state.main.login)
+
+  const users = useSelector(state => state.users.users)
 
   const dispatch = useDispatch()
 
   function onLogoutClickHandler() {
+    const userIndex = users.findIndex(item => item.login === userLogin)
+
+    dispatch(addUserCart({userIndex, cart}))
     dispatch(logout())
     dispatch(addMessage("Вы вышли из системы."))
   }

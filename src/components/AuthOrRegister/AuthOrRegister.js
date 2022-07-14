@@ -5,7 +5,7 @@ import {Link, useNavigate} from "react-router-dom";
 
 import mainStore from "../../redux/mainStore";
 import {addUser} from "../../redux/usersSlice";
-import {addMessage, adminAuth, userAuth} from "../../redux/mainSlice";
+import {addMessage, adminAuth, cartAddNewCount, cartAddNewGood, userAuth} from "../../redux/mainSlice";
 
 import declensionSymbols from "../../utils/declensionSymbols";
 
@@ -94,10 +94,41 @@ class AuthOrRegister extends Component {
     const users = mainStore.getState().users.users
     const user = users.find(user => user.login === login)
 
+    const cart = mainStore.getState().main.cart
+
     if (this.state.type === 'auth') {
       if (admin.login === login) {
         if (admin.password === password) {
-          mainStore.dispatch(adminAuth())
+
+          if (admin.cart.length !== 0) {
+            admin.cart.forEach(item => {
+              let goodIndex = 0
+              const good = cart.find((cartGoodItem, cartGoodIndex) => {
+                if(cartGoodItem.id === item.id) {
+                  goodIndex = cartGoodIndex
+                }
+                return cartGoodItem.id === item.id
+              })
+              if (good) {
+                const newCount = good.count + item.count
+                const goodWithNewCount = {
+                  ...good,
+                  count: newCount
+                }
+
+                mainStore.dispatch(cartAddNewCount({
+                  goodIndex: goodIndex,
+                  goodWithNewCount
+                }))
+              } else {
+                mainStore.dispatch(cartAddNewGood({
+                  newGood: item
+                }))
+              }
+            })
+          }
+
+          mainStore.dispatch(adminAuth(admin.login))
           mainStore.dispatch(addMessage("Вы авторизованы, администратор."))
           this.props.navigate("/")
         } else {
@@ -108,7 +139,35 @@ class AuthOrRegister extends Component {
         }
       } else if (user) {
         if (user.password === password) {
-          mainStore.dispatch(userAuth())
+          if (user.cart.length !== 0) {
+            user.cart.forEach(item => {
+              let goodIndex = 0
+              const good = cart.find((cartGoodItem, cartGoodIndex) => {
+                if(cartGoodItem.id === item.id) {
+                  goodIndex = cartGoodIndex
+                }
+                return cartGoodItem.id === item.id
+              })
+              if (good) {
+                const newCount = good.count + item.count
+                const goodWithNewCount = {
+                  ...good,
+                  count: newCount
+                }
+
+                mainStore.dispatch(cartAddNewCount({
+                  goodIndex: goodIndex,
+                  goodWithNewCount
+                }))
+              } else {
+                mainStore.dispatch(cartAddNewGood({
+                  newGood: item
+                }))
+              }
+            })
+          }
+
+          mainStore.dispatch(userAuth(user.login))
           mainStore.dispatch(addMessage("Вы авторизованы."))
           this.props.navigate("/")
         } else {
@@ -138,7 +197,7 @@ class AuthOrRegister extends Component {
       }
 
       mainStore.dispatch(addUser(newUser))
-      mainStore.dispatch(userAuth())
+      mainStore.dispatch(userAuth(newUser.login))
       mainStore.dispatch(addMessage("Вы зарегистрированы."))
       this.props.navigate("/")
     }

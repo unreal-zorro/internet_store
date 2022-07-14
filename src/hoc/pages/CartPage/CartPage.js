@@ -13,14 +13,14 @@ import {
 import cartCountAndAmount from "../../../utils/cartCountAndAmount";
 
 function CartPage() {
+  const isAuth = useSelector(state => state.main.isAuth)
+
   const cart = useSelector(state => state.main.cart)
   const categories = useSelector(state => state.categories.categories)
 
   const {count, amount} = cartCountAndAmount(cart, categories)
 
   const dispatch = useDispatch()
-
-  const isAuth = useSelector(state => state.main.isAuth)
 
   function inputChangeHandler(value, id) {
     let goodIndex = -1

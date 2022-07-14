@@ -5,6 +5,7 @@ export const mainSlice = createSlice({
   initialState: {
     isAuth: false,
     isAdmin: false,
+    login: '',
     cart: [],
     isOrdering: false,
     currentOrderNumber: 0,
@@ -19,15 +20,18 @@ export const mainSlice = createSlice({
     message: 'Привет!'
   },
   reducers: {
-    userAuth: state => {
+    userAuth: (state, action) => {
       state.isAuth = true
+      state.login = action.payload
     },
     logout: state => {
       state.isAuth = false
       state.isAdmin = false
+      state.login = ''
     },
-    adminAuth: state => {
+    adminAuth: (state, action) => {
       state.isAdmin = true
+      state.login = action.payload
     },
     cartAddNewGood: (state, action) => {
       state.cart[state.cart.length] = action.payload.newGood

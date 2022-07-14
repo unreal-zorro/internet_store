@@ -2,6 +2,7 @@ import './Message.scss'
 
 import {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
+
 import {addMessage} from "../../redux/mainSlice";
 
 //
@@ -59,9 +60,7 @@ function Message() {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    if (message) {
-      setTimeout(() => dispatch(addMessage('')), 3000)
-    }
+    setTimeout(() => dispatch(addMessage('')), 3000)
   });
 
   return (
