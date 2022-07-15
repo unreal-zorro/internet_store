@@ -12,6 +12,7 @@ import SidebarItem from "../../components/Sidebar/SidebarItem/SidebarItem";
 import SidebarLink from "../../components/Sidebar/SidebarLink/SidebarLink";
 import Footer from "../../components/Footer/Footer";
 import Message from "../../components/Message/Message";
+import Loader from "../../components/Loader/Loader";
 
 class MainLayout extends React.Component {
   constructor(props) {
@@ -20,7 +21,8 @@ class MainLayout extends React.Component {
       sidebarActive: true,
       searchValue: '',
       searchActive: false,
-      categories: mainStore.getState().categories.categories
+      categories: mainStore.getState().categories.categories,
+      loading: false
     }
     this.burgerClickHandler = this.burgerClickHandler.bind(this)
     this.searchClickHandler = this.searchClickHandler.bind(this)
@@ -102,12 +104,14 @@ class MainLayout extends React.Component {
           </Sidebar>
 
           {
-            searchActive
-              ? <Navigate
-                to={"catalog/search?value=" + searchValue}
-                replace={true}
-              />
-              : <Outlet/>
+            this.state.loading
+              ? <Loader />
+              : searchActive
+                ? <Navigate
+                  to={"catalog/search?value=" + searchValue}
+                  replace={true}
+                />
+                : <Outlet/>
           }
 
         </Container>
