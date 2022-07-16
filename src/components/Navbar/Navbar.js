@@ -5,7 +5,7 @@ import {Link, NavLink} from "react-router-dom";
 import {addMessage, logout} from "../../redux/mainSlice";
 
 import Burger from "./Burger/Burger";
-import {addUserCart} from "../../redux/usersSlice";
+import {addAdminCart, addUserCart} from "../../redux/usersSlice";
 
 function Navbar(props) {
   const cart = useSelector(state => state.main.cart)
@@ -23,11 +23,17 @@ function Navbar(props) {
   const dispatch = useDispatch()
 
   function onLogoutClickHandler() {
-    const userIndex = users.findIndex(item => item.login === userLogin)
+    if (isAdmin) {
+      dispatch(addAdminCart({cart}))
+      dispatch(logout())
+      dispatch(addMessage("Вы вышли из системы, администратор."))
+    } else if (isAuth) {
+      const userIndex = users.findIndex(item => item.login === userLogin)
 
-    dispatch(addUserCart({userIndex, cart}))
-    dispatch(logout())
-    dispatch(addMessage("Вы вышли из системы."))
+      dispatch(addUserCart({userIndex, cart}))
+      dispatch(logout())
+      dispatch(addMessage("Вы вышли из системы."))
+    }
   }
 
   return (
@@ -50,7 +56,7 @@ function Navbar(props) {
 
         <ul className="navbar__menu">
           <li className="navbar__menu-item">
-            <NavLink to="/" className="navbar__menu-link">
+            <NavLink to="/" className="navbar__menu-link navbar__menu-link_main">
               Главная
             </NavLink>
           </li>
@@ -82,22 +88,32 @@ function Navbar(props) {
         </ul>
 
         <div className="navbar__user">
-          <NavLink to="/cart" className="navbar__cart">
+          <NavLink
+            to="/cart"
+            className="navbar__cart"
+          >
             <img src="/icons/cart.png" alt="cart" />
             <div className={"navbar__count " + (count !== 0 ? 'active' : '')}>
               {count}
             </div>
           </NavLink>
-          <div
+          <Link
+            to={isAuth || isAdmin ? "" : "/auth"}
+            className="navbar__auth"
             onClick={isAuth || isAdmin ? onLogoutClickHandler : undefined}
           >
-            <Link
-              to={isAuth || isAdmin ? "" : "/auth"}
-              className="navbar__auth"
-            >
+            {
+              isAuth || isAdmin
+                ? <img src="/icons/out.png" alt="out" />
+                : <img src="/icons/auth.png" alt="auth" />
+            }
+            <div className="navbar__auth-text_md">
               {isAuth || isAdmin ? "Выйти" : "Вход/Регистрация"}
-            </Link>
-          </div>
+            </div>
+            <div className="navbar__auth-text_sm">
+              {isAuth || isAdmin ? "Выйти" : "Вход/Рег."}
+            </div>
+          </Link>
         </div>
       </div>
     </section>

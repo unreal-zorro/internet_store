@@ -41,6 +41,9 @@ export const usersSlice = createSlice({
     addUser: (state, action) => {
       state.users.push({...action.payload})
     },
+    addAdminCart: (state, action) => {
+      state.admin.cart = action.payload.cart
+    },
     addUserCart: (state, action) => {
       state.users[action.payload.userIndex].cart = action.payload.cart
     }
@@ -49,6 +52,7 @@ export const usersSlice = createSlice({
 
 export const {
   addUser,
+  addAdminCart,
   addUserCart
 } = usersSlice.actions
 
