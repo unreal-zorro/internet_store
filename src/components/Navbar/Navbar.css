@@ -95,6 +95,9 @@
   border: 2px solid rgba(241, 150, 33, 0.7);
   border-radius: 1000px;
 }
+.navbar__menu-img {
+  display: none;
+}
 .navbar__user {
   display: flex;
   justify-content: flex-start;
@@ -220,13 +223,60 @@
   }
 }
 @media screen and (max-width: 575px) {
-  .navbar__menu-link_main {
+  .navbar {
+    padding: 0 7px;
+  }
+  .navbar__burger {
+    margin-right: 5px;
+  }
+  .navbar__logo {
+    max-width: 30px;
+    max-height: 30px;
+    margin-right: 5px;
+  }
+  .navbar__menu-item {
+    margin-left: 0;
+  }
+  .navbar__menu-item_main {
     display: none;
+  }
+  .navbar__menu-link {
+    display: none;
+  }
+  .navbar__menu-img {
+    display: block;
+    max-width: 40px;
+    max-height: 40px;
+    margin-right: 5px;
+    position: relative;
+    border: 2px solid #53852e;
+    border-radius: 10px;
+  }
+  .navbar__menu-img img {
+    width: 100%;
+    height: 100%;
+    padding: 5px;
+  }
+  .navbar__menu-img:hover {
+    color: rgba(241, 150, 33, 0.7);
+    border: 2px solid rgba(241, 150, 33, 0.7);
+  }
+  .navbar__menu-img.active {
+    max-width: 43px;
+    max-height: 43px;
+    border: 2px solid rgba(241, 150, 33, 0.7);
+    background-color: #dee3d0;
+  }
+  .navbar__edit {
+    margin-right: 5px;
+  }
+  .navbar__cart {
+    margin-right: 5px;
   }
   .navbar__auth {
     max-width: 40px;
     max-height: 40px;
-    margin-right: 10px;
+    margin-right: 0;
     position: relative;
     border: 2px solid #53852e;
     border-radius: 10px;

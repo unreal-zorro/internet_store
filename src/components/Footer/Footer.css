@@ -24,4 +24,16 @@
   color: #1d29af;
 }
 
+@media screen and (max-width: 575px) {
+  .footer {
+    padding: 5px;
+  }
+  .footer__name {
+    font-size: 14px;
+  }
+  .footer__descr {
+    font-size: 10px;
+  }
+}
+
 /*# sourceMappingURL=Footer.css.map */

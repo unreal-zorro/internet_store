@@ -99,3 +99,17 @@
     transition: all 1s;
   }
 }
+
+@media screen and (max-width: 575px) {
+  .sidebar {
+    &.active {
+      background-color: #fff;
+      position: fixed;
+      top: 110px;
+      left: 10px;
+    }
+    &__content {
+      margin: 0;
+    }
+  }
+}

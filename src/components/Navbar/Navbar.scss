@@ -97,6 +97,9 @@
         border-radius: 1000px;
       }
     }
+    &-img {
+      display: none;
+    }
   }
   &__user {
     display: flex;
@@ -237,17 +240,60 @@
 
 @media screen and (max-width: 575px) {
   .navbar {
+    padding: 0 7px;
+    &__burger {
+      margin-right: 5px;
+    }
+    &__logo {
+      max-width: 30px;
+      max-height: 30px;
+      margin-right: 5px;
+    }
     &__menu {
-      &-link {
+      &-item {
+        margin-left: 0;
         &_main {
           display: none;
         }
       }
+      &-link {
+        display: none;
+      }
+      &-img {
+        display: block;
+        max-width: 40px;
+        max-height: 40px;
+        margin-right: 5px;
+        position: relative;
+        border: 2px solid $main-color;
+        border-radius: 10px;
+        img {
+          width: 100%;
+          height: 100%;
+          padding: 5px;
+        }
+        &:hover {
+          color: rgba($menu-color, 0.7);
+          border: 2px solid rgba($menu-color, 0.7);
+        }
+        &.active {
+          max-width: 43px;
+          max-height: 43px;
+          border: 2px solid rgba($menu-color, 0.7);
+          background-color: $menu-selected-color;
+        }
+      }
+    }
+    &__edit {
+      margin-right: 5px;
+    }
+    &__cart {
+      margin-right: 5px;
     }
     &__auth {
       max-width: 40px;
       max-height: 40px;
-      margin-right: 10px;
+      margin-right: 0;
       position: relative;
       border: 2px solid $main-color;
       border-radius: 10px;
@@ -257,10 +303,10 @@
         height: 100%;
         padding: 5px;
       }
-        &:hover {
-          color: rgba($menu-color, 0.7);
-          border: 2px solid rgba($menu-color, 0.7);
-        }
+      &:hover {
+        color: rgba($menu-color, 0.7);
+        border: 2px solid rgba($menu-color, 0.7);
+      }
       &-text {
         &_sm {
           display: none;

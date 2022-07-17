@@ -16,6 +16,12 @@ function Search(props) {
         className="btn search__btn"
         onClick={props.onClick}
       >Найти</button>
+      <div
+        className="search__icon"
+        onClick={props.onClick}
+      >
+        <img src="/icons/search.png" alt="search"/>
+      </div>
     </section>
   )
 }

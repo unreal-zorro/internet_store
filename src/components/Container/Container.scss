@@ -24,18 +24,7 @@
 
 @media screen and (max-width: 991px) {
   .container {
-    width: 720px;
-  }
-}
-
-@media screen and (max-width: 767px) {
-  .container {
-    width: 540px;
-  }
-}
-
-@media screen and (max-width: 575px) {
-  .container {
-    width: 540px;
+    width: 100%;
+    max-width: 960px;
   }
 }

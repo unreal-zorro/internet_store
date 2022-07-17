@@ -55,8 +55,8 @@ function Navbar(props) {
         </div>
 
         <ul className="navbar__menu">
-          <li className="navbar__menu-item">
-            <NavLink to="/" className="navbar__menu-link navbar__menu-link_main">
+          <li className="navbar__menu-item navbar__menu-item_main">
+            <NavLink to="/" className="navbar__menu-link">
               Главная
             </NavLink>
           </li>
@@ -64,15 +64,24 @@ function Navbar(props) {
             <NavLink to="/catalog" className="navbar__menu-link">
               Каталог
             </NavLink>
+            <NavLink to="/catalog" className="navbar__menu-img">
+              <img src="/icons/catalog.png" alt="catalog"/>
+            </NavLink>
           </li>
           <li className="navbar__menu-item">
             <NavLink to="/delivery-payment" className="navbar__menu-link">
               Доставка и оплата
             </NavLink>
+            <NavLink to="/delivery-payment" className="navbar__menu-img">
+              <img src="/icons/delivery.png" alt="delivery"/>
+            </NavLink>
           </li>
           <li className="navbar__menu-item">
             <NavLink to="/contacts" className="navbar__menu-link">
               Контакты
+            </NavLink>
+            <NavLink to="/contacts" className="navbar__menu-img">
+              <img src="/icons/contacts.png" alt="contacts"/>
             </NavLink>
           </li>
 
