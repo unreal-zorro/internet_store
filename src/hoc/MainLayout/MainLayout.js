@@ -18,7 +18,7 @@ class MainLayout extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      sidebarActive: true,
+      sidebarActive: (window.innerWidth > 767),
       searchValue: '',
       searchActive: false,
       categories: mainStore.getState().categories.categories,

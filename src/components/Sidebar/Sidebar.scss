@@ -1,6 +1,7 @@
 @import "../../sass/base/variables.scss";
 
 .sidebar {
+  background-color: #fff;
   position: absolute;
   transform: translateX(-1000%);
   transition: all 1s;
@@ -100,7 +101,7 @@
   }
 }
 
-@media screen and (max-width: 575px) {
+@media screen and (max-width: 767px) {
   .sidebar {
     &.active {
       background-color: #fff;
