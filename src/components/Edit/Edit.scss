@@ -30,7 +30,7 @@
     width: 100%;
     border: 1px solid #000;
     border-radius: 10px;
-    margin: 20px 10px 10px 0;
+    margin: 20px 10px 10px 10px;
     :last-child {
       border-bottom: none;
     }
@@ -351,6 +351,9 @@
     &-ok {
       width: 100px;
     }
+    &-buttons {
+      display: none;
+    }
     &-error {
       font-size: 16px;
       color: $cart-color;
@@ -371,6 +374,201 @@
     &-descr {
       font-size: 6px;
       line-height: 1;
+    }
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .edit {
+    &__menu {
+      &.active {
+        padding: 0 5px 5px 5px;
+      }
+      &-form {
+        width: calc(100% - 15px);
+        padding: 5px 0;
+      }
+      &-row {
+        flex-direction: column;
+        font-size: 10px;
+        span {
+          font-size: 14px;
+          margin-bottom: 5px;
+        }
+      }
+      &-str {
+        width: 100%;
+        margin: 0 5px 5px 5px;
+      }
+      &-col {
+        margin: 0 5px 5px 5px;
+      }
+      &-label {
+        min-width: 55px;
+        margin: 0 5px 0 5px;
+      }
+      &-input {
+        min-height: 20px;
+        margin-right: 5px;
+      }
+      &-textarea {
+        width: calc(100% - 10px);
+        height: 30px;
+        margin: 0 5px;
+        padding: 5px;
+      }
+      &-select {
+        min-height: 20px;
+        margin-right: 5px;
+      }
+      &-option {
+        min-height: 20px;
+      }
+      &-link {
+        max-height: 20px;
+        max-width: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        img {
+          width: 100%;
+          height: 100%;
+        }
+        :hover {
+          cursor: pointer;
+          border: 2px solid $main-color;
+          border-radius: 1000px;
+        }
+      }
+      &-ok {
+        display: none;
+      }
+      &-buttons {
+        width: 100%;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+      }
+      &-error {
+        font-size: 10px;
+        margin: 0 5px;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 575px) {
+  .edit {
+    &__cards {
+      margin: 10px 5px;
+    }
+    &__header {
+      font-size: 8px;
+      height: 25px;
+      &_id {
+        min-width: 25px;
+        max-width: 25px;
+        line-height: 15px;
+      }
+      &_img {
+        min-width: 30px;
+        max-width: 30px;
+        line-height: 15px;
+      }
+      &_info {
+        line-height: 15px;
+      }
+      &_category {
+        min-width: 50px;
+        max-width: 50px;
+        line-height: 15px;
+      }
+      &_count {
+        min-width: 40px;
+        max-width: 40px;
+      }
+      &_price {
+        min-width: 35px;
+        max-width: 35px;
+      }
+      &_actions {
+        min-width: 45px;
+        max-width: 45px;
+        line-height: 15px;
+      }
+    }
+    &__card {
+      max-height: 55px;
+    }
+    &-id {
+      min-width: 25px;
+      max-width: 25px;
+      height: 55px;
+      font-size: 5px;
+    }
+    &-img {
+      min-width: 30px;
+      max-width: 30px;
+      height: 55px;
+      img {
+        max-width: 25px;
+        max-height: 70px;
+      }
+    }
+    &-info {
+      min-height: 55px;
+    }
+    &-name {
+      font-size: 6px;
+    }
+    &-rating {
+      font-size: 5px;
+    }
+    &-descr {
+      font-size: 5px;
+    }
+    &-category {
+      min-width: 50px;
+      max-width: 50px;
+      height: 55px;
+      font-size: 7px;
+    }
+    &-count {
+      min-width: 40px;
+      max-width: 40px;
+      height: 55px;
+      font-size: 8px;
+    }
+    &-price {
+      min-width: 35px;
+      max-width: 35px;
+      height: 55px;
+      font-size: 8px;
+    }
+    &-actions {
+      flex-direction: column;
+      justify-content: center;
+      min-width: 45px;
+      max-width: 45px;
+      height: 55px;
+      &__link {
+        img {
+          max-width: 10px;
+          max-height: 10px;
+          margin: 5px;
+        }
+      }
+    }
+    &__menu {
+      &-form {
+        width: 100%;
+        padding: 5px 0;
+      }
+      &-row {
+        span {
+          font-size: 12px;
+        }
+      }
     }
   }
 }

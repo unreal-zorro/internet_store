@@ -71,4 +71,29 @@
   background-color: rgba(83, 133, 46, 0.3);
 }
 
+@media screen and (max-width: 575px) {
+  .modal-form {
+    margin: 5px;
+  }
+  .modal-form__row {
+    padding: 5px;
+  }
+  .modal-form__label {
+    min-width: 80px;
+    font-size: 10px;
+  }
+  .modal-form__label.error {
+    font-size: 10px;
+  }
+  .modal-form__input {
+    min-width: 200px;
+    padding: 5px 10px;
+    font-size: 10px;
+  }
+  .modal-form__btn {
+    font-size: 14px;
+    height: 30px;
+  }
+}
+
 /*# sourceMappingURL=Modal.css.map */

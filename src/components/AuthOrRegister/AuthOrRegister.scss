@@ -73,3 +73,16 @@
     }
   }
 }
+
+@media screen and (max-width: 575px) {
+  .auth {
+    &-form {
+      &__row {
+        padding: 10px;
+      }
+      &__input {
+        width: 205px;
+      }
+    }
+  }
+}

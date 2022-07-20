@@ -29,7 +29,7 @@
   width: 100%;
   border: 1px solid #000;
   border-radius: 10px;
-  margin: 20px 10px 10px 0;
+  margin: 20px 10px 10px 10px;
 }
 .edit__cards :last-child {
   border-bottom: none;
@@ -349,6 +349,9 @@
 .edit__menu-ok {
   width: 100px;
 }
+.edit__menu-buttons {
+  display: none;
+}
 .edit__menu-error {
   font-size: 16px;
   color: #ff0000;
@@ -366,6 +369,187 @@
   .edit-descr {
     font-size: 6px;
     line-height: 1;
+  }
+}
+@media screen and (max-width: 767px) {
+  .edit__menu.active {
+    padding: 0 5px 5px 5px;
+  }
+  .edit__menu-form {
+    width: calc(100% - 15px);
+    padding: 5px 0;
+  }
+  .edit__menu-row {
+    flex-direction: column;
+    font-size: 10px;
+  }
+  .edit__menu-row span {
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+  .edit__menu-str {
+    width: 100%;
+    margin: 0 5px 5px 5px;
+  }
+  .edit__menu-col {
+    margin: 0 5px 5px 5px;
+  }
+  .edit__menu-label {
+    min-width: 55px;
+    margin: 0 5px 0 5px;
+  }
+  .edit__menu-input {
+    min-height: 20px;
+    margin-right: 5px;
+  }
+  .edit__menu-textarea {
+    width: calc(100% - 10px);
+    height: 30px;
+    margin: 0 5px;
+    padding: 5px;
+  }
+  .edit__menu-select {
+    min-height: 20px;
+    margin-right: 5px;
+  }
+  .edit__menu-option {
+    min-height: 20px;
+  }
+  .edit__menu-link {
+    max-height: 20px;
+    max-width: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .edit__menu-link img {
+    width: 100%;
+    height: 100%;
+  }
+  .edit__menu-link :hover {
+    cursor: pointer;
+    border: 2px solid #53852e;
+    border-radius: 1000px;
+  }
+  .edit__menu-ok {
+    display: none;
+  }
+  .edit__menu-buttons {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+  .edit__menu-error {
+    font-size: 10px;
+    margin: 0 5px;
+  }
+}
+@media screen and (max-width: 575px) {
+  .edit__cards {
+    margin: 10px 5px;
+  }
+  .edit__header {
+    font-size: 8px;
+    height: 25px;
+  }
+  .edit__header_id {
+    min-width: 25px;
+    max-width: 25px;
+    line-height: 15px;
+  }
+  .edit__header_img {
+    min-width: 30px;
+    max-width: 30px;
+    line-height: 15px;
+  }
+  .edit__header_info {
+    line-height: 15px;
+  }
+  .edit__header_category {
+    min-width: 50px;
+    max-width: 50px;
+    line-height: 15px;
+  }
+  .edit__header_count {
+    min-width: 40px;
+    max-width: 40px;
+  }
+  .edit__header_price {
+    min-width: 35px;
+    max-width: 35px;
+  }
+  .edit__header_actions {
+    min-width: 45px;
+    max-width: 45px;
+    line-height: 15px;
+  }
+  .edit__card {
+    max-height: 55px;
+  }
+  .edit-id {
+    min-width: 25px;
+    max-width: 25px;
+    height: 55px;
+    font-size: 5px;
+  }
+  .edit-img {
+    min-width: 30px;
+    max-width: 30px;
+    height: 55px;
+  }
+  .edit-img img {
+    max-width: 25px;
+    max-height: 70px;
+  }
+  .edit-info {
+    min-height: 55px;
+  }
+  .edit-name {
+    font-size: 6px;
+  }
+  .edit-rating {
+    font-size: 5px;
+  }
+  .edit-descr {
+    font-size: 5px;
+  }
+  .edit-category {
+    min-width: 50px;
+    max-width: 50px;
+    height: 55px;
+    font-size: 7px;
+  }
+  .edit-count {
+    min-width: 40px;
+    max-width: 40px;
+    height: 55px;
+    font-size: 8px;
+  }
+  .edit-price {
+    min-width: 35px;
+    max-width: 35px;
+    height: 55px;
+    font-size: 8px;
+  }
+  .edit-actions {
+    flex-direction: column;
+    justify-content: center;
+    min-width: 45px;
+    max-width: 45px;
+    height: 55px;
+  }
+  .edit-actions__link img {
+    max-width: 10px;
+    max-height: 10px;
+    margin: 5px;
+  }
+  .edit__menu-form {
+    width: 100%;
+    padding: 5px 0;
+  }
+  .edit__menu-row span {
+    font-size: 12px;
   }
 }
 

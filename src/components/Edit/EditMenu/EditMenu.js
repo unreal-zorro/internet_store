@@ -175,6 +175,21 @@ function EditMenu(props) {
           </div>
         </div>
 
+        <div className="edit__menu-buttons">
+          <div
+            className="edit__menu-link"
+            onClick={props.onOkClick}
+          >
+            <img src="/icons/ok.png" alt="ok" />
+          </div>
+          <div
+            className="edit__menu-link"
+            onClick={props.onCancelClick}
+          >
+            <img src="/icons/cancel.png" alt="cancel" />
+          </div>
+        </div>
+
         <div className="edit__menu-row">
           <div className="edit__menu-error">
             {(props.errorGoodId + ' ' + props.errorGoodName).trim()}

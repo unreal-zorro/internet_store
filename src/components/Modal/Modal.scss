@@ -72,3 +72,30 @@
     }
   }
 }
+
+@media screen and (max-width: 575px) {
+  .modal {
+    &-form {
+      margin: 5px;
+      &__row {
+        padding: 5px;
+      }
+      &__label {
+        min-width: 80px;
+        font-size: 10px;
+        &.error {
+          font-size: 10px;
+        }
+      }
+      &__input {
+        min-width: 200px;
+        padding: 5px 10px;
+        font-size: 10px;
+      }
+      &__btn {
+        font-size: 14px;
+        height: 30px;
+      }
+    }
+  }
+}

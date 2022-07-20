@@ -40,7 +40,7 @@ class EditPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isSidebarActive: true,
+      isSidebarActive: (window.innerWidth > 767),
       categories: mainStore.getState().categories.categories,
       currentCategory: '',
       category: {id: 0, title: '', name: '', goods: []},
@@ -575,6 +575,14 @@ class EditPage extends React.Component {
     console.log("goodWithLikeId: ", goodWithLikeId)
     console.log("goodWithLikeName: ", goodWithLikeName)
 
+    if (!goodId) {
+      errorId = 'Идентификатор товара не должен быть пустым.'
+    }
+
+    if (!goodName) {
+      errorName = 'Имя товара не должно быть пустым.'
+    }
+
     if (action === 'add') {
       if (goodWithLikeId) {
         errorId = 'Товар с таким идентификатором уже существует.'
@@ -959,7 +967,9 @@ class EditPage extends React.Component {
               this.state.currentCategory
                 ? !(this.state.currentCategory === 'search' && this.state.goods.length === 0)
                   ? <React.Fragment>
-                    <Visual>
+                    <Visual
+                      className="edit"
+                    >
                       <Sort
                         value={this.state.sortValue}
                         onChange={this.sortSelectChangeHandler}
