@@ -19,3 +19,17 @@
     margin: 0 5px;
   }
 }
+
+@media screen and (max-width: 575px) {
+  .navigation {
+    &__title {
+      font-size: 12px;
+    }
+    &__link {
+      font-size: 12px;
+    }
+    &__divider {
+      font-size: 12px;
+    }
+  }
+}

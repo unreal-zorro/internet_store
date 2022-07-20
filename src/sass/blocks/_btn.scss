@@ -17,3 +17,11 @@
     cursor: pointer;
   }
 }
+
+@media screen and (max-width: 575px) {
+  .btn {
+    &-delete {
+      font-size: 10px;
+    }
+  }
+}

@@ -16,4 +16,22 @@
   font-weight: 900;
 }
 
+@media screen and (max-width: 575px) {
+  .pagination {
+    max-width: 320px;
+  }
+  .pagination__btn {
+    font-size: 10px;
+    margin: 0;
+  }
+  .pagination__pages {
+    font-size: 12px;
+    margin: 0 10px;
+  }
+  .pagination__pages span {
+    font-size: 12px;
+    font-weight: 900;
+  }
+}
+
 /*# sourceMappingURL=Pagination.css.map */

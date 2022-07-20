@@ -84,4 +84,48 @@
   font-size: 14px;
 }
 
+@media screen and (max-width: 575px) {
+  .description__img {
+    margin: 10px;
+  }
+  .description__img img {
+    max-width: 250px;
+    max-height: 250px;
+  }
+  .description__name {
+    font-size: 14px;
+  }
+  .description__id {
+    font-size: 12px;
+  }
+  .description__descr {
+    font-size: 14px;
+  }
+  .description__rating {
+    font-size: 14px;
+  }
+  .description__price {
+    font-size: 16px;
+  }
+  .description__add {
+    width: 100%;
+    justify-content: flex-start;
+    padding-left: 10px;
+  }
+  .description__label {
+    font-size: 12px;
+    margin-right: 5px;
+  }
+  .description__input {
+    margin-right: 5px;
+  }
+  .description__text {
+    margin-right: 5px;
+    font-size: 12px;
+  }
+  .description__btn {
+    font-size: 12px;
+  }
+}
+
 /*# sourceMappingURL=Description.css.map */

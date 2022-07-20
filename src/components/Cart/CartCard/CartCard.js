@@ -32,9 +32,15 @@ function CartCard(props) {
           <span>шт.</span>
         </div>
         <button
-          className="btn btn-delete"
+          className="btn btn-delete cart-count__btn-delete"
           onClick={props.onClick}
         >Удалить</button>
+        <div
+          className="cart-count__icon-delete"
+          onClick={props.onClick}
+        >
+          <img src="/icons/cart-remove.png" alt="cart-remove"/>
+        </div>
       </div>
       <div className="cart-price"><span>{props.price} руб.</span></div>
     </div>

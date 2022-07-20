@@ -39,36 +39,18 @@
 .ordering__amount span {
   font-weight: 900;
 }
-.ordering-delivery {
+.ordering-delivery, .ordering-payment {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
   padding: 10px;
 }
-.ordering-delivery__label {
+.ordering-delivery__label, .ordering-payment__label {
   font-size: 16px;
   margin-right: 10px;
 }
-.ordering-delivery__select {
-  min-width: 220px;
-  padding: 5px;
-  border: 1px solid #1d29af;
-  border-radius: 1000px;
-  font-size: 14px;
-}
-.ordering-payment {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  padding: 10px;
-}
-.ordering-payment__label {
-  font-size: 16px;
-  margin-right: 10px;
-}
-.ordering-payment__select {
+.ordering-delivery__select, .ordering-payment__select {
   min-width: 220px;
   padding: 5px;
   border: 1px solid #1d29af;
@@ -113,6 +95,25 @@
 .ordering-comment__text {
   width: 100%;
   min-height: 100px;
+}
+
+@media screen and (max-width: 575px) {
+  .ordering-delivery, .ordering-payment {
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .ordering-delivery__label, .ordering-payment__label {
+    margin: 0 0 5px 0;
+  }
+  .ordering-phone {
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .ordering-phone__label {
+    margin: 0 0 5px 0;
+  }
 }
 
 /*# sourceMappingURL=Ordering.css.map */

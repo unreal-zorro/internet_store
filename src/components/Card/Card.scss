@@ -72,3 +72,29 @@
     }
   }
 }
+
+@media screen and (max-width: 575px) {
+  .card {
+    flex-direction: column;
+    &-img {
+      min-height: 100px;
+      max-height: 100px;
+      margin: 10px 0;
+    }
+    &-name {
+      font-size: 12px;
+    }
+    &-id {
+      font-size: 10px;
+    }
+    &-rating {
+      font-size: 12px;
+    }
+    &-price {
+      font-size: 14px;
+    }
+    &-btn {
+      margin: 5px 0;
+    }
+  }
+}

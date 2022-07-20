@@ -295,8 +295,6 @@
       max-height: 40px;
       margin-right: 0;
       position: relative;
-      border: 2px solid $main-color;
-      border-radius: 10px;
       img {
         display: inline;
         width: 100%;
@@ -306,6 +304,7 @@
       &:hover {
         color: rgba($menu-color, 0.7);
         border: 2px solid rgba($menu-color, 0.7);
+        border-radius: 10px;
       }
       &-text {
         &_sm {

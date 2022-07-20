@@ -23,4 +23,12 @@
   background-color: #8f1515;
 }
 
+@media screen and (max-width: 575px) {
+  .message.active {
+    right: 20px;
+    max-width: 280px;
+    font-size: 12px;
+  }
+}
+
 /*# sourceMappingURL=Message.css.map */

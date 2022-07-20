@@ -68,5 +68,30 @@
     height: 30px;
   }
 }
+@media screen and (max-width: 575px) {
+  .card {
+    flex-direction: column;
+  }
+  .card-img {
+    min-height: 100px;
+    max-height: 100px;
+    margin: 10px 0;
+  }
+  .card-name {
+    font-size: 12px;
+  }
+  .card-id {
+    font-size: 10px;
+  }
+  .card-rating {
+    font-size: 12px;
+  }
+  .card-price {
+    font-size: 14px;
+  }
+  .card-btn {
+    margin: 5px 0;
+  }
+}
 
 /*# sourceMappingURL=Card.css.map */

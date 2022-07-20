@@ -24,5 +24,13 @@
     font-size: 14px;
   }
 }
+@media screen and (max-width: 575px) {
+  .sort {
+    justify-content: flex-start;
+    width: 100%;
+    padding: 0;
+    margin-bottom: 10px;
+  }
+}
 
 /*# sourceMappingURL=Sort.css.map */

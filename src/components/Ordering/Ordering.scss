@@ -40,27 +40,7 @@
       font-weight: 900;
     }
   }
-  &-delivery {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    padding: 10px;
-    &__label {
-      font-size: 16px;
-      margin-right: 10px;
-    }
-    &__select {
-      min-width: 220px;
-      padding: 5px;
-      border: 1px solid $burger-color;
-      border-radius: 1000px;
-      font-size: 14px;
-    }
-    &__item {
-    }
-  }
-  &-payment {
+  &-delivery, &-payment {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -117,6 +97,27 @@
     &__text {
       width: 100%;
       min-height: 100px;
+    }
+  }
+}
+
+@media screen and (max-width: 575px) {
+  .ordering {
+    &-delivery, &-payment {
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: flex-start;
+      &__label {
+        margin: 0 0 5px 0;
+      }
+    }
+    &-phone {
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: flex-start;
+      &__label {
+        margin: 0 0 5px 0;
+      }
     }
   }
 }

@@ -5,4 +5,12 @@
   padding: 10px 0;
 }
 
+@media screen and (max-width: 575px) {
+  .visual {
+    flex-direction: column;
+    padding: 10px 0 0 0;
+    width: 100%;
+  }
+}
+
 /*# sourceMappingURL=Visual.css.map */
