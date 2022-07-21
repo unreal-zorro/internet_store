@@ -17,3 +17,11 @@ Applied technologies:
 Using styles:
 
 ### Scss
+
+## Internet addresses
+
+Hosting addresses:
+
+### https://internet-store-frontend.web.app
+
+### https://internet-store-frontend.firebaseapp.com
