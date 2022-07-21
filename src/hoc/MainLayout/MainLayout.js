@@ -18,7 +18,7 @@ class MainLayout extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      sidebarActive: (window.innerWidth > 767),
+      isSidebarActive: (window.innerWidth > 767),
       searchValue: '',
       searchActive: false,
       categories: mainStore.getState().categories.categories,
@@ -33,7 +33,7 @@ class MainLayout extends React.Component {
   async burgerClickHandler() {
     await this.setState(prevState => ({
       ...prevState,
-      sidebarActive: !prevState.sidebarActive
+      isSidebarActive: !prevState.isSidebarActive
     }))
   }
 
@@ -76,7 +76,7 @@ class MainLayout extends React.Component {
       <div>
         <Bg />
         <Navbar
-          className={this.state.sidebarActive ? 'active' : ''}
+          className={this.state.isSidebarActive ? 'active' : ''}
           onClick={this.burgerClickHandler}
         />
         <Search
@@ -87,7 +87,7 @@ class MainLayout extends React.Component {
         />
         <Container>
           <Sidebar
-            className={this.state.sidebarActive ? 'active' : ''}
+            className={this.state.isSidebarActive ? 'active' : ''}
           >
             {this.state.categories.map(item => {
               return (

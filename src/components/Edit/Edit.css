@@ -37,9 +37,9 @@
 .edit__header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: stretch;
   width: 100%;
-  height: 35px;
+  height: 100%;
   text-align: center;
   border-bottom: 1px solid #000;
   font-size: 12px;
@@ -47,7 +47,6 @@
 .edit__header_id {
   min-width: 50px;
   max-width: 50px;
-  min-height: 100%;
   border-right: 1px solid #000;
   padding: 5px;
   font-weight: 900;
@@ -56,7 +55,6 @@
 .edit__header_img {
   min-width: 60px;
   max-width: 60px;
-  min-height: 100%;
   border-right: 1px solid #000;
   padding: 5px;
   font-weight: 900;
@@ -64,7 +62,6 @@
 }
 .edit__header_info {
   width: 100%;
-  min-height: 100%;
   border-right: 1px solid #000;
   padding: 5px;
   font-weight: 900;
@@ -73,7 +70,6 @@
 .edit__header_category {
   min-width: 90px;
   max-width: 90px;
-  min-height: 100%;
   border-right: 1px solid #000;
   padding: 5px;
   font-weight: 900;
@@ -82,7 +78,6 @@
 .edit__header_count {
   min-width: 60px;
   max-width: 60px;
-  min-height: 100%;
   border-right: 1px solid #000;
   padding: 5px;
   font-weight: 900;
@@ -91,7 +86,6 @@
 .edit__header_price {
   min-width: 50px;
   max-width: 50px;
-  min-height: 100%;
   border-right: 1px solid #000;
   padding: 5px;
   font-weight: 900;
@@ -100,7 +94,6 @@
 .edit__header_actions {
   min-width: 70px;
   max-width: 70px;
-  min-height: 100%;
   font-weight: 900;
   line-height: 25px;
   padding: 5px;
@@ -108,9 +101,9 @@
 .edit__card {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: stretch;
   width: 100%;
-  max-height: 70px;
+  min-height: 30px;
   border-bottom: 1px solid #000;
 }
 .edit-id {
@@ -119,7 +112,6 @@
   align-items: center;
   min-width: 50px;
   max-width: 50px;
-  height: 70px;
   font-size: 10px;
   text-align: center;
   border-right: 1px solid #000;
@@ -130,7 +122,6 @@
   align-items: center;
   min-width: 60px;
   max-width: 60px;
-  height: 70px;
   border-right: 1px solid #000;
 }
 .edit-img img {
@@ -144,9 +135,8 @@
   justify-content: center;
   align-items: flex-start;
   width: 100%;
-  min-height: 70px;
   border-right: 1px solid #000;
-  padding: 0 3px;
+  padding: 3px;
 }
 .edit-name {
   font-size: 12px;
@@ -174,7 +164,6 @@
   align-items: center;
   min-width: 90px;
   max-width: 90px;
-  height: 70px;
   border-right: 1px solid #000;
   font-size: 12px;
   color: #164107;
@@ -186,7 +175,6 @@
   align-items: center;
   min-width: 60px;
   max-width: 60px;
-  height: 70px;
   border-right: 1px solid #000;
   font-size: 12px;
   color: #164107;
@@ -201,7 +189,6 @@
   align-items: center;
   min-width: 50px;
   max-width: 50px;
-  height: 70px;
   border-right: 1px solid #000;
   font-size: 12px;
   color: #8f1515;
@@ -216,7 +203,6 @@
   align-items: center;
   min-width: 70px;
   max-width: 70px;
-  height: 70px;
 }
 .edit-actions__link img {
   max-width: 20px;
@@ -359,19 +345,58 @@
 
 @media screen and (max-width: 991px) {
   .edit-name {
-    font-size: 6px;
-    line-height: 1;
+    font-size: 12px;
   }
   .edit-rating {
-    font-size: 6px;
-    line-height: 1;
+    font-size: 10px;
   }
   .edit-descr {
-    font-size: 6px;
-    line-height: 1;
+    font-size: 10px;
   }
 }
 @media screen and (max-width: 767px) {
+  .edit__header {
+    font-size: 10px;
+  }
+  .edit__header_id {
+    line-height: 15px;
+  }
+  .edit__header_img {
+    line-height: 15px;
+  }
+  .edit__header_info {
+    line-height: 15px;
+  }
+  .edit__header_category {
+    line-height: 15px;
+  }
+  .edit__header_actions {
+    line-height: 15px;
+  }
+  .edit__card {
+    min-height: 30px;
+  }
+  .edit-id {
+    font-size: 9px;
+  }
+  .edit-name {
+    font-size: 10px;
+  }
+  .edit-rating {
+    font-size: 9px;
+  }
+  .edit-descr {
+    font-size: 9px;
+  }
+  .edit-category {
+    font-size: 10px;
+  }
+  .edit-count {
+    font-size: 10px;
+  }
+  .edit-price {
+    font-size: 10px;
+  }
   .edit__menu.active {
     padding: 0 5px 5px 5px;
   }
@@ -404,9 +429,9 @@
   }
   .edit__menu-textarea {
     width: calc(100% - 10px);
-    height: 30px;
+    height: 32px;
     margin: 0 5px;
-    padding: 5px;
+    padding: 0 10px;
   }
   .edit__menu-select {
     min-height: 20px;
@@ -451,7 +476,6 @@
   }
   .edit__header {
     font-size: 8px;
-    height: 25px;
   }
   .edit__header_id {
     min-width: 25px;
@@ -485,25 +509,20 @@
     line-height: 15px;
   }
   .edit__card {
-    max-height: 55px;
+    min-height: 30px;
   }
   .edit-id {
     min-width: 25px;
     max-width: 25px;
-    height: 55px;
     font-size: 5px;
   }
   .edit-img {
     min-width: 30px;
     max-width: 30px;
-    height: 55px;
   }
   .edit-img img {
     max-width: 25px;
     max-height: 70px;
-  }
-  .edit-info {
-    min-height: 55px;
   }
   .edit-name {
     font-size: 6px;
@@ -517,19 +536,16 @@
   .edit-category {
     min-width: 50px;
     max-width: 50px;
-    height: 55px;
     font-size: 7px;
   }
   .edit-count {
     min-width: 40px;
     max-width: 40px;
-    height: 55px;
     font-size: 8px;
   }
   .edit-price {
     min-width: 35px;
     max-width: 35px;
-    height: 55px;
     font-size: 8px;
   }
   .edit-actions {
@@ -537,7 +553,6 @@
     justify-content: center;
     min-width: 45px;
     max-width: 45px;
-    height: 55px;
   }
   .edit-actions__link img {
     max-width: 10px;
@@ -546,7 +561,7 @@
   }
   .edit__menu-form {
     width: 100%;
-    padding: 5px 0;
+    padding: 4px 0;
   }
   .edit__menu-row span {
     font-size: 12px;

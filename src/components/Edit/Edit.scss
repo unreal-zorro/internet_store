@@ -38,16 +38,15 @@
   &__header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: stretch;
     width: 100%;
-    height: 35px;
+    height: 100%;
     text-align: center;
     border-bottom: 1px solid #000;
     font-size: 12px;
     &_id {
       min-width: 50px;
       max-width: 50px;
-      min-height: 100%;
       border-right: 1px solid #000;
       padding: 5px;
       font-weight: 900;
@@ -56,7 +55,6 @@
     &_img {
       min-width: 60px;
       max-width: 60px;
-      min-height: 100%;
       border-right: 1px solid #000;
       padding: 5px;
       font-weight: 900;
@@ -64,7 +62,6 @@
     }
     &_info {
       width: 100%;
-      min-height: 100%;
       border-right: 1px solid #000;
       padding: 5px;
       font-weight: 900;
@@ -73,7 +70,6 @@
     &_category {
       min-width: 90px;
       max-width: 90px;
-      min-height: 100%;
       border-right: 1px solid #000;
       padding: 5px;
       font-weight: 900;
@@ -82,7 +78,6 @@
     &_count {
       min-width: 60px;
       max-width: 60px;
-      min-height: 100%;
       border-right: 1px solid #000;
       padding: 5px;
       font-weight: 900;
@@ -91,7 +86,6 @@
     &_price {
       min-width: 50px;
       max-width: 50px;
-      min-height: 100%;
       border-right: 1px solid #000;
       padding: 5px;
       font-weight: 900;
@@ -100,7 +94,6 @@
     &_actions {
       min-width: 70px;
       max-width: 70px;
-      min-height: 100%;
       font-weight: 900;
       line-height: 25px;
       padding: 5px;
@@ -109,9 +102,9 @@
   &__card {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: stretch;
     width: 100%;
-    max-height: 70px;
+    min-height: 30px;
     border-bottom: 1px solid #000;
   }
   &-id {
@@ -120,7 +113,6 @@
     align-items: center;
     min-width: 50px;
     max-width: 50px;
-    height: 70px;
     font-size: 10px;
     text-align: center;
     border-right: 1px solid #000;
@@ -131,7 +123,6 @@
     align-items: center;
     min-width: 60px;
     max-width: 60px;
-    height: 70px;
     border-right: 1px solid #000;
     img {
       padding: 2px;
@@ -145,9 +136,8 @@
     justify-content: center;
     align-items: flex-start;
     width: 100%;
-    min-height: 70px;
     border-right: 1px solid #000;
-    padding: 0 3px;
+    padding: 3px;
   }
   &-name {
     font-size: 12px;
@@ -175,7 +165,6 @@
     align-items: center;
     min-width: 90px;
     max-width: 90px;
-    height: 70px;
     border-right: 1px solid #000;
     font-size: 12px;
     color: $auth-color;
@@ -187,7 +176,6 @@
     align-items: center;
     min-width: 60px;
     max-width: 60px;
-    height: 70px;
     border-right: 1px solid #000;
     font-size: 12px;
     color: $auth-color;
@@ -202,7 +190,6 @@
     align-items: center;
     min-width: 50px;
     max-width: 50px;
-    height: 70px;
     border-right: 1px solid #000;
     font-size: 12px;
     color: $store-color;
@@ -217,7 +204,6 @@
     align-items: center;
     min-width: 70px;
     max-width: 70px;
-    height: 70px;
     &__link {
       img {
         max-width: 20px;
@@ -364,22 +350,61 @@
 @media screen and (max-width: 991px) {
   .edit {
     &-name {
-      font-size: 6px;
-      line-height: 1;
+      font-size: 12px;
     }
     &-rating {
-      font-size: 6px;
-      line-height: 1;
+      font-size: 10px;
     }
     &-descr {
-      font-size: 6px;
-      line-height: 1;
+      font-size: 10px;
     }
   }
 }
 
 @media screen and (max-width: 767px) {
   .edit {
+    &__header {
+      font-size: 10px;
+      &_id {
+        line-height: 15px;
+      }
+      &_img {
+        line-height: 15px;
+      }
+      &_info {
+        line-height: 15px;
+      }
+      &_category {
+        line-height: 15px;
+      }
+      &_actions {
+        line-height: 15px;
+      }
+    }
+    &__card {
+      min-height: 30px;
+    }
+    &-id {
+      font-size: 9px;
+    }
+    &-name {
+      font-size: 10px;
+    }
+    &-rating {
+      font-size: 9px;
+    }
+    &-descr {
+      font-size: 9px;
+    }
+    &-category {
+      font-size: 10px;
+    }
+    &-count {
+      font-size: 10px;
+    }
+    &-price {
+      font-size: 10px;
+    }
     &__menu {
       &.active {
         padding: 0 5px 5px 5px;
@@ -413,9 +438,9 @@
       }
       &-textarea {
         width: calc(100% - 10px);
-        height: 30px;
+        height: 32px;
         margin: 0 5px;
-        padding: 5px;
+        padding: 0 10px;
       }
       &-select {
         min-height: 20px;
@@ -464,7 +489,6 @@
     }
     &__header {
       font-size: 8px;
-      height: 25px;
       &_id {
         min-width: 25px;
         max-width: 25px;
@@ -498,25 +522,20 @@
       }
     }
     &__card {
-      max-height: 55px;
+      min-height: 30px;
     }
     &-id {
       min-width: 25px;
       max-width: 25px;
-      height: 55px;
       font-size: 5px;
     }
     &-img {
       min-width: 30px;
       max-width: 30px;
-      height: 55px;
       img {
         max-width: 25px;
         max-height: 70px;
       }
-    }
-    &-info {
-      min-height: 55px;
     }
     &-name {
       font-size: 6px;
@@ -530,19 +549,16 @@
     &-category {
       min-width: 50px;
       max-width: 50px;
-      height: 55px;
       font-size: 7px;
     }
     &-count {
       min-width: 40px;
       max-width: 40px;
-      height: 55px;
       font-size: 8px;
     }
     &-price {
       min-width: 35px;
       max-width: 35px;
-      height: 55px;
       font-size: 8px;
     }
     &-actions {
@@ -550,7 +566,6 @@
       justify-content: center;
       min-width: 45px;
       max-width: 45px;
-      height: 55px;
       &__link {
         img {
           max-width: 10px;
@@ -562,7 +577,7 @@
     &__menu {
       &-form {
         width: 100%;
-        padding: 5px 0;
+        padding: 4px 0;
       }
       &-row {
         span {

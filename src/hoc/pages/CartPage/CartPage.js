@@ -14,6 +14,7 @@ import cartCountAndAmount from "../../../utils/cartCountAndAmount";
 
 function CartPage() {
   const isAuth = useSelector(state => state.main.isAuth)
+  const isAdmin = useSelector(state => state.main.isAdmin)
 
   const cart = useSelector(state => state.main.cart)
   const categories = useSelector(state => state.categories.categories)
@@ -68,7 +69,7 @@ function CartPage() {
       />
       <CartContent
         className={count > 0
-          ? isAuth
+          ? (isAuth || isAdmin)
             ? "active"
             : "no_auth"
           : ""}
