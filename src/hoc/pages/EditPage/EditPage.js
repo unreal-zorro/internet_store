@@ -55,6 +55,7 @@ class EditPage extends React.Component {
       editedCategoryId: '',
       errorEditedCategoryId: '',
       searchValue: '',
+      tempSearchValue: '',
       searchActive: false,
       sortValue: 'price-incr',
       visibleValue: '5',
@@ -332,15 +333,28 @@ class EditPage extends React.Component {
   async searchChangeHandler(value) {
     await this.setState(prevState => ({
       ...prevState,
-      searchValue: value
+      searchValue: value,
+      tempSearchValue: value
     }))
   }
 
-  async searchClickHandler() {
-    const value = this.state.searchValue
+  async searchClickHandler(searchVal) {
+    let value = ''
+    if(searchVal) {
+      value = searchVal
+    } else {
+      value = this.state.searchValue
+    }
 
     if (!value) {
       return
+    }
+
+    if (!this.state.searchValue) {
+      await this.setState(prevState => ({
+        ...prevState,
+        searchValue: value,
+      }))
     }
 
     await this.setState(prevState => ({
@@ -455,6 +469,10 @@ class EditPage extends React.Component {
       categories: mainStore.getState().categories.categories,
       goods
     }))
+
+    if (this.state.currentCategory === 'search') {
+      await this.searchClickHandler(this.state.tempSearchValue)
+    }
   }
 
   async addGoodClickHandler(categoryId) {
@@ -554,9 +572,6 @@ class EditPage extends React.Component {
 
     const allGoods = [].concat(...categories.map(item => item.goods))
 
-    const category = categories
-      .find(item => item.title === goodCategoryTitle)
-
     const currentCategory = categories
       .find(item => item.id === currentCategoryId)
 
@@ -568,12 +583,6 @@ class EditPage extends React.Component {
 
     const goodWithLikeName = allGoods
       .find(itemGood => itemGood.name === goodName)
-
-    console.log("category: ", category)
-    console.log("currentCategory: ", currentCategory)
-    console.log("currentGood: ", currentGood)
-    console.log("goodWithLikeId: ", goodWithLikeId)
-    console.log("goodWithLikeName: ", goodWithLikeName)
 
     if (!goodId) {
       errorId = 'Идентификатор товара не должен быть пустым.'
@@ -691,6 +700,9 @@ class EditPage extends React.Component {
         editedGoodPrice: ''
       }))
     }
+    if (this.state.currentCategory === 'search') {
+      await this.searchClickHandler(this.state.tempSearchValue)
+    }
   }
 
   async cancelGoodClickHandler(event) {
@@ -719,7 +731,7 @@ class EditPage extends React.Component {
     ) {
       const category = this.state.categories.find(item => item.name === this.state.currentCategory)
         ? this.state.categories.find(item => item.name === this.state.currentCategory)
-        : this.state.currentCategory === 'all' || this.state.currentCategory === 'search'
+        : (this.state.currentCategory === 'all' || this.state.currentCategory === 'search')
           ? this.state.categories
           : {id: 0, title: '', name: '', goods: []}
 
@@ -1008,7 +1020,8 @@ class EditPage extends React.Component {
                                   name={item.name}
                                   rating={item.rating}
                                   descr={item.descr}
-                                  category={this.state.currentCategory === 'all'
+                                  category={(this.state.currentCategory === 'all' ||
+                                    this.state.currentCategory === 'search')
                                     ? this.state.categories.find(
                                       itemCategories => itemCategories.goods.find(
                                         itemGood => itemGood.id === item.id
@@ -1020,7 +1033,8 @@ class EditPage extends React.Component {
                                   price={item.price}
                                   onEditClick={() => this.editGoodClickHandler(
                                     item.id,
-                                    this.state.currentCategory === 'all'
+                                    (this.state.currentCategory === 'all' ||
+                                    this.state.currentCategory === 'search')
                                       ? this.state.categories.find(
                                         itemCategories => itemCategories.goods.find(
                                           itemGood => itemGood.id === item.id
@@ -1030,7 +1044,8 @@ class EditPage extends React.Component {
                                   )}
                                   onDeleteClick={() => this.deleteGoodClickHandler(
                                     item.id,
-                                    this.state.currentCategory === 'all'
+                                    (this.state.currentCategory === 'all' ||
+                                    this.state.currentCategory === 'search')
                                       ? this.state.categories.find(
                                         itemCategories => itemCategories.goods.find(
                                           itemGood => itemGood.id === item.id
