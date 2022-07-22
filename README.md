@@ -25,3 +25,11 @@ Hosting addresses:
 ### https://internet-store-frontend.web.app
 
 ### https://internet-store-frontend.firebaseapp.com
+
+## Login information
+
+Login on test:
+
+### Administrator: name: admin; login: 123456
+
+### User: name: user; login: 123456
