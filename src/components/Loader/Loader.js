@@ -13,6 +13,9 @@ function Loader() {
         <div></div>
         <div></div>
       </div>
+      <div className="loader__text">
+        Идёт загрузка...
+      </div>
     </div>
   )
 }
