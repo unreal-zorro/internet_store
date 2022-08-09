@@ -1,0 +1,13 @@
+.delivery {
+  width: 100%;
+  text-align: left;
+}
+.delivery__title {
+  font-size: 18px;
+  font-weight: 900;
+}
+.delivery__item {
+  font-size: 16px;
+}
+
+/*# sourceMappingURL=Delivery.css.map */

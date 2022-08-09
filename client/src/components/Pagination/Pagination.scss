@@ -1,0 +1,35 @@
+.pagination {
+  max-width: 400px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  &__btn {
+    font-size: 14px;
+    margin: 0 10px;
+  }
+  &__pages {
+    font-size: 14px;
+    span {
+      font-size: 16px;
+      font-weight: 900;
+    }
+  }
+}
+
+@media screen and (max-width: 575px) {
+  .pagination {
+    max-width: 320px;
+    &__btn {
+      font-size: 10px;
+      margin: 0;
+    }
+    &__pages {
+      font-size: 12px;
+      margin: 0 10px;
+      span {
+        font-size: 12px;
+        font-weight: 900;
+      }
+    }
+  }
+}

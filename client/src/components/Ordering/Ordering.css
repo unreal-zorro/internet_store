@@ -1,0 +1,119 @@
+.ordering {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  border: 1px solid #000;
+  border-radius: 10px;
+  margin: 10px;
+}
+.ordering__total {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+  padding: 0 10px;
+}
+.ordering__text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  font-size: 18px;
+  font-weight: 900;
+  padding: 10px 0;
+}
+.ordering__goods {
+  font-size: 16px;
+  padding: 10px 0;
+}
+.ordering__goods span {
+  font-weight: 900;
+}
+.ordering__amount {
+  font-size: 16px;
+  padding: 10px 0;
+}
+.ordering__amount span {
+  font-weight: 900;
+}
+.ordering-delivery, .ordering-payment {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 10px;
+}
+.ordering-delivery__label, .ordering-payment__label {
+  font-size: 16px;
+  margin-right: 10px;
+}
+.ordering-delivery__select, .ordering-payment__select {
+  min-width: 220px;
+  padding: 5px;
+  border: 1px solid #1d29af;
+  border-radius: 1000px;
+  font-size: 14px;
+}
+.ordering__btn {
+  margin: 10px 0;
+  font-size: 20px;
+  height: 40px;
+}
+.ordering-phone {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 10px;
+}
+.ordering-phone__label {
+  font-size: 16px;
+  margin-right: 10px;
+}
+.ordering-phone__input {
+  min-width: 220px;
+  padding: 5px 15px;
+  border: 1px solid #1d29af;
+  border-radius: 1000px;
+  font-size: 14px;
+}
+.ordering-comment {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0 10px;
+}
+.ordering-comment__label {
+  font-size: 16px;
+  padding: 10px 0;
+}
+.ordering-comment__text {
+  width: 100%;
+  min-height: 100px;
+}
+
+@media screen and (max-width: 575px) {
+  .ordering-delivery, .ordering-payment {
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .ordering-delivery__label, .ordering-payment__label {
+    margin: 0 0 5px 0;
+  }
+  .ordering-phone {
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .ordering-phone__label {
+    margin: 0 0 5px 0;
+  }
+}
+
+/*# sourceMappingURL=Ordering.css.map */

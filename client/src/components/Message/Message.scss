@@ -1,0 +1,36 @@
+@import "../../sass/base/variables.scss";
+
+.message {
+  &.active {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    position: fixed;
+    top: 70px;
+    right: 70px;
+    background-color: $auth-color;
+    border: none;
+    border-radius: 1000px;
+    padding: 10px 25px;
+    min-width: 100px;
+    max-width: 500px;
+    min-height: 30px;
+    font-size: 16px;
+    text-align: center;
+    color: #fff;
+    &.error {
+      background-color: $store-color;
+    }
+  }
+  display: none;
+}
+
+@media screen and (max-width: 575px) {
+  .message {
+    &.active {
+      right: 20px;
+      max-width: 280px;
+      font-size: 12px;
+    }
+  }
+}

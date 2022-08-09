@@ -1,0 +1,12 @@
+.bg-color {
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: auto;
+  right: auto;
+  height: 50px;
+  width: 100%;
+  background-color: #fff;
+}
+
+/*# sourceMappingURL=Bg.css.map */
