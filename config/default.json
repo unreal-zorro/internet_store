@@ -1,0 +1,6 @@
+{
+  "port": 5000,
+  "jwtSecret": "Internet Store is very cool!",
+//  "mongoUri": "mongodb+srv://unreal:store777123@cluster0.fi907en.mongodb.net/app?retryWrites=true&w=majority",
+  "mongoUri": "mongodb://localhost:27017/app"
+}
