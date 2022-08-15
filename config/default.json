@@ -1,0 +1,5 @@
+{
+  "port": 5000,
+  "jwtSecret": "Internet Store is very cool!",
+  "mongoUri": "mongodb://localhost:27017/app"
+}
