@@ -1,5 +1,5 @@
 import AuthLayout from "../../AuthLayout/AuthLayout";
-import AuthOrRegister from "../../../components/AuthOrRegister/AuthOrRegister";
+import {AuthOrRegister} from "../../../components/AuthOrRegister/AuthOrRegister";
 
 function RegisterPage() {
   return (
@@ -12,4 +12,3 @@ function RegisterPage() {
 }
 
 export default RegisterPage
-
