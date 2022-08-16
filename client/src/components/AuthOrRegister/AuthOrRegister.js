@@ -109,7 +109,7 @@ export const AuthOrRegister = (props) => {
             className="auth-form__label"
           >Пароль:</label>
           <input
-            type="text"
+            type="password"
             id="password"
             className="auth-form__input"
             placeholder="Введите пароль"

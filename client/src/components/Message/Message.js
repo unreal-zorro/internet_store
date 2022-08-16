@@ -11,9 +11,11 @@ function Message() {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    setTimeout(() => dispatch(addMessage('')), 3000)
-  }, [dispatch]);
-  
+    if (message) {
+      setTimeout(() => dispatch(addMessage('')), 3000)
+    }
+  }, [dispatch, message]);
+
   return (
     <div
       className={"message " + (message ? "active" : "")}
