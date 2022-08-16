@@ -1,21 +1,30 @@
 import './AuthOrRegister.scss'
 
-import {useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {Link} from "react-router-dom";
 
 import {useHttp} from "../../hooks/http.hook";
 import declensionSymbols from "../../utils/declensionSymbols";
+import {useMessage} from "../../hooks/message.hook";
+import {AuthContext} from "../../context/auth.context";
 
 export const AuthOrRegister = (props) => {
   const type = props.type
+  const auth = useContext(AuthContext);
+  const message = useMessage()
 
-  const {loading, request} = useHttp()
+  const {loading, request, error, clearError} = useHttp()
   const [form, setForm] = useState({
     name: '', password: ''
   });
   const [nameError, setNameError] = useState('')
   const [passwordError, setPasswordError] = useState('')
   const passwordMinLength = 6
+
+  useEffect(() => {
+    message(error)
+    clearError()
+  }, [error, message, clearError]);
 
   const inputNameChangeHandler = event => {
     const name = event.target.value
@@ -50,7 +59,7 @@ export const AuthOrRegister = (props) => {
     }
   }
 
-  const registerHandler = async event => {
+  const registerOrLoginHandler = async event => {
     event.preventDefault()
 
     if (nameError || passwordError) {
@@ -58,8 +67,13 @@ export const AuthOrRegister = (props) => {
     }
 
     try {
-      const data = await request('/api/auth/register', 'POST', {...form})
-      console.log('Data: ', data)
+      if (type === 'register') {
+        const data = await request('/api/auth/register', 'POST', {...form})
+        message(data.message)
+      } else if (type === 'auth') {
+        const data = await request('/api/auth/login', 'POST', {...form})
+        auth.login(data.to, data.userId)
+      }
     } catch (e) {}
   }
 
@@ -67,7 +81,7 @@ export const AuthOrRegister = (props) => {
     <div className="auth">
       <form
         className="auth-form"
-        onSubmit={registerHandler}
+        onSubmit={registerOrLoginHandler}
       >
 
         <div className="auth-form__row">

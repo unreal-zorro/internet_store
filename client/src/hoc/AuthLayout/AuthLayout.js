@@ -1,5 +1,6 @@
 import Container from "../../components/Container/Container";
 import HomeLink from "../../components/HomeLink/HomeLink";
+import Message from "../../components/Message/Message";
 
 function AuthLayout(props) {
   return (
@@ -10,6 +11,7 @@ function AuthLayout(props) {
         {props.children}
 
       </Container>
+      <Message />
     </div>
   )
 }

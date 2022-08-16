@@ -14,8 +14,6 @@ router.post(
   body('password', 'Минимальная длина пароля 6 символов.').isLength({ min: 6 }).trim(),
   async (req, res) => {
     try {
-      console.log('Body: ', req.body)
-
       const errors = validationResult(req)
 
       if (!errors.isEmpty()) {
@@ -40,7 +38,6 @@ router.post(
       await user.save()
 
       res.status(201).json({ message: 'Пользователь создан.' })
-
     } catch (e) {
       res.status(500).json({
         message: 'Что-то пошло не так, попробуйте снова.'
@@ -52,8 +49,8 @@ router.post(
 router.post(
   '/login',
   body('name', 'Введите корректное имя.').not().isEmpty().trim(),
-  body('password', 'Введите пароль').exists(),
-  body('password', 'Минимальная длина пароля 6 символов.').isLength({ min: 6 }),
+  body('password', 'Введите пароль').exists().trim(),
+  body('password', 'Минимальная длина пароля 6 символов.').isLength({ min: 6 }).trim(),
   async (req, res) => {
     try {
       const errors = validationResult(req)
