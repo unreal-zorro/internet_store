@@ -1,7 +1,7 @@
 import './AuthOrRegister.scss'
 
 import {useContext, useEffect, useState} from "react";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 
 import {useHttp} from "../../hooks/http.hook";
 import declensionSymbols from "../../utils/declensionSymbols";
@@ -12,6 +12,8 @@ export const AuthOrRegister = (props) => {
   const type = props.type
   const auth = useContext(AuthContext);
   const message = useMessage()
+
+  let navigate = useNavigate()
 
   const {loading, request, error, clearError} = useHttp()
   const [form, setForm] = useState({
@@ -70,10 +72,12 @@ export const AuthOrRegister = (props) => {
       if (type === 'register') {
         const data = await request('/api/auth/register', 'POST', {...form})
         message(data.message)
-      } else if (type === 'auth') {
-        const data = await request('/api/auth/login', 'POST', {...form})
-        auth.login(data.to, data.userId)
       }
+
+      const data = await request('/api/auth/login', 'POST', {...form})
+      auth.login(data.token, data.userId, data.isAdmin)
+      message(data.message)
+      navigate('/')
     } catch (e) {}
   }
 

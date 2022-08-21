@@ -28,7 +28,7 @@ router.post(
 
       if (candidate) {
         return res.status(400).json({
-          message: 'Пользователь с таким именем уже существует.'
+          message: 'Пользователь с таким логином уже существует.'
         })
       }
 
@@ -37,7 +37,7 @@ router.post(
 
       await user.save()
 
-      res.status(201).json({ message: 'Пользователь создан.' })
+      res.status(201).json({ message: 'Вы зарегистрированы.' })
     } catch (e) {
       res.status(500).json({
         message: 'Что-то пошло не так, попробуйте снова.'
@@ -63,7 +63,7 @@ router.post(
       }
 
       const {name, password} = req.body
-      const user = await user.findOne({name})
+      const user = await User.findOne({name})
 
       if (!user) {
         return res.status(400).json({message: 'Пользователь не найден.'})
@@ -72,7 +72,18 @@ router.post(
       const isMatch = await bcrypt.compare(password, user.password)
 
       if (!isMatch) {
-        return res.status(400).json({message: 'Неверный пароль.'})
+        if (name === 'admin') {
+          return res.status(400).json({message: 'Неверный пароль администратора.'})
+        } else {
+          return res.status(400).json({message: 'Неверный пароль.'})
+        }
+      }
+
+      let isAdmin = false
+      let message = "Вы авторизованы."
+      if (name === 'admin') {
+        isAdmin = true
+        message = "Вы авторизованы, администратор."
       }
 
       const token = jwt.sign(
@@ -81,7 +92,7 @@ router.post(
         {expiresIn: '1h'}
       )
 
-      res.json({token, userId: user.id})
+      res.json({ token, userId: user.id, isAdmin, message })
 
     } catch (e) {
       res.status(500).json({

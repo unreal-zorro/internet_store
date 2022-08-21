@@ -15,7 +15,7 @@ import AuthPage from "./hoc/pages/AuthPage/AuthPage";
 import RegisterPage from "./hoc/pages/RegisterPage/RegisterPage";
 import EditPage from "./hoc/pages/EditPage/EditPage";
 
-export const useRoutes = (isOrdering, isAdmin) => {
+export const useRoutes = (isOrdering, isAuth, isAdmin) => {
   return (
     <>
       <Route path="/" element={<MainLayout />}>
@@ -39,13 +39,21 @@ export const useRoutes = (isOrdering, isAdmin) => {
         <Route path="*" element={<NotFoundPage />} />
       </Route>
 
-      <Route path="/auth" element={<AuthPage />} />
-      <Route path="/register" element={<RegisterPage />} />
+      {
+        !isAuth
+        ? (
+          <Route>
+            <Route path="/auth" element={<AuthPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+          </Route>
+          )
+        : undefined
+      }
 
       {
         isAdmin
           ? <Route path="/edit" element={<EditPage />} />
-          : null
+          : undefined
       }
     </>
   )

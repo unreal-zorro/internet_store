@@ -1,21 +1,31 @@
 import './Navbar.scss'
 
+import {useContext} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {Link, NavLink} from "react-router-dom";
-import {addMessage, logout} from "../../redux/mainSlice";
 
+import {addMessage} from "../../redux/mainSlice";
 import Burger from "./Burger/Burger";
 import {addAdminCart, addUserCart} from "../../redux/usersSlice";
+import {AuthContext} from "../../context/auth.context";
+import {useMessage} from "../../hooks/message.hook";
 
 function Navbar(props) {
+  const auth = useContext(AuthContext);
+  const isAuth = !!auth.token
+  const isAdmin = auth.isAdmin
+  const logout = auth.logout
+
+  const message = useMessage()
+
   const cart = useSelector(state => state.main.cart)
 
   const count = cart.reduce((sum, item) => {
     return sum + item.count
   }, 0)
 
-  const isAuth = useSelector(state => state.main.isAuth)
-  const isAdmin = useSelector(state => state.main.isAdmin)
+  // const isAuth = useSelector(state => state.main.isAuth)
+  // const isAdmin = useSelector(state => state.main.isAdmin)
   const userLogin = useSelector(state => state.main.login)
 
   const users = useSelector(state => state.users.users)
@@ -24,15 +34,21 @@ function Navbar(props) {
 
   function onLogoutClickHandler() {
     if (isAdmin) {
-      dispatch(addAdminCart({cart}))
-      dispatch(logout())
-      dispatch(addMessage("Вы вышли из системы, администратор."))
-    } else if (isAuth) {
-      const userIndex = users.findIndex(item => item.login === userLogin)
+      // dispatch(addAdminCart({cart}))
+      // dispatch(logout())
 
-      dispatch(addUserCart({userIndex, cart}))
-      dispatch(logout())
-      dispatch(addMessage("Вы вышли из системы."))
+      logout()
+
+      message("Вы вышли из системы, администратор.")
+    } else if (isAuth) {
+      // const userIndex = users.findIndex(item => item.login === userLogin)
+
+      // dispatch(addUserCart({userIndex, cart}))
+      // dispatch(logout())
+
+      logout()
+
+      message("Вы вышли из системы.")
     }
   }
 
@@ -92,7 +108,7 @@ function Navbar(props) {
                   <img src="/icons/edit.png" alt="edit" />
                 </NavLink>
               </li>
-              : undefined
+              : null
           }
         </ul>
 
@@ -107,20 +123,20 @@ function Navbar(props) {
             </div>
           </NavLink>
           <Link
-            to={isAuth || isAdmin ? "" : "/auth"}
+            to={(isAuth || isAdmin) ? "" : "/auth"}
             className="navbar__auth"
             onClick={isAuth || isAdmin ? onLogoutClickHandler : undefined}
           >
             {
-              isAuth || isAdmin
+              (isAuth || isAdmin)
                 ? <img src="/icons/out.png" alt="out" />
                 : <img src="/icons/auth.png" alt="auth" />
             }
             <div className="navbar__auth-text_md">
-              {isAuth || isAdmin ? "Выйти" : "Вход/Регистрация"}
+              {(isAuth || isAdmin) ? "Выйти" : "Вход/Регистрация"}
             </div>
             <div className="navbar__auth-text_sm">
-              {isAuth || isAdmin ? "Выйти" : "Вход/Рег."}
+              {(isAuth || isAdmin) ? "Выйти" : "Вход/Рег."}
             </div>
           </Link>
         </div>

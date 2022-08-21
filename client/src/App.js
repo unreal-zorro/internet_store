@@ -10,13 +10,13 @@ import {AuthContext} from "./context/auth.context";
 function App() {
   const isOrdering = useSelector(state => state.main.isOrdering)
 
-  const {token, login, logout, userId} = useAuth()
+  const {token, login, logout, userId, isAdmin} = useAuth()
   const isAuthenticated = !!token
-  const routes = useRoutes(isOrdering, isAuthenticated)
+  const routes = useRoutes(isOrdering, isAuthenticated, isAdmin)
 
   return (
     <AuthContext.Provider value={{
-      token, login, logout, userId, isAuthenticated
+      token, login, logout, userId, isAuthenticated, isAdmin
     }}>
       <Routes>
         { routes }
