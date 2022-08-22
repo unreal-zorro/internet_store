@@ -1,12 +1,23 @@
 import './Description.scss'
 
-import {useDispatch, useSelector} from "react-redux";
+import {useContext} from "react";
+// import {useDispatch, useSelector} from "react-redux";
 
-import {addMessage, cartAddNewCount, cartAddNewGood} from "../../redux/mainSlice";
+// import {addMessage, cartAddNewCount, cartAddNewGood} from "../../redux/mainSlice";
+import {CartContext} from "../../context/cart.context";
+import {useMessage} from "../../hooks/message.hook";
 
 function Description(props) {
-  const cart = useSelector(state => state.main.cart)
-  const dispatch = useDispatch()
+  // const cart = useSelector(state => state.main.cart)
+
+  const cartObject = useContext(CartContext);
+  const cart = cartObject.cart
+  const cartAddNewCount = cartObject.cartAddNewCount
+  const cartAddNewGood = cartObject.cartAddNewGood
+
+  const message = useMessage()
+
+  // const dispatch = useDispatch()
 
   let count = 1
 
@@ -36,16 +47,20 @@ function Description(props) {
         ...good,
         count: newCount
       }
-      dispatch(cartAddNewCount({goodIndex, goodWithNewCount}))
-      dispatch(addMessage("Товар добавлен в корзину."))
+      // dispatch(cartAddNewCount({goodIndex, goodWithNewCount}))
+      // dispatch(addMessage("Товар добавлен в корзину."))
+      cartAddNewCount(goodIndex, goodWithNewCount)
+      message("Количество товаров в корзине изменено.")
     } else {
       const newGood = {
         categoryId: props.categoryId,
         id: props.id,
         count: count
       }
-      dispatch(cartAddNewGood({newGood}))
-      dispatch(addMessage("Товар добавлен в корзину."))
+      // dispatch(cartAddNewGood({newGood}))
+      // dispatch(addMessage("Товар добавлен в корзину."))
+      cartAddNewGood(newGood)
+      message("Товар добавлен в корзину.")
     }
   }
 

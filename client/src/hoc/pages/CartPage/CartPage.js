@@ -5,23 +5,38 @@ import CartContent from "../../../components/Cart/CartContent/CartContent";
 import CartCard from "../../../components/Cart/CartCard/CartCard";
 import Cart from "../../../components/Cart/Cart";
 import {
-  addMessage,
-  cartAddNewCount,
-  cartDeleteGood,
+  // addMessage,
+  // cartAddNewCount,
+  // cartDeleteGood,
   isOrderingChange
 } from "../../../redux/mainSlice";
 import cartCountAndAmount from "../../../utils/cartCountAndAmount";
+import {useContext} from "react";
+import {AuthContext} from "../../../context/auth.context";
+import {CartContext} from "../../../context/cart.context";
+import {useMessage} from "../../../hooks/message.hook";
 
 function CartPage() {
-  const isAuth = useSelector(state => state.main.isAuth)
-  const isAdmin = useSelector(state => state.main.isAdmin)
+  // const isAuth = useSelector(state => state.main.isAuth)
+  // const isAdmin = useSelector(state => state.main.isAdmin)
 
-  const cart = useSelector(state => state.main.cart)
+  const auth = useContext(AuthContext);
+  const isAuth = !!auth.token
+  const isAdmin = auth.isAdmin
+
+  // const cart = useSelector(state => state.main.cart)
+  const cartObject = useContext(CartContext)
+  const cart = cartObject.cart
+  const cartAddNewCount = cartObject.cartAddNewCount
+  const cartDeleteGood = cartObject.cartDeleteGood
+
   const categories = useSelector(state => state.categories.categories)
 
   const {count, amount} = cartCountAndAmount(cart, categories)
 
   const dispatch = useDispatch()
+
+  const message = useMessage()
 
   function inputChangeHandler(value, id) {
     let goodIndex = -1
@@ -47,15 +62,21 @@ function CartPage() {
       count: value
     }
 
-    dispatch(cartAddNewCount({goodIndex, goodWithNewCount}))
-    dispatch(addMessage("Количество товаров изменено."))
+    // dispatch(cartAddNewCount({goodIndex, goodWithNewCount}))
+    cartAddNewCount(goodIndex, goodWithNewCount)
+
+    // dispatch(addMessage("Количество товаров изменено."))
+    message("Количество товаров изменено.")
   }
 
   function deleteButtonClickHandler(id) {
     let goodIndex = cart.findIndex((item) => item.id === id)
 
-    dispatch(cartDeleteGood({goodIndex}))
-    dispatch(addMessage("Товар удалён из корзины."))
+    // dispatch(cartDeleteGood({goodIndex}))
+    cartDeleteGood(goodIndex)
+
+    // dispatch(addMessage("Товар удалён из корзины."))
+    message("Товар удалён из корзины.")
   }
 
   function cartOrderingClickHandler() {
@@ -75,6 +96,8 @@ function CartPage() {
           : ""}
         count={count}
         amount={amount}
+        isAuth={isAuth}
+        isAdmin={isAdmin}
         onClick={cartOrderingClickHandler}
       >
         {cart.map(item => {

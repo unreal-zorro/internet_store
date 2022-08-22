@@ -1,14 +1,15 @@
 import './Navbar.scss'
 
-import {useContext} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import {useContext, useEffect} from "react";
+// import {useDispatch, useSelector} from "react-redux";
 import {Link, NavLink} from "react-router-dom";
 
-import {addMessage} from "../../redux/mainSlice";
+// import {addMessage} from "../../redux/mainSlice";
 import Burger from "./Burger/Burger";
-import {addAdminCart, addUserCart} from "../../redux/usersSlice";
+// import {addAdminCart, addUserCart} from "../../redux/usersSlice";
 import {AuthContext} from "../../context/auth.context";
 import {useMessage} from "../../hooks/message.hook";
+import {CartContext} from "../../context/cart.context";
 
 function Navbar(props) {
   const auth = useContext(AuthContext);
@@ -18,38 +19,39 @@ function Navbar(props) {
 
   const message = useMessage()
 
-  const cart = useSelector(state => state.main.cart)
-
-  const count = cart.reduce((sum, item) => {
-    return sum + item.count
-  }, 0)
+  // const cart = useSelector(state => state.main.cart)
+  const cartObject = useContext(CartContext)
+  // const cart = cartObject.cart
+  const cartClear = cartObject.cartClear
+  const count = cartObject.count
 
   // const isAuth = useSelector(state => state.main.isAuth)
   // const isAdmin = useSelector(state => state.main.isAdmin)
-  const userLogin = useSelector(state => state.main.login)
+  // const userLogin = useSelector(state => state.main.login)
 
-  const users = useSelector(state => state.users.users)
+  // const users = useSelector(state => state.users.users)
 
-  const dispatch = useDispatch()
+  // const dispatch = useDispatch()
 
   function onLogoutClickHandler() {
-    if (isAdmin) {
+    // if (isAdmin) {
       // dispatch(addAdminCart({cart}))
       // dispatch(logout())
-
-      logout()
-
-      message("Вы вышли из системы, администратор.")
-    } else if (isAuth) {
+    // } else if (isAuth) {
       // const userIndex = users.findIndex(item => item.login === userLogin)
-
       // dispatch(addUserCart({userIndex, cart}))
       // dispatch(logout())
+    // }
 
-      logout()
+    let logoutMessage = "Вы вышли из системы."
 
-      message("Вы вышли из системы.")
+    if (isAdmin) {
+      logoutMessage = "Вы вышли из системы, администратор."
     }
+
+    cartClear()
+    logout()
+    message(logoutMessage)
   }
 
   return (

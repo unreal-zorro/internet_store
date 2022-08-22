@@ -1,13 +1,13 @@
 import '../Cart.scss'
 
-import mainStore from "../../../redux/mainStore";
+// import mainStore from "../../../redux/mainStore";
 
 import CartTotal from "../CartTotal/CartTotal";
 import CartAuth from "../CartAuth/CartAuth";
 
 function CartContent(props) {
-  const isAuth = mainStore.getState().main.isAuth
-  const isAdmin = mainStore.getState().main.isAdmin
+  // const isAuth = mainStore.getState().main.isAuth
+  // const isAdmin = mainStore.getState().main.isAdmin
 
   return (
     <div className={"cart__content " + props.className}>
@@ -23,7 +23,7 @@ function CartContent(props) {
       </div>
 
       {
-        (isAuth || isAdmin)
+        (props.isAuth || props.isAdmin)
           ? <CartTotal
             count={props.count}
             amount={props.amount}

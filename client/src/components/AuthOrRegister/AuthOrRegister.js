@@ -12,8 +12,7 @@ export const AuthOrRegister = (props) => {
   const type = props.type
   const auth = useContext(AuthContext);
   const message = useMessage()
-
-  let navigate = useNavigate()
+  const navigate = useNavigate()
 
   const {loading, request, error, clearError} = useHttp()
   const [form, setForm] = useState({
