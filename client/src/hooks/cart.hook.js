@@ -1,4 +1,6 @@
-import {useCallback, useEffect, useState} from "react";
+import {useCallback, useEffect,
+  // useRef,
+  useState} from "react";
 
 const storageName = 'cartData'
 
@@ -17,13 +19,15 @@ export const useCart = () => {
   }, [cart]);
 
   const cartAddNewGood = useCallback(newGood => {
-    setCart(cart[cart.length] = newGood)
+    setCart(cart.concat(newGood))
 
     localStorage.setItem(storageName, JSON.stringify(cart))
   }, [cart]);
 
   const cartAddNewCount = useCallback((goodIndex, goodWithNewCount) => {
-    setCart(cart[goodIndex] = goodWithNewCount)
+    const newCart = cart.slice()
+    newCart[goodIndex] = goodWithNewCount
+    setCart(newCart)
 
     localStorage.setItem(storageName, JSON.stringify(cart))
   }, [cart]);
@@ -52,21 +56,17 @@ export const useCart = () => {
   //   return countInCart
   // }, [cart]);
 
-  let count = 0
+  // const count = useRef(cart.reduce((sum, item) => sum + item.count, 0))
 
   useEffect(() => {
-    if (cart.length !== 0) {
-      count = cart.reduce((sum, item) => {
-        return sum + item.count
-      }, 0)
-    }
-
     const data = JSON.parse(localStorage.getItem(storageName))
 
-    if (data.length !== 0) {
-      cartInit(data)
+    if (data) {
+      setCart(data)
     }
-  }, [cartInit]);
+  }, []);
 
-  return { cart, cartInit, cartAddNewGood, cartAddNewCount, cartDeleteGood, cartClear, count }
+  return { cart, cartInit, cartAddNewGood, cartAddNewCount, cartDeleteGood, cartClear,
+    // count
+  }
 }

@@ -7,10 +7,12 @@ import {useHttp} from "../../hooks/http.hook";
 import declensionSymbols from "../../utils/declensionSymbols";
 import {useMessage} from "../../hooks/message.hook";
 import {AuthContext} from "../../context/auth.context";
+import {CartContext} from "../../context/cart.context";
 
 export const AuthOrRegister = (props) => {
   const type = props.type
   const auth = useContext(AuthContext);
+  const { cartInit } = useContext(CartContext)
   const message = useMessage()
   const navigate = useNavigate()
 
@@ -75,6 +77,7 @@ export const AuthOrRegister = (props) => {
 
       const data = await request('/api/auth/login', 'POST', {...form})
       auth.login(data.token, data.userId, data.isAdmin)
+      cartInit(data.cart)
       message(data.message)
       navigate('/')
     } catch (e) {}

@@ -92,7 +92,7 @@ router.post(
         {expiresIn: '1h'}
       )
 
-      res.json({ token, userId: user.id, isAdmin, message })
+      res.json({ token, userId: user.id, isAdmin, cart: user.cart, orders: user.orders, message })
 
     } catch (e) {
       res.status(500).json({
@@ -100,5 +100,41 @@ router.post(
       })
     }
 })
+
+// /api/auth/logout
+router.post(
+  '/logout',
+  body('name', 'Введите корректное имя.').not().isEmpty().trim(),
+  async (req, res) => {
+    try {
+      const errors = validationResult(req)
+
+      if (!errors.isEmpty()) {
+        return res.status(400).json({
+          errors: errors.array(),
+          message: 'Некорректные данные при выходе из системы.'
+        })
+      }
+
+      const {id, cart, orders} = req.body
+      const user = await User.findOneAndUpdate({id}, {cart, orders})
+
+      if (!user) {
+        return res.status(400).json({message: 'Пользователь не найден.'})
+      }
+
+      let message = "Вы вышли из системы."
+      if (name === 'admin') {
+        message = "Вы вышли из системы, администратор."
+      }
+
+      res.json({ message })
+
+    } catch (e) {
+      res.status(500).json({
+        message: 'Что-то пошло не так, попробуйте снова.'
+      })
+    }
+  })
 
 module.exports = router

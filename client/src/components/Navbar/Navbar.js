@@ -1,6 +1,6 @@
 import './Navbar.scss'
 
-import {useContext, useEffect} from "react";
+import {useContext, useEffect, useState} from "react";
 // import {useDispatch, useSelector} from "react-redux";
 import {Link, NavLink} from "react-router-dom";
 
@@ -10,20 +10,28 @@ import Burger from "./Burger/Burger";
 import {AuthContext} from "../../context/auth.context";
 import {useMessage} from "../../hooks/message.hook";
 import {CartContext} from "../../context/cart.context";
+import {useHttp} from "../../hooks/http.hook";
 
 function Navbar(props) {
   const auth = useContext(AuthContext);
   const isAuth = !!auth.token
   const isAdmin = auth.isAdmin
   const logout = auth.logout
+  const id = auth.userId
 
   const message = useMessage()
 
+  const {request, error, clearError} = useHttp()
+
+  useEffect(() => {
+    message(error)
+    clearError()
+  }, [error, message, clearError]);
+
   // const cart = useSelector(state => state.main.cart)
-  const cartObject = useContext(CartContext)
-  // const cart = cartObject.cart
-  const cartClear = cartObject.cartClear
-  const count = cartObject.count
+  const { cart, cartClear } = useContext(CartContext)
+  const count = cart.reduce((sum, item) => sum + item.count, 0)
+  // const count = 0
 
   // const isAuth = useSelector(state => state.main.isAuth)
   // const isAdmin = useSelector(state => state.main.isAdmin)
@@ -33,7 +41,7 @@ function Navbar(props) {
 
   // const dispatch = useDispatch()
 
-  function onLogoutClickHandler() {
+  async function onLogoutClickHandler() {
     // if (isAdmin) {
       // dispatch(addAdminCart({cart}))
       // dispatch(logout())
@@ -43,15 +51,21 @@ function Navbar(props) {
       // dispatch(logout())
     // }
 
-    let logoutMessage = "Вы вышли из системы."
+    try {
+      const data = await request('/api/auth/logout', 'POST', {id, cart, orders: []})
 
-    if (isAdmin) {
-      logoutMessage = "Вы вышли из системы, администратор."
-    }
+      cartClear()
+      logout()
+      message(data.message)
+    } catch (e) {}
 
-    cartClear()
-    logout()
-    message(logoutMessage)
+    // let logoutMessage = "Вы вышли из системы."
+    //
+    // if (isAdmin) {
+    //   logoutMessage = "Вы вышли из системы, администратор."
+    // }
+
+    // message(logoutMessage)
   }
 
   return (

@@ -11,7 +11,7 @@ export const useAuth = () => {
     setToken(jwtToken)
     setUserId(id)
     setIsAdmin(isAdministrator)
-    
+
     localStorage.setItem(storageName, JSON.stringify({
       userId: id, token: jwtToken, isAdmin: isAdministrator
     }))
@@ -32,7 +32,6 @@ export const useAuth = () => {
       login(data.token, data.userId, data.isAdmin)
     }
   }, [login]);
-
 
   return { login, logout, token, userId, isAdmin }
 }
