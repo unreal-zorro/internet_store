@@ -14,35 +14,35 @@ export const useCart = () => {
 
   const cartInit = useCallback(initialCart => {
     setCart(initialCart)
-
-    localStorage.setItem(storageName, JSON.stringify(cart))
-  }, [cart]);
+    localStorage.setItem(storageName, JSON.stringify(initialCart))
+  }, []);
 
   const cartAddNewGood = useCallback(newGood => {
-    setCart(cart.concat(newGood))
-
-    localStorage.setItem(storageName, JSON.stringify(cart))
+    const newCart = cart.concat(newGood)
+    setCart(newCart)
+    localStorage.setItem(storageName, JSON.stringify(newCart))
   }, [cart]);
 
   const cartAddNewCount = useCallback((goodIndex, goodWithNewCount) => {
     const newCart = cart.slice()
     newCart[goodIndex] = goodWithNewCount
     setCart(newCart)
-
-    localStorage.setItem(storageName, JSON.stringify(cart))
+    localStorage.setItem(storageName, JSON.stringify(newCart))
   }, [cart]);
 
   const cartDeleteGood = useCallback(goodIndex => {
-    setCart(cart.splice(goodIndex, 1))
-
-    localStorage.setItem(storageName, JSON.stringify(cart))
+    const newCart = cart.slice()
+    newCart.splice(goodIndex, 1)
+    setCart(newCart)
+    localStorage.setItem(storageName, JSON.stringify(newCart))
   }, [cart]);
 
   const cartClear = useCallback(() => {
-    setCart(cart.splice(0, cart.length))
-
+    // const newCart = cart.splice(0, cart.length)
+    const newCart = []
+    setCart(newCart)
     localStorage.removeItem(storageName)
-  }, [cart]);
+  }, []);
 
   // const count = useCallback(() => {
   //   const cartArray = [].concat(cart)

@@ -17,7 +17,7 @@ function Navbar(props) {
   const isAuth = !!auth.token
   const isAdmin = auth.isAdmin
   const logout = auth.logout
-  const id = auth.userId
+  const userId = auth.userId
 
   const message = useMessage()
 
@@ -52,7 +52,7 @@ function Navbar(props) {
     // }
 
     try {
-      const data = await request('/api/auth/logout', 'POST', {id, cart, orders: []})
+      const data = await request('/api/auth/logout', 'POST', {userId, cart, orders: []})
 
       cartClear()
       logout()

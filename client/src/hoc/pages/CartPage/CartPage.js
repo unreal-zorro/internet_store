@@ -25,10 +25,7 @@ function CartPage() {
   const isAdmin = auth.isAdmin
 
   // const cart = useSelector(state => state.main.cart)
-  const cartObject = useContext(CartContext)
-  const cart = cartObject.cart
-  const cartAddNewCount = cartObject.cartAddNewCount
-  const cartDeleteGood = cartObject.cartDeleteGood
+  const { cart, cartAddNewCount, cartDeleteGood, cartClear } = useContext(CartContext)
 
   const categories = useSelector(state => state.categories.categories)
 
@@ -70,9 +67,9 @@ function CartPage() {
   }
 
   function deleteButtonClickHandler(id) {
-    let goodIndex = cart.findIndex((item) => item.id === id)
-
     // dispatch(cartDeleteGood({goodIndex}))
+
+    const goodIndex = cart.findIndex((item) => item.id === id)
     cartDeleteGood(goodIndex)
 
     // dispatch(addMessage("Товар удалён из корзины."))

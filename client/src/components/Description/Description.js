@@ -10,10 +10,7 @@ import {useMessage} from "../../hooks/message.hook";
 function Description(props) {
   // const cart = useSelector(state => state.main.cart)
 
-  const cartObject = useContext(CartContext);
-  const cart = cartObject.cart
-  const cartAddNewCount = cartObject.cartAddNewCount
-  const cartAddNewGood = cartObject.cartAddNewGood
+  const { cart, cartAddNewCount, cartAddNewGood } = useContext(CartContext);
 
   const message = useMessage()
 
