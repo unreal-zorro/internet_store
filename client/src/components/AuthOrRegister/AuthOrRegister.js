@@ -12,7 +12,7 @@ import {CartContext} from "../../context/cart.context";
 export const AuthOrRegister = (props) => {
   const type = props.type
   const auth = useContext(AuthContext);
-  const { cartInit } = useContext(CartContext)
+  const { cart, cartInit } = useContext(CartContext)
   const message = useMessage()
   const navigate = useNavigate()
 
@@ -75,7 +75,7 @@ export const AuthOrRegister = (props) => {
         message(data.message)
       }
 
-      const data = await request('/api/auth/login', 'POST', {...form})
+      const data = await request('/api/auth/login', 'POST', {...form, cart})
       auth.login(data.token, data.userId, data.isAdmin)
       cartInit(data.cart)
       message(data.message)

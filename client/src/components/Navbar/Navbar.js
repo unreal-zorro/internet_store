@@ -1,6 +1,6 @@
 import './Navbar.scss'
 
-import {useContext, useEffect, useState} from "react";
+import {useContext, useEffect} from "react";
 // import {useDispatch, useSelector} from "react-redux";
 import {Link, NavLink} from "react-router-dom";
 
@@ -52,7 +52,7 @@ function Navbar(props) {
     // }
 
     try {
-      const data = await request('/api/auth/logout', 'POST', {userId, cart, orders: []})
+      const data = await request('/api/auth/logout', 'POST', {userId, cart})
 
       cartClear()
       logout()

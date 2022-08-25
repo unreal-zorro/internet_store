@@ -6,7 +6,6 @@ const {body, validationResult} = require('express-validator')
 const jwt = require('jsonwebtoken')
 const config = require('config')
 const {Types} = require("mongoose");
-const {ignoreRoot} = require("nodemon/lib/config/defaults");
 
 // /api/auth/register
 router.post(
@@ -53,6 +52,7 @@ router.post(
   body('name', 'Введите корректное имя.').not().isEmpty().trim(),
   body('password', 'Введите пароль').exists().trim(),
   body('password', 'Минимальная длина пароля 6 символов.').isLength({ min: 6 }).trim(),
+  body('cart', 'Корзина не существует.').exists(),
   async (req, res) => {
     try {
       const errors = validationResult(req)
@@ -64,7 +64,7 @@ router.post(
         })
       }
 
-      const {name, password} = req.body
+      const {name, password, cart} = req.body
       const user = await User.findOne({name})
 
       if (!user) {
@@ -94,7 +94,25 @@ router.post(
         {expiresIn: '1h'}
       )
 
-      res.json({ token, userId: user.id, isAdmin, cart: user.cart, orders: user.orders, message })
+      const userCart = user.cart
+      const intermediateCart = cart.map(item => {
+        const generalItem = userCart.find(userItem => userItem.id === item.id)
+        if (generalItem) {
+          const newCount = item.count + generalItem.count
+          return {...item, count: newCount}
+        } else {
+          return item
+        }
+      })
+      const userRestCart = userCart.map(item => {
+        const restItem = intermediateCart.find(intermediateItem => intermediateItem.id === item.id)
+        if (!restItem) {
+          return item
+        }
+      })
+      const newCart = intermediateCart.concat(userRestCart)
+
+      res.json({ token, userId: user.id, isAdmin, cart: newCart, message })
 
     } catch (e) {
       res.status(500).json({
@@ -106,51 +124,22 @@ router.post(
 // /api/auth/logout
 router.post(
   '/logout',
-  // body('userId', 'Введите корректный идентификатор.').not().isEmpty().trim(),
   async (req, res) => {
     try {
-      // const errors = validationResult(req)
-      //
-      // console.log("Errors: ", errors)
-      //
-      // if (!errors.isEmpty()) {
-      //   return res.status(400).json({
-      //     errors: errors.array(),
-      //     message: 'Некорректные данные при выходе из системы.'
-      //   })
-      // }
 
       const {userId, cart: newCart} = req.body
       const id = new Types.ObjectId(userId)
       const length = newCart.length
-      console.log("length: ", length)
 
-      // let newCart = await JSON.parse(cart)
+      await User.updateOne({_id: id}, { $push: { cart: { $each: newCart, $position: 0, $slice: length } } })
 
-      // console.log("NEW cart: ", newCart)
-
-      const user = User.findById(id)
-      console.log("user: ", user)
-
-      await User.updateOne({_id: id}, {$push: {cart: {$each: newCart, $position:0, $slice:length}}})
-        // , (err, result) => {
-      //   if (err) {
-      //     console.log("err: ", err.message)
-      //     throw err
-      //   }
-      //   console.log("result: ", result)
-      // })
-      // const user = await User.findById(userId)
-      // console.log("User: ", user)
-      //
-      // if (!user) {
-      //   return res.status(400).json({message: 'Пользователь не найден.'})
-      // }
+      const user = User.findById(userId)
+      const name = user.name
 
       let message = "Вы вышли из системы."
-      // if (name === 'admin') {
-      //   message = "Вы вышли из системы, администратор."
-      // }
+      if (name === 'admin') {
+        message = "Вы вышли из системы, администратор."
+      }
 
       res.json({ message })
 
