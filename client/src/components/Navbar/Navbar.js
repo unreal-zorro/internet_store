@@ -1,79 +1,16 @@
 import './Navbar.scss'
 
-import {useContext, useEffect} from "react";
-// import {useDispatch, useSelector} from "react-redux";
 import {Link, NavLink} from "react-router-dom";
 
-// import {addMessage} from "../../redux/mainSlice";
 import Burger from "./Burger/Burger";
-// import {addAdminCart, addUserCart} from "../../redux/usersSlice";
-import {AuthContext} from "../../context/auth.context";
-import {useMessage} from "../../hooks/message.hook";
-import {CartContext} from "../../context/cart.context";
-import {useHttp} from "../../hooks/http.hook";
 
 function Navbar(props) {
-  const auth = useContext(AuthContext);
-  const isAuth = !!auth.token
-  const isAdmin = auth.isAdmin
-  const logout = auth.logout
-  const userId = auth.userId
-
-  const message = useMessage()
-
-  const {request, error, clearError} = useHttp()
-
-  useEffect(() => {
-    message(error)
-    clearError()
-  }, [error, message, clearError]);
-
-  // const cart = useSelector(state => state.main.cart)
-  const { cart, cartClear } = useContext(CartContext)
-  const count = cart.reduce((sum, item) => sum + item.count, 0)
-  // const count = 0
-
-  // const isAuth = useSelector(state => state.main.isAuth)
-  // const isAdmin = useSelector(state => state.main.isAdmin)
-  // const userLogin = useSelector(state => state.main.login)
-
-  // const users = useSelector(state => state.users.users)
-
-  // const dispatch = useDispatch()
-
-  async function onLogoutClickHandler() {
-    // if (isAdmin) {
-      // dispatch(addAdminCart({cart}))
-      // dispatch(logout())
-    // } else if (isAuth) {
-      // const userIndex = users.findIndex(item => item.login === userLogin)
-      // dispatch(addUserCart({userIndex, cart}))
-      // dispatch(logout())
-    // }
-
-    try {
-      const data = await request('/api/auth/logout', 'POST', {userId, cart})
-
-      cartClear()
-      logout()
-      message(data.message)
-    } catch (e) {}
-
-    // let logoutMessage = "Вы вышли из системы."
-    //
-    // if (isAdmin) {
-    //   logoutMessage = "Вы вышли из системы, администратор."
-    // }
-
-    // message(logoutMessage)
-  }
-
   return (
     <section className="navbar">
       <div className="navbar__wrapper">
         <div className="navbar__greeting">
           <Burger
-            onClick={props.onClick}
+            onClick={props.onBurgerClick}
             className={props.className}
           />
 
@@ -118,7 +55,7 @@ function Navbar(props) {
           </li>
 
           {
-            isAdmin
+            props.isAdmin
               ? <li className="navbar__menu-item navbar__user">
                 <NavLink to="/edit" className="navbar__edit">
                   <img src="/icons/edit.png" alt="edit" />
@@ -134,25 +71,25 @@ function Navbar(props) {
             className="navbar__cart"
           >
             <img src="/icons/cart.png" alt="cart" />
-            <div className={"navbar__count " + (count !== 0 ? 'active' : '')}>
-              {count}
+            <div className={"navbar__count " + (props.count !== 0 ? 'active' : '')}>
+              {props.count}
             </div>
           </NavLink>
           <Link
-            to={(isAuth || isAdmin) ? "" : "/auth"}
+            to={(props.isAuth || props.isAdmin) ? "" : "/auth"}
             className="navbar__auth"
-            onClick={isAuth || isAdmin ? onLogoutClickHandler : undefined}
+            onClick={props.isAuth || props.isAdmin ? props.onLogoutClick : undefined}
           >
             {
-              (isAuth || isAdmin)
+              (props.isAuth || props.isAdmin)
                 ? <img src="/icons/out.png" alt="out" />
                 : <img src="/icons/auth.png" alt="auth" />
             }
             <div className="navbar__auth-text_md">
-              {(isAuth || isAdmin) ? "Выйти" : "Вход/Регистрация"}
+              {(props.isAuth || props.isAdmin) ? "Выйти" : "Вход/Регистрация"}
             </div>
             <div className="navbar__auth-text_sm">
-              {(isAuth || isAdmin) ? "Выйти" : "Вход/Рег."}
+              {(props.isAuth || props.isAdmin) ? "Выйти" : "Вход/Рег."}
             </div>
           </Link>
         </div>

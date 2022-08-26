@@ -3,10 +3,10 @@ import {AuthOrRegister} from "../../../components/AuthOrRegister/AuthOrRegister"
 
 function AuthPage() {
   return (
-    <AuthLayout>
-      <AuthOrRegister
-        type="auth"
-      />
+    <AuthLayout
+      type="auth"
+    >
+      <AuthOrRegister />
     </AuthLayout>
   )
 }

@@ -24,7 +24,7 @@ router.post(
         })
       }
 
-      const {name, password} = req.body
+      const {name, password, cart} = req.body
       const candidate = await User.findOne({ name })
 
       if (candidate) {
@@ -34,7 +34,8 @@ router.post(
       }
 
       const hashedPassword = await bcrypt.hash(password, 12)
-      const user = new User({ name, password: hashedPassword })
+      const newCart = cart.length === 0 ? [] : cart
+      const user = new User({ name, password: hashedPassword, cart: newCart })
 
       await user.save()
 
@@ -94,23 +95,34 @@ router.post(
         {expiresIn: '1h'}
       )
 
-      const userCart = user.cart
-      const intermediateCart = cart.map(item => {
-        const generalItem = userCart.find(userItem => userItem.id === item.id)
-        if (generalItem) {
-          const newCount = item.count + generalItem.count
-          return {...item, count: newCount}
-        } else {
-          return item
-        }
-      })
-      const userRestCart = userCart.map(item => {
-        const restItem = intermediateCart.find(intermediateItem => intermediateItem.id === item.id)
-        if (!restItem) {
-          return item
-        }
-      })
-      const newCart = intermediateCart.concat(userRestCart)
+      const userCart = user.cart.slice()
+
+      const newCart = cart.length === 0
+        ? userCart.length === 0
+          ? []
+          : userCart
+        : userCart.length === 0
+          ? cart
+          : cart
+            .map(item => {
+              let userItem = {}
+              let userIndex = -1
+              if (userCart.find((item2, index) => {
+                if (item2.id === item.id) {
+                  userItem = item2
+                  userIndex = index
+                  return true
+                } else {
+                  return false
+                }
+              })) {
+                userCart.splice(userIndex, 1)
+                return {...item, count: item.count + userItem.count}
+              } else {
+                return item
+              }
+            })
+            .concat(userCart)
 
       res.json({ token, userId: user.id, isAdmin, cart: newCart, message })
 

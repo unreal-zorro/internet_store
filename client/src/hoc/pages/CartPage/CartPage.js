@@ -4,12 +4,7 @@ import CartEmpty from "../../../components/Cart/CartEmpty/CartEmpty";
 import CartContent from "../../../components/Cart/CartContent/CartContent";
 import CartCard from "../../../components/Cart/CartCard/CartCard";
 import Cart from "../../../components/Cart/Cart";
-import {
-  // addMessage,
-  // cartAddNewCount,
-  // cartDeleteGood,
-  isOrderingChange
-} from "../../../redux/mainSlice";
+import {isOrderingChange} from "../../../redux/mainSlice";
 import cartCountAndAmount from "../../../utils/cartCountAndAmount";
 import {useContext} from "react";
 import {AuthContext} from "../../../context/auth.context";
@@ -17,22 +12,13 @@ import {CartContext} from "../../../context/cart.context";
 import {useMessage} from "../../../hooks/message.hook";
 
 function CartPage() {
-  // const isAuth = useSelector(state => state.main.isAuth)
-  // const isAdmin = useSelector(state => state.main.isAdmin)
-
   const auth = useContext(AuthContext);
   const isAuth = !!auth.token
   const isAdmin = auth.isAdmin
-
-  // const cart = useSelector(state => state.main.cart)
-  const { cart, cartAddNewCount, cartDeleteGood, cartClear } = useContext(CartContext)
-
+  const { cart, cartAddNewCount, cartDeleteGood } = useContext(CartContext)
   const categories = useSelector(state => state.categories.categories)
-
   const {count, amount} = cartCountAndAmount(cart, categories)
-
   const dispatch = useDispatch()
-
   const message = useMessage()
 
   function inputChangeHandler(value, id) {
@@ -48,9 +34,7 @@ function CartPage() {
       }
     })
 
-    if (goodIndex === -1) {
-      return
-    } else if (value < 0) {
+    if (goodIndex === -1 || value < 0) {
       return
     }
 
@@ -59,20 +43,13 @@ function CartPage() {
       count: value
     }
 
-    // dispatch(cartAddNewCount({goodIndex, goodWithNewCount}))
     cartAddNewCount(goodIndex, goodWithNewCount)
-
-    // dispatch(addMessage("Количество товаров изменено."))
     message("Количество товаров изменено.")
   }
 
   function deleteButtonClickHandler(id) {
-    // dispatch(cartDeleteGood({goodIndex}))
-
     const goodIndex = cart.findIndex((item) => item.id === id)
     cartDeleteGood(goodIndex)
-
-    // dispatch(addMessage("Товар удалён из корзины."))
     message("Товар удалён из корзины.")
   }
 

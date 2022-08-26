@@ -1,7 +1,5 @@
-import React from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {Outlet, Navigate} from "react-router-dom";
-
-import mainStore from "../../redux/mainStore";
 
 import Bg from "../../components/Bg/Bg";
 import Navbar from "../../components/Navbar/Navbar";
@@ -13,113 +11,126 @@ import SidebarLink from "../../components/Sidebar/SidebarLink/SidebarLink";
 import Footer from "../../components/Footer/Footer";
 import Message from "../../components/Message/Message";
 import Loader from "../../components/Loader/Loader";
+import {AuthContext} from "../../context/auth.context";
+import {CartContext} from "../../context/cart.context";
+import {useHttp} from "../../hooks/http.hook";
+import {useSelector} from "react-redux";
+import {useMessage} from "../../hooks/message.hook";
 
-class MainLayout extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isSidebarActive: (window.innerWidth > 767),
-      searchValue: '',
-      searchActive: false,
-      categories: mainStore.getState().categories.categories,
-      loading: false
-    }
-    this.burgerClickHandler = this.burgerClickHandler.bind(this)
-    this.searchClickHandler = this.searchClickHandler.bind(this)
-    this.searchChangeHandler = this.searchChangeHandler.bind(this)
-    this.searchOnKeyDownHandler = this.searchOnKeyDownHandler.bind(this)
+function MainLayout() {
+  const [isSidebarActive, setIsSidebarActive] = useState(window.innerWidth > 767);
+  const [searchValue, setSearchValue] = useState('');
+  const [searchActive, setSearchActive] = useState(false);
+  const categories = useSelector(state => state.categories.categories)
+  // const [loading, setLoading] = useState(false);
+  const loading = false
+
+  const burgerClickHandler = () => {
+    setIsSidebarActive(!isSidebarActive)
   }
 
-  async burgerClickHandler() {
-    await this.setState(prevState => ({
-      ...prevState,
-      isSidebarActive: !prevState.isSidebarActive
-    }))
+  const searchChangeHandler = value => {
+    setSearchValue(value)
   }
 
-  async searchChangeHandler(value) {
-    await this.setState(prevState => ({
-      ...prevState,
-      searchValue: value
-    }))
-  }
-
-  async searchClickHandler() {
-    const value = this.state.searchValue
-
-    if (!value) {
+  const searchClickHandler = () => {
+    if (!searchValue) {
       return
     }
 
-    await this.setState(prevState => ({
-      ...prevState,
-      searchActive: true,
-    }))
-    await this.setState(prevState => ({
-      ...prevState,
-      searchValue: '',
-      searchActive: false
-    }))
+    setSearchActive(true)
   }
 
-  async searchOnKeyDownHandler(key) {
+  useEffect(() => {
+    setSearchValue('')
+    setSearchActive(false)
+  }, [searchActive]);
+
+  const searchOnKeyDownHandler = key => {
     if (key === 'Enter') {
-      await this.searchClickHandler()
+      searchClickHandler()
     }
   }
 
-  render() {
-    const searchValue = this.state.searchValue
-    const searchActive = this.state.searchActive
+  const auth = useContext(AuthContext);
+  const isAuth = !!auth.token
+  const isAdmin = auth.isAdmin
+  const logout = auth.logout
+  const userId = auth.userId
 
-    return (
-      <div>
-        <Bg />
-        <Navbar
-          className={this.state.isSidebarActive ? 'active' : ''}
-          onClick={this.burgerClickHandler}
-        />
-        <Search
-          value={searchValue}
-          onChange={(event) => this.searchChangeHandler(event.target.value)}
-          onClick={() => this.searchClickHandler()}
-          onKeyDown={(event) => this.searchOnKeyDownHandler(event.key)}
-        />
-        <Container>
-          <Sidebar
-            className={this.state.isSidebarActive ? 'active' : ''}
-          >
-            {this.state.categories.map(item => {
-              return (
-                <SidebarItem
-                  key={item.id}
-                >
-                  <SidebarLink
-                    link={"/catalog/" + item.title}
-                    linkText={item.name}
-                  />
-                </SidebarItem>
-              )
-            })}
-          </Sidebar>
+  const message = useMessage()
 
-          {
-            this.state.loading
-              ? <Loader />
-              : searchActive
-                ? <Navigate
-                  to={"catalog/search?value=" + searchValue}
-                  replace={true}
-                />
-                : <Outlet/>
-          }
+  const {request, error, clearError} = useHttp()
 
-        </Container>
-        <Footer />
-        <Message />
-      </div>
-    )
+  useEffect(() => {
+    message(error)
+    clearError()
+  }, [error, message, clearError]);
+
+  const { cart, cartClear } = useContext(CartContext)
+  const count = cart.reduce((sum, item) => sum + item.count, 0)
+
+  const logoutClickHandler = async () => {
+    try {
+      const data = await request('/api/auth/logout', 'POST', {userId, cart})
+
+      cartClear()
+      logout()
+      message(data.message)
+    } catch (e) {}
   }
+
+  return (
+    <div>
+      <Bg />
+      <Navbar
+        className={isSidebarActive ? 'active' : ''}
+        isAdmin={isAdmin}
+        isAuth={isAuth}
+        count={count}
+        onBurgerClick={burgerClickHandler}
+        onLogoutClick={logoutClickHandler}
+      />
+      <Search
+        value={searchValue}
+        onChange={event => searchChangeHandler(event.target.value)}
+        onClick={() => searchClickHandler()}
+        onKeyDown={event => searchOnKeyDownHandler(event.key)}
+      />
+      <Container>
+        <Sidebar
+          className={isSidebarActive ? 'active' : ''}
+        >
+          {categories.map(item => {
+            return (
+              <SidebarItem
+                key={item.id}
+              >
+                <SidebarLink
+                  link={"/catalog/" + item.title}
+                  linkText={item.name}
+                />
+              </SidebarItem>
+            )
+          })}
+        </Sidebar>
+
+        {
+          loading
+            ? <Loader />
+            : searchActive
+              ? <Navigate
+                to={"catalog/search?value=" + searchValue}
+                replace={true}
+              />
+              : <Outlet/>
+        }
+
+      </Container>
+      <Footer />
+      <Message />
+    </div>
+  )
 }
 
 export default MainLayout

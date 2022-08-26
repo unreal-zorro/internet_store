@@ -1,66 +1,6 @@
 import './Description.scss'
 
-import {useContext} from "react";
-// import {useDispatch, useSelector} from "react-redux";
-
-// import {addMessage, cartAddNewCount, cartAddNewGood} from "../../redux/mainSlice";
-import {CartContext} from "../../context/cart.context";
-import {useMessage} from "../../hooks/message.hook";
-
 function Description(props) {
-  // const cart = useSelector(state => state.main.cart)
-
-  const { cart, cartAddNewCount, cartAddNewGood } = useContext(CartContext);
-
-  const message = useMessage()
-
-  // const dispatch = useDispatch()
-
-  let count = 1
-
-  function inputChangeHandler(value) {
-    count = +value.target.value
-  }
-
-  function clickHandler() {
-    if (count < 1) {
-      return
-    }
-
-    let goodIndex = 0
-
-    const good = cart.find((item, index) => {
-      if (item.id === props.id) {
-        goodIndex = index
-        return item
-      } else {
-        return undefined
-      }
-    })
-
-    if (good) {
-      const newCount = good.count + count
-      const goodWithNewCount = {
-        ...good,
-        count: newCount
-      }
-      // dispatch(cartAddNewCount({goodIndex, goodWithNewCount}))
-      // dispatch(addMessage("Товар добавлен в корзину."))
-      cartAddNewCount(goodIndex, goodWithNewCount)
-      message("Количество товаров в корзине изменено.")
-    } else {
-      const newGood = {
-        categoryId: props.categoryId,
-        id: props.id,
-        count: count
-      }
-      // dispatch(cartAddNewGood({newGood}))
-      // dispatch(addMessage("Товар добавлен в корзину."))
-      cartAddNewGood(newGood)
-      message("Товар добавлен в корзину.")
-    }
-  }
-
   return (
     <div className="description">
       <div className="description__img"><img src={props.url} alt="img" /></div>
@@ -78,15 +18,15 @@ function Description(props) {
           id="count"
           type="number"
           min="1"
-          defaultValue={count}
-          onChange={inputChangeHandler}
+          defaultValue={props.count}
+          onChange={props.inputCountChangeHandler}
         />
         <div className="description__text">
           шт.
         </div>
         <button
           className="btn description__btn"
-          onClick={clickHandler}
+          onClick={props.addToCartClickHandler}
         >В корзину</button>
       </div>
     </div>

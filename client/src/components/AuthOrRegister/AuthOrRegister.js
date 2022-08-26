@@ -1,93 +1,13 @@
 import './AuthOrRegister.scss'
 
-import {useContext, useEffect, useState} from "react";
-import {Link, useNavigate} from "react-router-dom";
-
-import {useHttp} from "../../hooks/http.hook";
-import declensionSymbols from "../../utils/declensionSymbols";
-import {useMessage} from "../../hooks/message.hook";
-import {AuthContext} from "../../context/auth.context";
-import {CartContext} from "../../context/cart.context";
+import {Link} from "react-router-dom";
 
 export const AuthOrRegister = (props) => {
-  const type = props.type
-  const auth = useContext(AuthContext);
-  const { cart, cartInit } = useContext(CartContext)
-  const message = useMessage()
-  const navigate = useNavigate()
-
-  const {loading, request, error, clearError} = useHttp()
-  const [form, setForm] = useState({
-    name: '', password: ''
-  });
-  const [nameError, setNameError] = useState('')
-  const [passwordError, setPasswordError] = useState('')
-  const passwordMinLength = 6
-
-  useEffect(() => {
-    message(error)
-    clearError()
-  }, [error, message, clearError]);
-
-  const inputNameChangeHandler = event => {
-    const name = event.target.value
-
-    if (name === '') {
-      setNameError('Логин не может быть пустым.')
-    } else {
-      setNameError('')
-      setForm({ ...form, [event.target.name]: [event.target.value] })
-    }
-  }
-
-  const inputPasswordChangeHandler = (event) => {
-    const password = event.target.value
-
-    if (password === '') {
-      setPasswordError('Пароль не может быть пустым.')
-    } else if (
-      password.length > 0 &&
-      password.length < passwordMinLength
-    ) {
-      let passwordError = "Длина пароля должна быть не менее " +
-        passwordMinLength +
-        declensionSymbols(passwordMinLength, 'ов') +
-        " Сейчас она равна " + password.length +
-        declensionSymbols(password.length, 'ам')
-
-      setPasswordError(passwordError)
-    } else {
-      setPasswordError('')
-      setForm({ ...form, [event.target.name]: [event.target.value] })
-    }
-  }
-
-  const registerOrLoginHandler = async event => {
-    event.preventDefault()
-
-    if (nameError || passwordError) {
-      return undefined
-    }
-
-    try {
-      if (type === 'register') {
-        const data = await request('/api/auth/register', 'POST', {...form})
-        message(data.message)
-      }
-
-      const data = await request('/api/auth/login', 'POST', {...form, cart})
-      auth.login(data.token, data.userId, data.isAdmin)
-      cartInit(data.cart)
-      message(data.message)
-      navigate('/')
-    } catch (e) {}
-  }
-
   return (
     <div className="auth">
       <form
         className="auth-form"
-        onSubmit={registerOrLoginHandler}
+        onSubmit={props.registerOrLoginHandler}
       >
 
         <div className="auth-form__row">
@@ -101,13 +21,13 @@ export const AuthOrRegister = (props) => {
             className="auth-form__input"
             placeholder="Введите логин"
             name="name"
-            onChange={inputNameChangeHandler}
+            onChange={props.inputNameChangeHandler}
           />
         </div>
 
         <div
           className="auth-form__row auth-form__error"
-        > { nameError } </div>
+        > { props.nameError } </div>
 
         <div className="auth-form__row">
           <label
@@ -120,21 +40,21 @@ export const AuthOrRegister = (props) => {
             className="auth-form__input"
             placeholder="Введите пароль"
             name="password"
-            onChange={inputPasswordChangeHandler}
+            onChange={props.inputPasswordChangeHandler}
           />
         </div>
 
         <div
           className="auth-form__row auth-form__error"
-        > { passwordError } </div>
+        > { props.passwordError } </div>
 
         <button
           className="btn auth-form__btn"
-          disabled={loading}
+          disabled={props.loading}
         >
-          {type === 'auth'
+          {props.type === 'auth'
             ? 'Войти'
-            : type === 'register'
+            : props.type === 'register'
               ? 'Зарегистрироваться'
               : ''}
         </button>
@@ -142,15 +62,15 @@ export const AuthOrRegister = (props) => {
         <div className="auth-form__link">
           или&nbsp;
           <Link
-            to={type === 'auth'
+            to={props.type === 'auth'
               ? "/register"
-              : type === 'register'
+              : props.type === 'register'
                 ? "/auth"
                 : "/"}
           >
-            {type === 'auth'
+            {props.type === 'auth'
               ? 'зарегистрироваться'
-              : type === 'register'
+              : props.type === 'register'
                 ? 'войти'
                 : ''}
           </Link>

@@ -1,6 +1,6 @@
 import {useSelector} from "react-redux";
 import {useLocation} from "react-router-dom";
-import React from "react";
+import React, {useContext} from "react";
 
 import Navigation from "../../../components/Navigation/Navigation";
 import NavigationTitle from "../../../components/Navigation/NavigationTitle/NavigationTitle";
@@ -9,6 +9,8 @@ import NavigationDivider from "../../../components/Navigation/NavigationDiveder/
 import Description from "../../../components/Description/Description";
 import Promo from "../../../components/Promo/Promo";
 import Text from "../../../components/Text/Text";
+import {CartContext} from "../../../context/cart.context";
+import {useMessage} from "../../../hooks/message.hook";
 
 function CardPage() {
   const categories = useSelector(state => state.categories.categories)
@@ -31,6 +33,49 @@ function CardPage() {
     category.goods.find(item => item.id === +goodId)
       ? category.goods.find(item => item.id === +goodId)
       : {url: "", name: "", descr: "", id: 0, rating: "", price: ""}
+
+  const { cart, cartAddNewCount, cartAddNewGood } = useContext(CartContext);
+  const message = useMessage()
+  let count = 1
+
+  function inputCountChangeHandler(value) {
+    count = +value.target.value
+  }
+
+  function addToCartClickHandler() {
+    if (count < 1) {
+      return
+    }
+
+    let goodIndex = 0
+
+    const goodToCart = cart.find((item, index) => {
+      if (item.id === good.id) {
+        goodIndex = index
+        return item
+      } else {
+        return undefined
+      }
+    })
+
+    if (goodToCart) {
+      const newCount = goodToCart.count + count
+      const goodWithNewCount = {
+        ...goodToCart,
+        count: newCount
+      }
+      cartAddNewCount(goodIndex, goodWithNewCount)
+      message("Количество товаров в корзине изменено.")
+    } else {
+      const newGood = {
+        categoryId: category.id,
+        id: good.id,
+        count
+      }
+      cartAddNewGood(newGood)
+      message("Товар добавлен в корзину.")
+    }
+  }
 
   return (
     <Promo>
@@ -69,6 +114,9 @@ function CardPage() {
                 categoryId={category.id}
                 rating={good.rating}
                 price={good.price}
+                count={count}
+                inputCountChangeHandler={inputCountChangeHandler}
+                addToCartClickHandler={addToCartClickHandler}
               />
             </React.Fragment>
             : <Text text="Нет такого товара."/>

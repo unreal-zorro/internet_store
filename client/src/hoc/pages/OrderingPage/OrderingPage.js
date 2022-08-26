@@ -1,10 +1,7 @@
-import React, {
-  // Component,
-  useContext, useState} from "react";
+import React, {useContext, useState} from "react";
 
 import {
   addOrder,
-  // cartClear,
   currentOrderNumberChange,
   currentOrderPhoneChange,
   isOrderingChange
@@ -17,7 +14,7 @@ import Modal from "../../../components/Modal/Modal";
 import ModalOrdering from "../../../components/Modal/ModalOrdering/ModalOrdering";
 import {CartContext} from "../../../context/cart.context";
 
-function OrderingPage(props) {
+function OrderingPage() {
   const [delivery, setDelivery] = useState("removal");
   const [payment, setPayment] = useState("cash");
   const [phone, setPhone] = useState("");
@@ -71,18 +68,9 @@ function OrderingPage(props) {
 
   function submitOrderingHandler(event) {
     event.preventDefault()
-    // const cart = mainStore.getState().main.cart
+
     if (cart.length === 0) {
       mainStore.dispatch(isOrderingChange(false))
-      // await this.setState(prevState => ({
-      //   ...prevState,
-      //   delivery: "removal",
-      //   payment: "cash",
-      //   phone: "",
-      //   comment: "",
-      //   isOrdering: false,
-      //   currentOrder: {}
-      // }))
 
       setDelivery("removal")
       setPayment("cash")
@@ -104,10 +92,6 @@ function OrderingPage(props) {
         comment
       }
     }
-    // await this.setState(prevState => ({
-    //   ...prevState,
-    //   currentOrder
-    // }))
 
     setCurrentOrder(newCurrentOrder)
 
@@ -115,40 +99,18 @@ function OrderingPage(props) {
     mainStore.dispatch(currentOrderNumberChange(currentOrder.number))
     mainStore.dispatch(currentOrderPhoneChange(currentOrder.orderingInfo.phone))
 
-    // mainStore.dispatch(cartClear())
     cartClear()
-
-    // await this.setState(prevState => ({
-    //   ...prevState,
-    //   delivery: "removal",
-    //   payment: "cash",
-    //   phone: "",
-    //   comment: "",
-    //   currentOrder: {}
-    // }))
 
     setDelivery("removal")
     setPayment("cash")
     setPhone("")
     setComment("")
     setCurrentOrder(null)
-
-    // await this.setState(prevState => ({
-    //   ...prevState,
-    //   isOrdering: true
-    // }))
-
     setIsOrdering(true)
   }
 
   function modalClickHandler() {
-    // await this.setState(prevState => ({
-    //   ...prevState,
-    //   isOrdering: false,
-    // }))
-
     setIsOrdering(false)
-
     mainStore.dispatch(isOrderingChange(false))
     mainStore.dispatch(currentOrderNumberChange(0))
     mainStore.dispatch(currentOrderPhoneChange(''))
