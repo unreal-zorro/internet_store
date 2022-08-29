@@ -66,7 +66,7 @@ router.post(
       }
 
       const {name, password, cart} = req.body
-      const user = await User.findOne({name})
+      const user = await User.findOne({ name })
 
       if (!user) {
         return res.status(400).json({message: 'Пользователь не найден.'})
@@ -138,19 +138,84 @@ router.post(
   '/logout',
   async (req, res) => {
     try {
-
       const {userId, cart: newCart} = req.body
       const id = new Types.ObjectId(userId)
       const length = newCart.length
 
-      await User.updateOne({_id: id}, { $push: { cart: { $each: newCart, $position: 0, $slice: length } } })
+      await User.updateOne({_id: id}, {
+        $push: { cart: { $each: newCart, $position: 0, $slice: length } }
+      })
 
-      const user = User.findById(userId)
-      const name = user.name
+      const user = await User.findById(userId)
+      // (err, user) => {
+        // if (err) {
+        //   return
+        // }
+        // let message = "Вы вышли из системы."
+        //
+        // if (user.name === 'admin') {
+        //   message = "Вы вышли из системы, администратор."
+        // }
+        //
+        // res.json({ message })
+      // })
 
       let message = "Вы вышли из системы."
-      if (name === 'admin') {
+
+      if (user.name === 'admin') {
         message = "Вы вышли из системы, администратор."
+      }
+
+      res.json({ message })
+
+    } catch (e) {
+      res.status(500).json({
+        message: 'Что-то пошло не так, попробуйте снова.'
+      })
+    }
+  })
+
+// /api/auth/order
+router.post(
+  '/order',
+  async (req, res) => {
+    try {
+      const {userId, cart: newCart, order} = req.body
+      const id = new Types.ObjectId(userId)
+
+      const length = newCart.length
+
+      await User.updateOne({_id: id}, {
+        $push: {
+          cart: { $each: newCart, $position: 0, $slice: length },
+          orders: { ...order }
+        }
+      })
+
+      const user = await User.findById(userId)
+      // (err, user) => {
+      //   if (err) {
+      //     return
+      //   }
+      //   const ordersLength = user.orders.length
+      //   const number = user.orders[ordersLength - 1].number
+      //
+      //   let message = `Ваш заказ № ${number} оформлен!`
+      //
+      //   if (user.name === 'admin') {
+      //     message = `Ваш заказ № ${number} оформлен, администратор!`
+      //   }
+      //
+      //   res.json({ message })
+      // })
+
+      const ordersLength = user.orders.length
+      const number = user.orders[ordersLength - 1].number
+
+      let message = `Ваш заказ № ${number} оформлен!`
+
+      if (user.name === 'admin') {
+        message = `Ваш заказ № ${number} оформлен, администратор!`
       }
 
       res.json({ message })
