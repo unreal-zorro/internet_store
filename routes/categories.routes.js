@@ -3,12 +3,11 @@ const router = Router()
 const {body, validationResult} = require('express-validator')
 const Category = require('../models/Category')
 
-// /api/categories/categories
-router.post('/categories',
+// /api/categories/create
+router.post('/create',
   body('id', 'Некорректный идентификатор.').not().isEmpty().trim(),
   body('title', 'Некорректный заголовок.').exists().trim(),
   body('name', 'Некорректное имя.').exists().trim(),
-  body('goods', 'Товары не существуют.').exists(),
   async (req, res) => {
     try {
       const errors = validationResult(req)
@@ -20,7 +19,7 @@ router.post('/categories',
         })
       }
 
-      const { id, title, name, goods } = req.body
+      const { id, title, name } = req.body
       const candidate = await Category.findOne({ id })
 
       if (candidate) {
@@ -29,8 +28,7 @@ router.post('/categories',
         })
       }
 
-      const newGoods = goods.length === 0 ? [] : goods
-      const category = new Category({ id, title, name, goods: newGoods })
+      const category = new Category({ id, title, name })
 
       await category.save()
 
@@ -42,15 +40,15 @@ router.post('/categories',
     }
 })
 
-// /api/categories/categories
-router.get('/categories',
-  body('id', 'Некорректный идентификатор.').not().isEmpty().trim(),
+// /api/categories/all
+router.get('/all',
   async (req, res) => {
     try {
       const categories = await Category.find()
 
       if (categories.length === 0) {
         return res.status(400).json({
+          categories: [],
           message: 'Категорий пока нет.'
         })
       }
@@ -63,8 +61,9 @@ router.get('/categories',
     }
 })
 
-// /api/categories/categories/:id
-router.delete('/categories/:id',
+// /api/categories/remove
+router.delete('/remove',
+  body('id', 'Некорректный идентификатор.').not().isEmpty().trim(),
   async (req, res) => {
     try {
       const errors = validationResult(req)
@@ -96,8 +95,8 @@ router.delete('/categories/:id',
     }
 })
 
-// /api/categories/categories/:id
-router.put('/categories/:id',
+// /api/categories/update
+router.put('/update',
   body('id', 'Некорректный идентификатор.').not().isEmpty().trim(),
   body('title', 'Некорректный заголовок.').exists().trim(),
   body('name', 'Некорректное имя.').exists().trim(),

@@ -35,6 +35,7 @@ import EditCatalogItem from "../../../components/Catalog/EditCatalogItem/EditCat
 import Promo from "../../../components/Promo/Promo";
 import EditNavigationLink from "../../../components/Navigation/EditNavigationLink/EditNavigationLink";
 import Text from "../../../components/Text/Text";
+import {addMessage} from "../../../redux/mainSlice";
 
 class EditPage extends React.Component {
   constructor(props) {
@@ -73,7 +74,15 @@ class EditPage extends React.Component {
       errorEditedGoodName: '',
       editedGoodDescr: '',
       editedGoodAmount: '',
-      editedGoodPrice: ''
+      editedGoodPrice: '',
+      loading: false,
+      error: null,
+      isAdmin: props.authContext.isAdmin,
+      isAuth: !!props.authContext.token,
+      userId: props.authContext.userId,
+      logout: props.authContext.logout,
+      cart: props.cartContext.cart,
+      cartClear: props.cartContext.cartClear
     }
     this.burgerClickHandler = this.burgerClickHandler.bind(this)
     this.catalogClickHandler = this.catalogClickHandler.bind(this)
@@ -107,6 +116,8 @@ class EditPage extends React.Component {
     this.goodPriceChangeHandler = this.goodPriceChangeHandler.bind(this)
     this.okGoodClickHandler = this.okGoodClickHandler.bind(this)
     this.cancelGoodClickHandler = this.cancelGoodClickHandler.bind(this)
+    this.request = this.request.bind(this)
+    this.logoutClickHandler = this.logoutClickHandler.bind(this)
   }
 
   async burgerClickHandler() {
@@ -221,71 +232,71 @@ class EditPage extends React.Component {
     const categoryId = this.state.editedCategoryId
     const categories = mainStore.getState().categories.categories
 
-    let errorName = ''
-    let errorTitle = ''
-    let errorId = ''
+    // let errorName = ''
+    // let errorTitle = ''
+    // let errorId = ''
+    //
+    // if (categoryName === '') {
+    //   errorName = 'Имя категории не должно быть пустым.'
+    // }
+    //
+    // if (categoryTitle === '') {
+    //   errorTitle = 'Заголовок категории не должен быть пустым.'
+    // }
+    //
+    // if (categoryId === '') {
+    //   errorId = 'Идентификатор категории не должен быть пустым.'
+    // }
 
-    if (categoryName === '') {
-      errorName = 'Имя категории не должно быть пустым.'
-    }
+    // if (action === 'add') {
+    //   if (categories.find(item => item.name === categoryName)) {
+    //     errorName = 'Категория с таким именем уже существует.'
+    //   }
+    //
+    //   if (categories.find(item => item.title === categoryTitle)) {
+    //     errorTitle = 'Категория с таким заголовком уже существует.'
+    //   }
+    //
+    //   if (categories.find(item => item.id === +categoryId)) {
+    //     errorId = 'Категория с таким идентификатором уже существует.'
+    //   }
+    // } else if (action === 'edit') {
+    //   const currentCategory = categories.find(item => item.id === currentCategoryId)
+    //
+    //   if (categories.find(item =>
+    //     currentCategory.name !== categoryName
+    //       ? item.name === categoryName
+    //       : undefined
+    //   )) {
+    //     errorName = 'Категория с таким именем уже существует.'
+    //   }
+    //
+    //   if (categories.find(item =>
+    //     currentCategory.title !== categoryTitle
+    //       ? item.title === categoryTitle
+    //       : undefined
+    //   )) {
+    //     errorTitle = 'Категория с таким заголовком уже существует.'
+    //   }
+    //
+    //   if (categories.find(item =>
+    //     currentCategory.id !== +categoryId
+    //       ? item.id === +categoryId
+    //       : undefined
+    //   )) {
+    //     errorId = 'Категория с таким идентификатором уже существует.'
+    //   }
+    // }
 
-    if (categoryTitle === '') {
-      errorTitle = 'Заголовок категории не должен быть пустым.'
-    }
-
-    if (categoryId === '') {
-      errorId = 'Идентификатор категории не должен быть пустым.'
-    }
-
-    if (action === 'add') {
-      if (categories.find(item => item.name === categoryName)) {
-        errorName = 'Категория с таким именем уже существует.'
-      }
-
-      if (categories.find(item => item.title === categoryTitle)) {
-        errorTitle = 'Категория с таким заголовком уже существует.'
-      }
-
-      if (categories.find(item => item.id === +categoryId)) {
-        errorId = 'Категория с таким идентификатором уже существует.'
-      }
-    } else if (action === 'edit') {
-      const currentCategory = categories.find(item => item.id === currentCategoryId)
-
-      if (categories.find(item =>
-        currentCategory.name !== categoryName
-          ? item.name === categoryName
-          : undefined
-      )) {
-        errorName = 'Категория с таким именем уже существует.'
-      }
-
-      if (categories.find(item =>
-        currentCategory.title !== categoryTitle
-          ? item.title === categoryTitle
-          : undefined
-      )) {
-        errorTitle = 'Категория с таким заголовком уже существует.'
-      }
-
-      if (categories.find(item =>
-        currentCategory.id !== +categoryId
-          ? item.id === +categoryId
-          : undefined
-      )) {
-        errorId = 'Категория с таким идентификатором уже существует.'
-      }
-    }
-
-    if (errorName || errorTitle || errorId) {
-      await this.setState(prevState => ({
-        ...prevState,
-        errorEditedCategoryName: errorName,
-        errorEditedCategoryTitle: errorTitle,
-        errorEditedCategoryId: errorId
-      }))
-      return undefined
-    } else {
+    // if (errorName || errorTitle || errorId) {
+    //   await this.setState(prevState => ({
+    //     ...prevState,
+    //     errorEditedCategoryName: errorName,
+    //     errorEditedCategoryTitle: errorTitle,
+    //     errorEditedCategoryId: errorId
+    //   }))
+    //   return undefined
+    // } else {
       const completeCategory = {
         categoryId,
         categoryTitle,
@@ -293,6 +304,11 @@ class EditPage extends React.Component {
       }
 
       if (action === 'add') {
+        // await mainStore.dispatch(addCategory(completeCategory))
+
+        const data = await this.request('/api/categories/create', 'POST',
+          {id: categoryId, title: categoryTitle, name: categoryName})
+        mainStore.dispatch(addMessage(data.message))
         await mainStore.dispatch(addCategory(completeCategory))
       } else if (action === 'edit') {
         const index = categories.findIndex(item => item.id === currentCategoryId)
@@ -311,7 +327,7 @@ class EditPage extends React.Component {
         editedCategoryId: '',
         errorEditedCategoryId: ''
       }))
-    }
+    // }
   }
 
   async cancelClickEditCategoryHandler(event) {
@@ -754,11 +770,13 @@ class EditPage extends React.Component {
           searchActive: false
         }))
       } else {
-        goods = category.length
-          ? [].concat(...this.state.categories.map(item => item.goods))
-          : category.goods.length === 0
-            ? []
-            : [].concat(category.goods)
+        goods = category.length === 0
+          ? []
+          : category.length === 1
+            ? category.goods.length === 0
+              ? []
+              : [].concat(category.goods)
+            : [].concat(...this.state.categories.map(item => item.goods))
       }
 
       goods.sort(sortMap[this.state.sortValue])
@@ -836,15 +854,76 @@ class EditPage extends React.Component {
         goods
       }))
     }
+    mainStore.dispatch(addMessage(this.state.error))
+    this.setState(prevState => ({
+      ...prevState,
+      error: null
+    }))
+  }
+
+  async request(url, method = 'GET', body = null, headers = {}) {
+    this.setState(prevState => ({
+      ...prevState,
+      loading: true
+    }))
+    try {
+      if(body) {
+        body = JSON.stringify(body)
+        headers['Content-Type'] = 'application/json'
+      }
+
+      const response = await fetch(url, {method, body, headers})
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Что-то пошло не так.')
+      }
+
+      this.setState(prevState => ({
+        ...prevState,
+        loading: false
+      }))
+
+      return data
+    } catch (e) {
+      this.setState(prevState => ({
+        ...prevState,
+        loading: false
+      }))
+      this.setState(prevState => ({
+        ...prevState,
+        error: e.message
+      }))
+      throw e
+    }
+  }
+
+  async logoutClickHandler() {
+    try {
+      const userId = this.state.userId
+      const cart = this.state.cart
+
+      const data = await this.request('/api/auth/logout', 'POST', {userId, cart})
+
+      this.state.cartClear()
+      this.state.logout()
+      mainStore.dispatch(addMessage(data.message))
+    } catch (e) {}
   }
 
   render() {
+    const count = this.state.cart.reduce((sum, item) => sum + item.count, 0)
+
     return (
       <div>
         <Bg />
         <Navbar
           className={this.state.isSidebarActive ? 'active' : ''}
-          onClick={this.burgerClickHandler}
+          isAdmin={this.state.isAdmin}
+          isAuth={this.state.isAuth}
+          count={count}
+          onBurgerClick={this.burgerClickHandler}
+          onLogoutClick={this.logoutClickHandler}
         />
         <Search
           value={this.state.searchValue}

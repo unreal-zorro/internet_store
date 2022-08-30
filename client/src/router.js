@@ -14,6 +14,8 @@ import NotFoundPage from "./hoc/pages/NotFoundPage/NotFoundPage";
 import AuthPage from "./hoc/pages/AuthPage/AuthPage";
 import RegisterPage from "./hoc/pages/RegisterPage/RegisterPage";
 import EditPage from "./hoc/pages/EditPage/EditPage";
+import {AuthContext} from "./context/auth.context";
+import {CartContext} from "./context/cart.context";
 
 export const useRoutes = (isOrdering, isAuth, isAdmin) => {
   return (
@@ -52,7 +54,20 @@ export const useRoutes = (isOrdering, isAuth, isAdmin) => {
 
       {
         isAdmin
-          ? <Route path="/edit" element={<EditPage />} />
+          ? <Route path="/edit" element={
+            <AuthContext.Consumer>
+              {authContext => (
+                <CartContext.Consumer>
+                  {cartContext => (
+                    <EditPage
+                      authContext={authContext}
+                      cartContext={cartContext}
+                    />
+                  )}
+                </CartContext.Consumer>
+              )}
+            </AuthContext.Consumer>
+          } />
           : undefined
       }
     </>

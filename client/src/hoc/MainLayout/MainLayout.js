@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from "react";
-import {Outlet, Navigate} from "react-router-dom";
+import {Navigate, Outlet} from "react-router-dom";
 
 import Bg from "../../components/Bg/Bg";
 import Navbar from "../../components/Navbar/Navbar";
@@ -14,19 +14,36 @@ import Loader from "../../components/Loader/Loader";
 import {AuthContext} from "../../context/auth.context";
 import {CartContext} from "../../context/cart.context";
 import {useHttp} from "../../hooks/http.hook";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {useMessage} from "../../hooks/message.hook";
+import {addCategory} from "../../redux/categoriesSlice";
+import {addMessage} from "../../redux/mainSlice";
 
 function MainLayout() {
-  const [isSidebarActive, setIsSidebarActive] = useState(window.innerWidth > 767);
   const [searchValue, setSearchValue] = useState('');
   const [searchActive, setSearchActive] = useState(false);
   const categories = useSelector(state => state.categories.categories)
+  const [isSidebarActive, setIsSidebarActive] = useState(
+    categories.length === 0
+      ? false
+      : window.innerWidth > 767
+  );
+
+  useEffect(() => {
+    if (window.innerWidth > 767 && categories.length !== 0) {
+      setIsSidebarActive(true)
+    }
+  }, [categories.length]);
+
   // const [loading, setLoading] = useState(false);
   const loading = false
 
+  const dispatch = useDispatch()
+
   const burgerClickHandler = () => {
-    setIsSidebarActive(!isSidebarActive)
+    categories.length === 0
+      ? setIsSidebarActive(false)
+      : setIsSidebarActive(!isSidebarActive)
   }
 
   const searchChangeHandler = value => {
@@ -61,6 +78,29 @@ function MainLayout() {
   const message = useMessage()
 
   const {request, error, clearError} = useHttp()
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await request('/api/categories/all')
+
+        for (let category of data.categories) {
+          if (!categories.find(item => item.id === category.id)) {
+            await dispatch(addCategory({
+              categoryId: category.id,
+              categoryTitle: category.title,
+              categoryName: category.name
+            }))
+          }
+        }
+        await dispatch(addMessage(data.message))
+      } catch (e) {}
+    }
+
+    if (categories.length === 0) {
+      fetchData().then()
+    }
+  }, [])
 
   useEffect(() => {
     message(error)
@@ -102,16 +142,16 @@ function MainLayout() {
           className={isSidebarActive ? 'active' : ''}
         >
           {categories.map(item => {
-            return (
-              <SidebarItem
-                key={item.id}
-              >
-                <SidebarLink
-                  link={"/catalog/" + item.title}
-                  linkText={item.name}
-                />
-              </SidebarItem>
-            )
+              return (
+                <SidebarItem
+                  key={item.id}
+                >
+                  <SidebarLink
+                    link={"/catalog/" + item.title}
+                    linkText={item.name}
+                  />
+                </SidebarItem>
+              )
           })}
         </Sidebar>
 
@@ -123,7 +163,7 @@ function MainLayout() {
                 to={"catalog/search?value=" + searchValue}
                 replace={true}
               />
-              : <Outlet/>
+              : <Outlet />
         }
 
       </Container>

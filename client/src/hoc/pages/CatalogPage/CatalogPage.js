@@ -7,6 +7,7 @@ import NavigationLink from "../../../components/Navigation/NavigationLink/Naviga
 import NavigationDivider from "../../../components/Navigation/NavigationDiveder/NavigationDivider";
 import Catalog from "../../../components/Catalog/Catalog";
 import CatalogItem from "../../../components/Catalog/CatalogItem/CatalogItem";
+import Text from "../../../components/Text/Text";
 
 function CatalogPage() {
   const categories = useSelector(state => state.categories.categories)
@@ -23,17 +24,22 @@ function CatalogPage() {
         <NavigationDivider />
       </Navigation>
 
-      <Catalog>
-        {categories.map(item => {
-          return (
-            <CatalogItem
-              key={item.id}
-              link={"/catalog/" + item.title}
-              linkText={item.name}
-            />
-          )
-        })}
-      </Catalog>
+      {categories.length === 0
+        ? <Text
+            text="Категорий пока нет."
+          />
+        : <Catalog>
+          {categories.map(item => {
+            return (
+              <CatalogItem
+                key={item.id}
+                link={"/catalog/" + item.title}
+                linkText={item.name}
+              />
+            )
+          })}
+        </Catalog>
+      }
     </Promo>
   )
 }
