@@ -4,6 +4,7 @@ import React, {useEffect} from "react";
 
 import {sortMap} from "../../../utils/sortMap";
 import {
+  addMessage,
   currentCategoryTitleChange,
   currentPageChange,
   pagesChange,
@@ -23,6 +24,9 @@ import Cards from "../../../components/Cards/Cards";
 import Card from "../../../components/Card/Card";
 import Pagination from "../../../components/Pagination/Pagination";
 import Text from "../../../components/Text/Text";
+import {useHttp} from "../../../hooks/http.hook";
+import {addGood} from "../../../redux/categoriesSlice";
+import {useMessage} from "../../../hooks/message.hook";
 
 function CategoryPage() {
   const categories = useSelector(state => state.categories.categories)
@@ -31,8 +35,7 @@ function CategoryPage() {
   const visibleValue = useSelector(state => state.main.visibleValue)
   const dispatch = useDispatch()
   const categoryTitle = location.pathname.slice(location.pathname.lastIndexOf('/') + 1)
-  const category =
-    categories.find((item) => item.title === categoryTitle)
+  const category = categories.find((item) => item.title === categoryTitle)
       ? categories.find((item) => item.title === categoryTitle)
       : {id: 0, title: '', name: '', goods: []}
 
@@ -83,6 +86,48 @@ function CategoryPage() {
       dispatch(currentPageChange(currentPage + 1))
     }
   }
+
+  const message = useMessage()
+  const {request, error, clearError} = useHttp()
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await request(`/api/goods/category/${category.id}`)
+
+        const categoryIndex = categories.findIndex(item => item.id === category.id)
+
+        for (let good of data.goods) {
+          if (!goods.find(item => item.id === good.id)) {
+            const completeGood = {
+              id: +good.id,
+              url: good.url,
+              name: good.name,
+              descr: good.descr,
+              rating: good.rating,
+              price: good.price,
+              amount: good.amount,
+              categoryId: good.categoryId
+            }
+            await dispatch(addGood({
+              categoryIndex,
+              completeGood
+            }))
+          }
+        }
+        await dispatch(addMessage(data.message))
+      } catch (e) {}
+    }
+
+    if (goods.length === 0 && category.id !== 0) {
+      fetchData().then()
+    }
+  }, [categoryTitle])
+
+  useEffect(() => {
+    message(error)
+    clearError()
+  }, [error, message, clearError]);
 
   return (
     <Promo>

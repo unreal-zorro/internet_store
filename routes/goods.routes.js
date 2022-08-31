@@ -2,6 +2,8 @@ const {Router} = require('express')
 const router = Router()
 const {body, validationResult} = require('express-validator')
 const Good = require('../models/Good')
+const Category = require('../models/Category')
+const {Types} = require("mongoose");
 
 // /api/goods/create
 router.post('/create',
@@ -33,7 +35,8 @@ router.post('/create',
         })
       }
 
-      const good = new Good({ id, url, name, descr, rating, price, amount, categoryId })
+      const category = await Category.findOne({ id: categoryId })
+      const good = new Good({ id, url, name, descr, rating, price, amount, categoryId: category._id })
 
       await good.save()
 
@@ -45,26 +48,39 @@ router.post('/create',
     }
 })
 
-// /api/goods/all
-router.get('/all',
-  body('categoryId', 'Некорректный идентификатор.').not().isEmpty().trim(),
+// /api/goods/category/:id
+router.get('/category/:id',
   async (req, res) => {
     try {
-      const errors = validationResult(req)
+      const categoryId = req.params.id
+      const category = await Category.findOne({ id: categoryId })
 
-      if (!errors.isEmpty()) {
-        return res.status(400).json({
-          errors: errors.array(),
-          message: 'Некорректные данные при получении товаров.'
-        })
-      }
-
-      const { categoryId } = req.body
-      const goods = await Good.find({ categoryId })
+      const goods = await Good.find({ categoryId: category._id })
 
       if (goods.length === 0) {
         return res.status(400).json({
           message: 'Товаров в данной категории пока нет.'
+        })
+      }
+
+      res.json({ goods, message: 'Товары загружены!' })
+    } catch (e) {
+      res.status(500).json({
+        message: 'Что-то пошло не так, попробуйте снова.'
+      })
+    }
+})
+
+// /api/goods/all
+router.get('/all',
+  async (req, res) => {
+    try {
+      const goods = await Good.find()
+
+      if (goods.length === 0) {
+        return res.status(400).json({
+          goods: [],
+          message: 'Товаров пока нет.'
         })
       }
 

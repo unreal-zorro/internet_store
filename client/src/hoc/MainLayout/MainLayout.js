@@ -76,7 +76,6 @@ function MainLayout() {
   const userId = auth.userId
 
   const message = useMessage()
-
   const {request, error, clearError} = useHttp()
 
   useEffect(() => {
@@ -86,11 +85,12 @@ function MainLayout() {
 
         for (let category of data.categories) {
           if (!categories.find(item => item.id === category.id)) {
-            await dispatch(addCategory({
+            const completeCategory = {
               categoryId: category.id,
               categoryTitle: category.title,
               categoryName: category.name
-            }))
+            }
+            await dispatch(addCategory(completeCategory))
           }
         }
         await dispatch(addMessage(data.message))
