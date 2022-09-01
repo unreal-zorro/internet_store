@@ -17,12 +17,8 @@ import EditCard from "../../../components/Edit/EditCard/EditCard";
 import EditCardAdd from "../../../components/Edit/EditCardAdd/EditCardAdd";
 import Pagination from "../../../components/Pagination/Pagination";
 import Edit from "../../../components/Edit/Edit";
-import Bg from "../../../components/Bg/Bg";
-import Navbar from "../../../components/Navbar/Navbar";
-import Search from "../../../components/Search/Search";
 import Container from "../../../components/Container/Container";
 import EditMenu from "../../../components/Edit/EditMenu/EditMenu";
-import Footer from "../../../components/Footer/Footer";
 import EditSidebar from "../../../components/EditSidebar/EditSidebar";
 import EditSidebarItem from "../../../components/EditSidebar/EditSidebarItem/EditSidebarItem";
 import EditSidebarLink from "../../../components/EditSidebar/EditSidebarLink/EditSidebarLink";
@@ -55,9 +51,9 @@ class EditPage extends React.Component {
       errorEditedCategoryTitle: '',
       editedCategoryId: '',
       errorEditedCategoryId: '',
-      searchValue: '',
-      tempSearchValue: '',
-      searchActive: false,
+      // searchValue: '',
+      // tempSearchValue: '',
+      // searchActive: false,
       sortValue: 'price-incr',
       visibleValue: '5',
       currentPage: 1,
@@ -78,7 +74,7 @@ class EditPage extends React.Component {
       loading: false,
       error: null
     }
-    this.burgerClickHandler = this.burgerClickHandler.bind(this)
+    // this.burgerClickHandler = this.burgerClickHandler.bind(this)
     this.catalogClickHandler = this.catalogClickHandler.bind(this)
     this.allCategoriesClickHandler = this.allCategoriesClickHandler.bind(this)
     this.categoryClickHandler = this.categoryClickHandler.bind(this)
@@ -90,9 +86,9 @@ class EditPage extends React.Component {
     this.categoryIdChangeHandler = this.categoryIdChangeHandler.bind(this)
     this.okClickEditCategoryHandler = this.okClickEditCategoryHandler.bind(this)
     this.cancelClickEditCategoryHandler = this.cancelClickEditCategoryHandler.bind(this)
-    this.searchClickHandler = this.searchClickHandler.bind(this)
-    this.searchChangeHandler = this.searchChangeHandler.bind(this)
-    this.searchOnKeyDownHandler = this.searchOnKeyDownHandler.bind(this)
+    // this.searchClickHandler = this.searchClickHandler.bind(this)
+    // this.searchChangeHandler = this.searchChangeHandler.bind(this)
+    // this.searchOnKeyDownHandler = this.searchOnKeyDownHandler.bind(this)
     this.sortSelectChangeHandler = this.sortSelectChangeHandler.bind(this)
     this.visibleSelectChangeHandler = this.visibleSelectChangeHandler.bind(this)
     this.prevButtonClickHandler = this.prevButtonClickHandler.bind(this)
@@ -111,15 +107,14 @@ class EditPage extends React.Component {
     this.okGoodClickHandler = this.okGoodClickHandler.bind(this)
     this.cancelGoodClickHandler = this.cancelGoodClickHandler.bind(this)
     this.request = this.request.bind(this)
-    this.logoutClickHandler = this.logoutClickHandler.bind(this)
   }
 
-  async burgerClickHandler() {
-    await this.setState(prevState => ({
-      ...prevState,
-      isSidebarActive: !prevState.isSidebarActive
-    }))
-  }
+  // async burgerClickHandler() {
+  //   await this.setState(prevState => ({
+  //     ...prevState,
+  //     isSidebarActive: !prevState.isSidebarActive
+  //   }))
+  // }
 
   async catalogClickHandler() {
     await this.setState(prevState => ({
@@ -338,45 +333,45 @@ class EditPage extends React.Component {
     }))
   }
 
-  async searchChangeHandler(value) {
-    await this.setState(prevState => ({
-      ...prevState,
-      searchValue: value,
-      tempSearchValue: value
-    }))
-  }
+  // async searchChangeHandler(value) {
+  //   await this.setState(prevState => ({
+  //     ...prevState,
+  //     searchValue: value,
+  //     tempSearchValue: value
+  //   }))
+  // }
 
-  async searchClickHandler(searchVal) {
-    let value = ''
-    if(searchVal) {
-      value = searchVal
-    } else {
-      value = this.state.searchValue
-    }
+  // async searchClickHandler(searchVal) {
+  //   let value = ''
+  //   if(searchVal) {
+  //     value = searchVal
+  //   } else {
+  //     value = this.state.searchValue
+  //   }
+  //
+  //   if (!value) {
+  //     return
+  //   }
+  //
+  //   if (!this.state.searchValue) {
+  //     await this.setState(prevState => ({
+  //       ...prevState,
+  //       searchValue: value,
+  //     }))
+  //   }
+  //
+  //   await this.setState(prevState => ({
+  //     ...prevState,
+  //     searchActive: true,
+  //     currentCategory: 'search'
+  //   }))
+  // }
 
-    if (!value) {
-      return
-    }
-
-    if (!this.state.searchValue) {
-      await this.setState(prevState => ({
-        ...prevState,
-        searchValue: value,
-      }))
-    }
-
-    await this.setState(prevState => ({
-      ...prevState,
-      searchActive: true,
-      currentCategory: 'search'
-    }))
-  }
-
-  async searchOnKeyDownHandler(key) {
-    if (key === 'Enter') {
-      await this.searchClickHandler()
-    }
-  }
+  // async searchOnKeyDownHandler(key) {
+  //   if (key === 'Enter') {
+  //     await this.searchClickHandler()
+  //   }
+  // }
 
   async sortSelectChangeHandler(value) {
     await this.setState(prevState => ({
@@ -478,9 +473,9 @@ class EditPage extends React.Component {
       goods
     }))
 
-    if (this.state.currentCategory === 'search') {
-      await this.searchClickHandler(this.state.tempSearchValue)
-    }
+    // if (this.state.currentCategory === 'search') {
+    //   await this.searchClickHandler(this.state.tempSearchValue)
+    // }
   }
 
   async addGoodClickHandler(categoryId) {
@@ -713,9 +708,9 @@ class EditPage extends React.Component {
         editedGoodPrice: ''
       }))
     // }
-    if (this.state.currentCategory === 'search') {
-      await this.searchClickHandler(this.state.tempSearchValue)
-    }
+    // if (this.state.currentCategory === 'search') {
+    //   await this.searchClickHandler(this.state.tempSearchValue)
+    // }
   }
 
   async cancelGoodClickHandler(event) {
@@ -739,7 +734,11 @@ class EditPage extends React.Component {
   }
 
   async componentDidUpdate(prevProps, prevState, snapshot) {
-    if (this.state.categories !== prevState.categories) {
+    if (this.state.searchValue) {
+
+    }
+
+    if (this.state.categories.length === prevState.categories) {
       this.setState(prev => ({
         ...prev,
         categories: mainStore.getState().categories.categories
@@ -858,11 +857,11 @@ class EditPage extends React.Component {
         goods
       }))
     }
-    // mainStore.dispatch(addMessage(this.state.error))
-    // this.setState(prevState => ({
-    //   ...prevState,
-    //   error: null
-    // }))
+    mainStore.dispatch(addMessage(this.state.error))
+    this.setState(prevState => ({
+      ...prevState,
+      error: null
+    }))
   }
 
   async request(url, method = 'GET', body = null, headers = {}) {
@@ -922,44 +921,14 @@ class EditPage extends React.Component {
   //   } catch (e) {}
   // }
 
-  async logoutClickHandler() {
-    try {
-      const userId = this.props.authContext.userId
-      const cart = this.props.cartContext.cart
-
-      const data = await this.request('/api/auth/logout', 'POST', {userId, cart})
-
-      this.props.cartContext.cartClear()
-      this.props.authContext.logout()
-      mainStore.dispatch(addMessage(data.message))
-    } catch (e) {}
-  }
-
   render() {
-    const count = this.props.cartContext.cart.reduce((sum, item) => sum + item.count, 0)
-
     return (
-      <div>
-        <Bg />
-        <Navbar
-          className={this.state.isSidebarActive ? 'active' : ''}
-          isAdmin={this.props.authContext.isAdmin}
-          isAuth={this.props.authContext.isAuth}
-          count={count}
-          onBurgerClick={this.burgerClickHandler}
-          onLogoutClick={this.logoutClickHandler}
-        />
-        <Search
-          value={this.state.searchValue}
-          onChange={event => this.searchChangeHandler(event.target.value)}
-          onClick={() => this.searchClickHandler()}
-          onKeyDown={event => this.searchOnKeyDownHandler(event.key)}
-        />
+      <>
         <Container
           className={this.state.editGoodAction ? "edited" : ""}
         >
           <EditSidebar
-            className={this.state.isSidebarActive ? 'active' : ''}
+            className={this.props.isSidebarActive ? 'active' : ''}
           >
             <EditSidebarItem>
               <EditSidebarLink
@@ -1038,15 +1007,15 @@ class EditPage extends React.Component {
                           </NavigationTitle>
                           <NavigationDivider />
                         </React.Fragment>
-                      : <React.Fragment>
-                        <NavigationTitle>
-                          <EditNavigationLink
-                            linkName={this.state.currentCategory}
-                            onClick={() => this.categoryClickHandler(this.state.currentCategory)}
-                          />
-                        </NavigationTitle>
-                        <NavigationDivider />
-                      </React.Fragment>
+                        : <React.Fragment>
+                          <NavigationTitle>
+                            <EditNavigationLink
+                              linkName={this.state.currentCategory}
+                              onClick={() => this.categoryClickHandler(this.state.currentCategory)}
+                            />
+                          </NavigationTitle>
+                          <NavigationDivider />
+                        </React.Fragment>
                     : undefined
                 }
               </Navigation>
@@ -1137,7 +1106,7 @@ class EditPage extends React.Component {
                                   onEditClick={() => this.editGoodClickHandler(
                                     item.id,
                                     (this.state.currentCategory === 'all' ||
-                                    this.state.currentCategory === 'search')
+                                      this.state.currentCategory === 'search')
                                       ? this.state.categories.find(
                                         itemCategories => itemCategories.goods.find(
                                           itemGood => itemGood.id === item.id
@@ -1148,7 +1117,7 @@ class EditPage extends React.Component {
                                   onDeleteClick={() => this.deleteGoodClickHandler(
                                     item.id,
                                     (this.state.currentCategory === 'all' ||
-                                    this.state.currentCategory === 'search')
+                                      this.state.currentCategory === 'search')
                                       ? this.state.categories.find(
                                         itemCategories => itemCategories.goods.find(
                                           itemGood => itemGood.id === item.id
@@ -1210,11 +1179,11 @@ class EditPage extends React.Component {
 
         <Modal
           className={
-          (this.state.editAction === "edit" ||
-          this.state.editAction === "add")
-            ? "active"
-            : ""
-        }
+            (this.state.editAction === "edit" ||
+              this.state.editAction === "add")
+              ? "active"
+              : ""
+          }
         >
           <ModalEditCategory
             onOkClick={event => this.okClickEditCategoryHandler(event)}
@@ -1230,9 +1199,7 @@ class EditPage extends React.Component {
             onChangeCategoryId={event => this.categoryIdChangeHandler(event.target.value)}
           />
         </Modal>
-
-        <Footer />
-      </div>
+      </>
     )
   }
 }

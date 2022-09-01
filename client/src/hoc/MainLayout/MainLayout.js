@@ -1,16 +1,11 @@
 import React, {useContext, useEffect, useState} from "react";
-import {Navigate, Outlet} from "react-router-dom";
+import {Outlet} from "react-router-dom";
 
 import Bg from "../../components/Bg/Bg";
 import Navbar from "../../components/Navbar/Navbar";
 import Search from "../../components/Search/Search";
-import Container from "../../components/Container/Container";
-import Sidebar from "../../components/Sidebar/Sidebar";
-import SidebarItem from "../../components/Sidebar/SidebarItem/SidebarItem";
-import SidebarLink from "../../components/Sidebar/SidebarLink/SidebarLink";
 import Footer from "../../components/Footer/Footer";
 import Message from "../../components/Message/Message";
-import Loader from "../../components/Loader/Loader";
 import {AuthContext} from "../../context/auth.context";
 import {CartContext} from "../../context/cart.context";
 import {useHttp} from "../../hooks/http.hook";
@@ -18,6 +13,9 @@ import {useDispatch, useSelector} from "react-redux";
 import {useMessage} from "../../hooks/message.hook";
 import {addCategory} from "../../redux/categoriesSlice";
 import {addMessage} from "../../redux/mainSlice";
+import Loader from "../../components/Loader/Loader";
+import Container from "../../components/Container/Container";
+import Promo from "../../components/Promo/Promo";
 
 function MainLayout() {
   const [searchValue, setSearchValue] = useState('');
@@ -35,9 +33,6 @@ function MainLayout() {
     }
   }, [categories.length]);
 
-  // const [loading, setLoading] = useState(false);
-  const loading = false
-
   const dispatch = useDispatch()
 
   const burgerClickHandler = () => {
@@ -51,11 +46,9 @@ function MainLayout() {
   }
 
   const searchClickHandler = () => {
-    if (!searchValue) {
-      return
+    if (searchValue) {
+      setSearchActive(true)
     }
-
-    setSearchActive(true)
   }
 
   useEffect(() => {
@@ -76,7 +69,7 @@ function MainLayout() {
   const userId = auth.userId
 
   const message = useMessage()
-  const {request, error, clearError} = useHttp()
+  const { loading, request, error, clearError } = useHttp()
 
   useEffect(() => {
     async function fetchData() {
@@ -100,7 +93,7 @@ function MainLayout() {
     if (categories.length === 0) {
       fetchData().then()
     }
-  }, [])
+  }, [categories, dispatch, request])
 
   useEffect(() => {
     message(error)
@@ -137,36 +130,15 @@ function MainLayout() {
         onClick={() => searchClickHandler()}
         onKeyDown={event => searchOnKeyDownHandler(event.key)}
       />
-      <Container>
-        <Sidebar
-          className={isSidebarActive ? 'active' : ''}
-        >
-          {categories.map(item => {
-              return (
-                <SidebarItem
-                  key={item.id}
-                >
-                  <SidebarLink
-                    link={"/catalog/" + item.title}
-                    linkText={item.name}
-                  />
-                </SidebarItem>
-              )
-          })}
-        </Sidebar>
 
-        {
-          loading
-            ? <Loader />
-            : searchActive
-              ? <Navigate
-                to={"catalog/search?value=" + searchValue}
-                replace={true}
-              />
-              : <Outlet />
-        }
+      {
+        loading
+          ? <Container><Loader /></Container>
+          : <Outlet
+            context={{ isSidebarActive, searchActive, searchValue }}
+          />
+      }
 
-      </Container>
       <Footer />
       <Message />
     </div>

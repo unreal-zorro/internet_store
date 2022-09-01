@@ -16,58 +16,63 @@ import RegisterPage from "./hoc/pages/RegisterPage/RegisterPage";
 import EditPage from "./hoc/pages/EditPage/EditPage";
 import {AuthContext} from "./context/auth.context";
 import {CartContext} from "./context/cart.context";
+import UserLayout from "./hoc/UserLayout/UserLayout";
+import AdminLayout from "./hoc/AdminLayout/AdminLayout";
 
 export const useRoutes = (isOrdering, isAuth, isAdmin) => {
   return (
     <>
       <Route path="/" element={<MainLayout />}>
-        <Route index element={<IndexPage />} />
+        <Route element={<UserLayout />}>
+          <Route index element={<IndexPage />} />
 
-        <Route path="catalog" element={<CatalogPage />} />
-        <Route path="catalog/:categoryTitle" element={<CategoryPage />} />
-        <Route path="catalog/search" element={<SearchPage />} />
-        <Route path="catalog/:categoryTitle/:cardId" element={<CardPage />} />
+          <Route path="catalog" element={<CatalogPage />} />
+          <Route path="catalog/:categoryTitle" element={<CategoryPage />} />
+          <Route path="catalog/search" element={<SearchPage />} />
+          <Route path="catalog/:categoryTitle/:cardId" element={<CardPage />} />
 
-        <Route path="delivery-payment" element={<DeliveryPaymentPage />} />
-        <Route path="contacts" element={<ContactsPage />} />
-        <Route path="cart" element={<CartPage />} />
+          <Route path="delivery-payment" element={<DeliveryPaymentPage />} />
+          <Route path="contacts" element={<ContactsPage />} />
+          <Route path="cart" element={<CartPage />} />
 
+          {
+            isOrdering
+              ? <Route path="ordering" element={<OrderingPage />} />
+              : null
+          }
+
+          <Route path="*" element={<NotFoundPage />} />
+        </Route>
         {
-          isOrdering
-            ? <Route path="ordering" element={<OrderingPage />} />
-            : null
+          isAdmin
+            ? <Route path="/edit" element={
+              <AuthContext.Consumer>
+                {authContext => (
+                  <CartContext.Consumer>
+                    {cartContext => (
+                      <AdminLayout>
+                        <EditPage
+                          authContext={authContext}
+                          cartContext={cartContext}
+                        />
+                      </AdminLayout>
+                    )}
+                  </CartContext.Consumer>
+                )}
+              </AuthContext.Consumer>
+            } />
+            : undefined
         }
-
-        <Route path="*" element={<NotFoundPage />} />
       </Route>
 
       {
         !isAuth
-        ? (
-          <Route>
-            <Route path="/auth" element={<AuthPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-          </Route>
+          ? (
+            <Route>
+              <Route path="/auth" element={<AuthPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+            </Route>
           )
-        : undefined
-      }
-
-      {
-        isAdmin
-          ? <Route path="/edit" element={
-            <AuthContext.Consumer>
-              {authContext => (
-                <CartContext.Consumer>
-                  {cartContext => (
-                    <EditPage
-                      authContext={authContext}
-                      cartContext={cartContext}
-                    />
-                  )}
-                </CartContext.Consumer>
-              )}
-            </AuthContext.Consumer>
-          } />
           : undefined
       }
     </>
