@@ -20,18 +20,40 @@ router.post('/create',
       }
 
       const { id, title, name } = req.body
-      const candidate = await Category.findOne({ id })
 
-      if (candidate) {
+      // const categoryId = +id
+      // const categoryTitle = title.toLowerCase()
+      // const categoryName = name.toLowerCase()
+      //
+      // if (!isFinite(categoryId)) {
+      //   return res.status(400).json({
+      //     message: 'Идентификатор категории должен быть числом.'
+      //   })
+      // }
+
+      const candidateWithLikeName = await Category.findOne({ name })
+      if (candidateWithLikeName) {
+        return res.status(400).json({
+          message: 'Категория с таким именем уже существует.'
+        })
+      }
+
+      const candidateWithLikeTitle = await Category.findOne({ title })
+      if (candidateWithLikeTitle) {
+        return res.status(400).json({
+          message: 'Категория с таким заголовком уже существует.'
+        })
+      }
+
+      const candidateWithLikeId = await Category.findOne({ id })
+      if (candidateWithLikeId) {
         return res.status(400).json({
           message: 'Категория с таким идентификатором уже существует.'
         })
       }
 
       const category = new Category({ id, title, name })
-
       await category.save()
-
       res.status(201).json({ message: 'Категория создана!' })
     } catch (e) {
       res.status(500).json({
@@ -97,10 +119,10 @@ router.delete('/remove',
 
 // /api/categories/update
 router.put('/update',
+  body('currentId', 'Некорректный текущий идентификатор.').not().isEmpty().trim(),
   body('id', 'Некорректный идентификатор.').not().isEmpty().trim(),
   body('title', 'Некорректный заголовок.').exists().trim(),
   body('name', 'Некорректное имя.').exists().trim(),
-  body('goods', 'Товары не существуют.').exists(),
   async (req, res) => {
     try {
       const errors = validationResult(req)
@@ -112,8 +134,8 @@ router.put('/update',
         })
       }
 
-      const { id, title, name, goods } = req.body
-      const category = await Category.findOne({ id })
+      const { currentId, id, title, name } = req.body
+      const category = await Category.findOne({ id: currentId })
 
       if (!category) {
         return res.status(400).json({
@@ -121,9 +143,35 @@ router.put('/update',
         })
       }
 
-      category.update({ id, title, name, goods })
+      if (category.name !== name) {
+        const categoryWithLikeName = await Category.findOne({ name })
+        if (categoryWithLikeName) {
+          return res.status(400).json({
+            message: 'Категория с таким именем уже существует.'
+          })
+        }
+      }
 
-      res.json({ message: `Категория ${name} обновлена!` })
+      if (category.title !== title) {
+        const categoryWithLikeTitle = await Category.findOne({ title })
+        if (categoryWithLikeTitle) {
+          return res.status(400).json({
+            message: 'Категория с таким заголовком уже существует.'
+          })
+        }
+      }
+
+      if (category.id !== +id) {
+        const categoryWithLikeId = await Category.findOne({ id })
+        if (categoryWithLikeId) {
+          return res.status(400).json({
+            message: 'Категория с таким идентификатором уже существует.'
+          })
+        }
+      }
+
+      await Category.findByIdAndUpdate(category._id, { id, title, name })
+      res.json({ message: 'Категория обновлена!' })
     } catch (e) {
       res.status(500).json({
         message: 'Что-то пошло не так, попробуйте снова.'

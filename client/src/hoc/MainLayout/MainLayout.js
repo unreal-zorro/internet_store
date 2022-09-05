@@ -1,21 +1,20 @@
 import React, {useContext, useEffect, useState} from "react";
 import {Outlet} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
 
+import {addCategory} from "../../redux/categoriesSlice";
+import {addMessage} from "../../redux/mainSlice";
+import {useHttp} from "../../hooks/http.hook";
+import {useMessage} from "../../hooks/message.hook";
+import {AuthContext} from "../../context/auth.context";
+import {CartContext} from "../../context/cart.context";
 import Bg from "../../components/Bg/Bg";
 import Navbar from "../../components/Navbar/Navbar";
 import Search from "../../components/Search/Search";
 import Footer from "../../components/Footer/Footer";
 import Message from "../../components/Message/Message";
-import {AuthContext} from "../../context/auth.context";
-import {CartContext} from "../../context/cart.context";
-import {useHttp} from "../../hooks/http.hook";
-import {useDispatch, useSelector} from "react-redux";
-import {useMessage} from "../../hooks/message.hook";
-import {addCategory} from "../../redux/categoriesSlice";
-import {addMessage} from "../../redux/mainSlice";
 import Loader from "../../components/Loader/Loader";
 import Container from "../../components/Container/Container";
-import Promo from "../../components/Promo/Promo";
 
 function MainLayout() {
   const [searchValue, setSearchValue] = useState('');

@@ -27,11 +27,18 @@ router.post('/create',
       }
 
       const { id, url, name, descr, rating, price, amount, categoryId } = req.body
-      const candidate = await Good.findOne({ id })
 
-      if (candidate) {
+      const candidateWithLikeId = await Good.findOne({ id })
+      if (candidateWithLikeId) {
         return res.status(400).json({
           message: 'Товар с таким идентификатором уже существует.'
+        })
+      }
+
+      const candidateWithLikeName = await Good.findOne({ name })
+      if (candidateWithLikeName) {
+        return res.status(400).json({
+          message: 'Товар с таким именем уже существует.'
         })
       }
 
@@ -127,6 +134,7 @@ router.delete('/remove',
 
 // /api/goods/update
 router.put('/update',
+  body('currentId', 'Некорректный текущий идентификатор.').not().isEmpty().trim(),
   body('id', 'Некорректный идентификатор.').not().isEmpty().trim(),
   body('url', 'Некорректный url-адрес.').exists().trim(),
   body('name', 'Некорректное имя.').exists().trim(),
@@ -146,8 +154,8 @@ router.put('/update',
         })
       }
 
-      const { id, url, name, descr, rating, price, amount, categoryId } = req.body
-      const good = await Good.findOne({ id })
+      const { currentId, id, url, name, descr, rating, price, amount, categoryId } = req.body
+      const good = await Good.findOne({ id: currentId })
 
       if (!good) {
         return res.status(400).json({
@@ -155,8 +163,25 @@ router.put('/update',
         })
       }
 
-      good.update({ id, url, name, descr, rating, price, amount, categoryId })
+      if (good.id !== +id) {
+        const goodWithLikeName = await Good.findOne({ id })
+        if (goodWithLikeName) {
+          return res.status(400).json({
+            message: 'Товар с таким идентификатором уже существует.'
+          })
+        }
+      }
 
+      if (good.name !== name) {
+        const goodWithLikeTitle = await Good.findOne({ name })
+        if (goodWithLikeTitle) {
+          return res.status(400).json({
+            message: 'Товар с таким именем уже существует.'
+          })
+        }
+      }
+
+      await Good.findByIdAndUpdate( good._id, { id, url, name, descr, rating, price, amount, categoryId })
       res.json({ message: `Товар обновлён!` })
     } catch (e) {
       res.status(500).json({

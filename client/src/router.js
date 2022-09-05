@@ -13,7 +13,9 @@ import OrderingPage from "./hoc/pages/OrderingPage/OrderingPage";
 import NotFoundPage from "./hoc/pages/NotFoundPage/NotFoundPage";
 import AuthPage from "./hoc/pages/AuthPage/AuthPage";
 import RegisterPage from "./hoc/pages/RegisterPage/RegisterPage";
-import EditPage from "./hoc/pages/EditPage/EditPage";
+import EditCatalogPage from "./hoc/pages/EditCatalogPage/EditCatalogPage";
+// import EditCategoryPage from "./hoc/pages/EditCategoryPage/EditCategoryPage";
+// import EditSearchPage from "./hoc/pages/EditSearchPage/EditSearchPage";
 import {AuthContext} from "./context/auth.context";
 import {CartContext} from "./context/cart.context";
 import UserLayout from "./hoc/UserLayout/UserLayout";
@@ -43,26 +45,103 @@ export const useRoutes = (isOrdering, isAuth, isAdmin) => {
 
           <Route path="*" element={<NotFoundPage />} />
         </Route>
+
         {
           isAdmin
-            ? <Route path="/edit" element={
-              <AuthContext.Consumer>
-                {authContext => (
-                  <CartContext.Consumer>
-                    {cartContext => (
-                      <AdminLayout>
-                        <EditPage
-                          authContext={authContext}
-                          cartContext={cartContext}
-                        />
-                      </AdminLayout>
-                    )}
-                  </CartContext.Consumer>
-                )}
-              </AuthContext.Consumer>
-            } />
-            : undefined
+            ? <Route path="edit" element={
+                <AuthContext.Consumer>
+                  {authContext => (
+                    <CartContext.Consumer>
+                      {cartContext => (
+                        <AdminLayout><EditCatalogPage /></AdminLayout>
+                      )}
+                    </CartContext.Consumer>
+                  )}
+                </AuthContext.Consumer>
+              }/>
+            : null
         }
+
+        {/*{*/}
+        {/*  isAdmin*/}
+        {/*    ? <>*/}
+        {/*      <Route path="edit" element={*/}
+        {/*        <AuthContext.Consumer>*/}
+        {/*          {authContext => (*/}
+        {/*            <CartContext.Consumer>*/}
+        {/*              {cartContext => (*/}
+        {/*                <AdminLayout><EditCatalogPage /></AdminLayout>*/}
+        {/*              )}*/}
+        {/*            </CartContext.Consumer>*/}
+        {/*          )}*/}
+        {/*        </AuthContext.Consumer>*/}
+        {/*      }/>*/}
+        {/*      <Route path="edit/:categoryTitle" element={*/}
+        {/*        <AuthContext.Consumer>*/}
+        {/*          {authContext => (*/}
+        {/*            <CartContext.Consumer>*/}
+        {/*              {cartContext => (*/}
+        {/*                <AdminLayout><EditCategoryPage /></AdminLayout>*/}
+        {/*              )}*/}
+        {/*            </CartContext.Consumer>*/}
+        {/*          )}*/}
+        {/*        </AuthContext.Consumer>*/}
+        {/*      }/>*/}
+        {/*      <Route path="edit/search" element={*/}
+        {/*        <AuthContext.Consumer>*/}
+        {/*          {authContext => (*/}
+        {/*            <CartContext.Consumer>*/}
+        {/*              {cartContext => (*/}
+        {/*                <AdminLayout><EditSearchPage /></AdminLayout>*/}
+        {/*              )}*/}
+        {/*            </CartContext.Consumer>*/}
+        {/*          )}*/}
+        {/*        </AuthContext.Consumer>*/}
+        {/*      }/>*/}
+        {/*    </>*/}
+        {/*    : null*/}
+        {/*}*/}
+
+        {/*{*/}
+        {/*  isAdmin*/}
+        {/*    ? <Route path="edit" element={*/}
+        {/*      <AuthContext.Consumer>*/}
+        {/*        {authContext => (*/}
+        {/*          <CartContext.Consumer>*/}
+        {/*            {cartContext => (*/}
+        {/*              <AdminLayout><EditPage /></AdminLayout>*/}
+        {/*            )}*/}
+        {/*          </CartContext.Consumer>*/}
+        {/*        )}*/}
+        {/*      </AuthContext.Consumer>*/}
+        {/*    }>*/}
+        {/*      <Route index element={<EditPage />} />*/}
+        {/*      <Route path=":categoryTitle" element={<EditCategoryPage />}/>*/}
+        {/*      <Route path="search" element={<EditSearchPage />}/>*/}
+        {/*    </Route>*/}
+        {/*    : null*/}
+        {/*}*/}
+
+        {/*{*/}
+        {/*  isAdmin*/}
+        {/*    ? <Route path="/edit" element={*/}
+        {/*      <AuthContext.Consumer>*/}
+        {/*        {authContext => (*/}
+        {/*          <CartContext.Consumer>*/}
+        {/*            {cartContext => (*/}
+        {/*              <AdminLayout>*/}
+        {/*                <EditPage*/}
+        {/*                  authContext={authContext}*/}
+        {/*                  cartContext={cartContext}*/}
+        {/*                />*/}
+        {/*              </AdminLayout>*/}
+        {/*            )}*/}
+        {/*          </CartContext.Consumer>*/}
+        {/*        )}*/}
+        {/*      </AuthContext.Consumer>*/}
+        {/*    } />*/}
+        {/*    : undefined*/}
+        {/*}*/}
       </Route>
 
       {
