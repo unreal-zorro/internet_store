@@ -3,7 +3,14 @@ import {useOutletContext} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 
 import mainStore from "../../redux/mainStore";
-import {addCategory, addGood, deleteCategory, deleteGood, editCategory, editGood} from "../../redux/categoriesSlice";
+import {
+  addCategory,
+  addGood,
+  deleteCategory,
+  deleteGood,
+  editCategory,
+  editGood
+} from "../../redux/categoriesSlice";
 import {addMessage} from "../../redux/mainSlice";
 import {useHttp} from "../../hooks/http.hook";
 import {useMessage} from "../../hooks/message.hook";
@@ -50,7 +57,7 @@ function AdminLayout(
   const categories = useSelector(state => state.categories.categories)
 
   const [editGoodAction, setEditGoodAction] = useState('');
-  const [currentCategory, setCurrentCategory] = useState('');
+  const [currentCategoryTitle, setCurrentCategoryTitle] = useState('');
   const [editAction, setEditAction] = useState('');
   const [currentEditedCategoryId, setCurrentEditedCategoryId] = useState('');
   const [editedCategoryId, setEditedCategoryId] = useState('');
@@ -96,30 +103,45 @@ function AdminLayout(
   // const children = React.cloneElement(props.children, newProps)
 
   const allCategoriesClickHandler = () => {
-    setCurrentCategory('all')
+    setCurrentCategoryTitle('all')
   }
 
-  const categoryClickHandler = async (name) => {
-    setCurrentCategory(name)
+  const categoryClickHandler = async (title) => {
+    setCurrentCategoryTitle(title)
+    const currentCategory = categories.find(category => category.title === title)
 
-    const currentCategory = categories.find(category => category.name === name)
-
-    if (goods.length === 0) {
+    if (currentCategory.goods.length === 0) {
       try {
         const data = await request(`/api/goods/category/${currentCategory.id}`)
+        const categoryIndex = categories.findIndex(item => item.id === currentCategory.id)
 
         for (let good of data.goods) {
-          if (!currentCategory.goods.find(item => item.id === good.id)) {
+          if (!goods.find(item => item.id === good.id)) {
             const completeGood = {
-              categoryId: good.id,
-              categoryTitle: good.title,
-              categoryName: good.name
+              id: +good.id,
+              url: good.url,
+              name: good.name,
+              descr: good.descr,
+              rating: good.rating,
+              price: good.price,
+              amount: good.amount,
+              categoryId: good.categoryId
             }
-            await dispatch(addGood(completeGood))
+            await dispatch(addGood({ categoryIndex, completeGood }))
+            // setGoods(prevState => [].concat(prevState, completeGood))
+            // setCategory(currentCategory)
           }
         }
+        const newGoods = currentCategory.goods
+        setGoods(newGoods)
         await dispatch(addMessage(data.message))
-      } catch (e) {}
+      } catch (e) {
+        setGoods([])
+        setCategory({id: 0, title: '', name: '', goods: []})
+      }
+    } else {
+      setGoods(currentCategory.goods)
+      setCategory(currentCategory)
     }
   }
 
@@ -132,9 +154,13 @@ function AdminLayout(
     setEditedCategoryTitle(category.title)
   }
 
-  const deleteCategoryClickHandler = id => {
-    const categoryIndex = categories.findIndex(item => item.id === id)
-    dispatch(deleteCategory({categoryIndex}))
+  const deleteCategoryClickHandler = async (id) => {
+    try {
+      const data = await request('/api/categories/remove', 'DELETE', {id})
+      dispatch(addMessage(data.message))
+      const categoryIndex = categories.findIndex(item => item.id === id)
+      dispatch(deleteCategory({categoryIndex}))
+    } catch (e) {}
   }
 
   const addCategoryClickHandler = () => {
@@ -241,30 +267,28 @@ function AdminLayout(
         if (currentCategory.title === goodCategoryTitle && currentGood.id === +goodId) {
           dispatch(editGood({ categoryIndex, goodIndex, completeGood }))
         } else {
-          dispatch(addGood({
-            categoryIndex,
-            completeGood
-          }))
-          dispatch(deleteGood({
-            categoryIndex: currentCategoryIndex,
-            goodIndex: currentGoodIndex
-          }))
+          dispatch(addGood({ categoryIndex, completeGood }))
+          dispatch(deleteGood({ categoryIndex: currentCategoryIndex, goodIndex: currentGoodIndex }))
         }
       }
 
-      const category = categories.find(item => item.name === currentCategory)
-        ? categories.find(item => item.name === currentCategory)
-        : currentCategory === 'all'
-          ? categories
-          : {id: 0, title: '', name: '', goods: []}
+      // const category = categories.find(item => item.name === currentCategory)
+      //   ? categories.find(item => item.name === currentCategory)
+      //   : currentCategory === 'all'
+      //     ? categories
+      //     : {id: 0, title: '', name: '', goods: []}
 
-      const goods = category.length
+      const newGoods = currentCategoryTitle === 'all' || currentCategoryTitle === 'search'
         ? [].concat(...mainStore.getState().categories.categories.map(item => item.goods))
-        : category.goods.length === 0
-          ? []
-          : [].concat(category.goods)
+        : categories.find(category => category.title === currentCategoryTitle).goods
 
-      setGoods(goods)
+      // const goods = category.length
+      //   ? [].concat(...mainStore.getState().categories.categories.map(item => item.goods))
+      //   : category.goods.length === 0
+      //     ? []
+      //     : [].concat(category.goods)
+
+      setGoods(newGoods)
       setEditGoodAction('')
       setCurrentEditedGoodId('')
       setCurrentEditedGoodCategoryId('')
@@ -394,7 +418,7 @@ function AdminLayout(
   }
 
   const catalogClickHandler = () => {
-    setCurrentCategory('')
+    setCurrentCategoryTitle('')
   }
 
   const sortSelectChangeHandler = value => {
@@ -431,35 +455,40 @@ function AdminLayout(
     setEditedGoodPrice(good.price)
   }
 
-  const deleteGoodClickHandler = (goodId, categoryId) => {
+  const deleteGoodClickHandler = async (goodId, categoryId) => {
     const categoryIndex = categories.findIndex(item => item.id === categoryId)
     const goodIndex = categories[categoryIndex].goods.findIndex(item => item.id === goodId)
-    dispatch(deleteGood({
-      categoryIndex,
-      goodIndex
-    }))
 
-    const category = categories.find(item => item.name === currentCategory)
-      ? categories.find(item => item.name === currentCategory)
-      : currentCategory === 'all'
-        ? categories
-        : {id: 0, title: '', name: '', goods: []}
+    try {
+      const data = await request('/api/goods/remove', 'DELETE', { id: goodId })
+      dispatch(addMessage(data.message))
+      dispatch(deleteGood({ categoryIndex, goodIndex }))
 
-    const goods = category.length
-      ? [].concat(...categories.map(item => item.goods))
-      : category.goods.length === 0
-        ? []
-        : [].concat(category.goods)
+      const category = categories.find(item => item.title === currentCategoryTitle)
+        ? categories.find(item => item.title === currentCategoryTitle)
+        : currentCategoryTitle === 'all'
+          ? categories
+          : {id: 0, title: '', name: '', goods: []}
 
-    setGoods(goods)
+      const goods = category.length
+        ? [].concat(...categories.map(item => item.goods))
+        : category.goods.length === 0
+          ? []
+          : [].concat(category.goods)
+
+      setGoods(goods)
+    } catch (e) {}
 
     // if (this.state.currentCategory === 'search') {
     //   await this.searchClickHandler(this.state.tempSearchValue)
     // }
   }
 
-  const addGoodClickHandler =categoryId => {
-    const category = categories.find(item => item.id === +categoryId)
+  const addGoodClickHandler = (categoryId = 0) => {
+    const category = (categoryId === 0)
+      ? categories[0]
+      : categories.find(item => item.id === +categoryId)
+
     setEditGoodAction('add')
     setCurrentEditedGoodId('')
     setCurrentEditedGoodCategoryId(categoryId)
@@ -503,7 +532,7 @@ function AdminLayout(
           >
             <EditSidebarItem>
               <EditSidebarLink
-                className={currentCategory === "all" ? "active" : ""}
+                className={currentCategoryTitle === "all" ? "active" : ""}
                 text="Все категории"
                 onClick={allCategoriesClickHandler}
               />
@@ -515,9 +544,9 @@ function AdminLayout(
                   key={item.id}
                 >
                   <EditSidebarLink
-                    className={currentCategory === item.name ? "active" : ""}
+                    className={currentCategoryTitle === item.title ? "active" : ""}
                     text={item.name}
-                    onClick={() => categoryClickHandler(item.name)}
+                    onClick={() => categoryClickHandler(item.title)}
                   />
                   <EditSidebarEdit>
                     <EditSidebarLinkEdit
@@ -558,8 +587,8 @@ function AdminLayout(
                 </NavigationTitle>
                 <NavigationDivider />
                 {
-                  currentCategory
-                    ? currentCategory === "all"
+                  currentCategoryTitle
+                    ? currentCategoryTitle === "all"
                       ? <>
                         <NavigationTitle>
                           <EditNavigationLink
@@ -569,7 +598,7 @@ function AdminLayout(
                         </NavigationTitle>
                         <NavigationDivider />
                       </>
-                      : currentCategory === "search"
+                      : currentCategoryTitle === "search"
                         ? <>
                           <NavigationTitle>
                             <EditNavigationLink
@@ -581,8 +610,8 @@ function AdminLayout(
                         : <>
                           <NavigationTitle>
                             <EditNavigationLink
-                              linkName={currentCategory}
-                              onClick={() => categoryClickHandler(currentCategory)}
+                              linkName={categories.find(category => category.title === currentCategoryTitle).name}
+                              onClick={() => categoryClickHandler(currentCategoryTitle)}
                             />
                           </NavigationTitle>
                           <NavigationDivider />
@@ -592,7 +621,7 @@ function AdminLayout(
               </Navigation>
 
               {
-                !currentCategory
+                !currentCategoryTitle
                   ? <Catalog>
                     <EditCatalogItem
                       linkText="Все категории"
@@ -604,13 +633,13 @@ function AdminLayout(
                           <EditCatalogItem
                             key={item.id}
                             linkText={item.name}
-                            onClick={() => categoryClickHandler(item.name)}
+                            onClick={() => categoryClickHandler(item.title)}
                           />
                         )
                       })
                     }
                   </Catalog>
-                  : currentCategory === 'search' && goods.length === 0
+                  : currentCategoryTitle === 'search' && goods.length === 0
                     ? <Text
                       text="Ничего не найдено."
                     />
@@ -619,8 +648,8 @@ function AdminLayout(
             </Promo>
 
             {
-              currentCategory
-                ? !(currentCategory === 'search' && goods.length === 0)
+              currentCategoryTitle
+                ? !(currentCategoryTitle === 'search' && goods.length === 0)
                   ? <>
                     <Visual
                       className="edit"
@@ -642,66 +671,72 @@ function AdminLayout(
                     <EditContent>
                       <EditCards>
                         {
-                          goods
-                            .sort(sortMap[sortValue])
-                            .slice(
-                              (currentPage - 1) * visibleValue,
-                              currentPage === 1 && pages === 1
-                                ? goods.length
-                                : currentPage === pages
-                                  ? goods.length < pages * visibleValue
-                                    ? goods.length
-                                    : pages * visibleValue
-                                  : currentPage * visibleValue
-                            )
-                            .map(item => {
-                              return (
-                                <EditCard
-                                  key={item.id}
-                                  id={item.id}
-                                  url={item.url}
-                                  name={item.name}
-                                  rating={item.rating}
-                                  descr={item.descr}
-                                  category={(currentCategory === 'all' ||
-                                    currentCategory === 'search')
-                                    ? categories.find(
-                                      itemCategories => itemCategories.goods.find(
-                                        itemGood => itemGood.id === item.id
-                                      )
-                                    ).name
-                                    : category.name
-                                  }
-                                  amount={item.amount}
-                                  price={item.price}
-                                  onEditClick={() => editGoodClickHandler(
-                                    item.id,
-                                    (currentCategory === 'all' ||
-                                      currentCategory === 'search')
-                                      ? categories.find(
-                                        itemCategories => itemCategories.goods.find(
-                                          itemGood => itemGood.id === item.id
-                                        )
-                                      ).id
-                                      : category.id
-                                  )}
-                                  onDeleteClick={() => deleteGoodClickHandler(
-                                    item.id,
-                                    (currentCategory === 'all' ||
-                                      currentCategory === 'search')
-                                      ? categories.find(
-                                        itemCategories => itemCategories.goods.find(
-                                          itemGood => itemGood.id === item.id
-                                        )
-                                      ).id
-                                      : category.id
-                                  )}
-                                />
+                          category.title === currentCategoryTitle
+                            ? goods
+                              .sort(sortMap[sortValue])
+                              .slice(
+                                (currentPage - 1) * visibleValue,
+                                currentPage === 1 && pages === 1
+                                  ? goods.length
+                                  : currentPage === pages
+                                    ? goods.length < pages * visibleValue
+                                      ? goods.length
+                                      : pages * visibleValue
+                                    : currentPage * visibleValue
                               )
-                            })
+                              .map(item => {
+                                return (
+                                  <EditCard
+                                    key={item.id}
+                                    id={item.id}
+                                    url={item.url}
+                                    name={item.name}
+                                    rating={item.rating}
+                                    descr={item.descr}
+                                    category={(currentCategoryTitle === 'all' ||
+                                      currentCategoryTitle === 'search')
+                                      ? categories.find(
+                                        itemCategories => itemCategories.goods.find(
+                                          itemGood => itemGood.id === item.id
+                                        )
+                                      ).name
+                                      : category.name
+                                    }
+                                    amount={item.amount}
+                                    price={item.price}
+                                    onEditClick={() => editGoodClickHandler(
+                                      item.id,
+                                      (currentCategoryTitle === 'all' ||
+                                        currentCategoryTitle === 'search')
+                                        ? categories.find(
+                                          itemCategories => itemCategories.goods.find(
+                                            itemGood => itemGood.id === item.id
+                                          )
+                                        ).id
+                                        : category.id
+                                    )}
+                                    onDeleteClick={() => deleteGoodClickHandler(
+                                      item.id,
+                                      (currentCategoryTitle === 'all' ||
+                                        currentCategoryTitle === 'search')
+                                        ? categories.find(
+                                          itemCategories => itemCategories.goods.find(
+                                            itemGood => itemGood.id === item.id
+                                          )
+                                        ).id
+                                        : category.id
+                                    )}
+                                  />
+                                )
+                              })
+                            : null
                         }
                         <EditCardAdd
-                          onClick={() => addGoodClickHandler(category.length ? 1 : category.id)}
+                          onClick={() => addGoodClickHandler(
+                            currentCategoryTitle === 'all' || currentCategoryTitle === 'search'
+                              ? 0
+                              : categories.find(category => category.title === currentCategoryTitle).id
+                          )}
                         />
                       </EditCards>
                     </EditContent>

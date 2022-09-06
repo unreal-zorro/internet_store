@@ -47,6 +47,9 @@ function CategoryPage() {
 
   let currentCategoryTitle = useSelector(state => state.main.currentCategoryTitle)
 
+  const message = useMessage()
+  const {request, error, clearError} = useHttp()
+
   useEffect(() => {
     if (currentCategoryTitle !== categoryTitle) {
       dispatch(currentPageChange(1))
@@ -86,9 +89,6 @@ function CategoryPage() {
       dispatch(currentPageChange(currentPage + 1))
     }
   }
-
-  const message = useMessage()
-  const {request, error, clearError} = useHttp()
 
   useEffect(() => {
     async function fetchData() {
@@ -133,7 +133,7 @@ function CategoryPage() {
     <Promo>
       {
         category.title
-          ? <React.Fragment>
+          ? <>
             <Navigation>
               <NavigationTitle>
                 <NavigationLink
@@ -194,7 +194,7 @@ function CategoryPage() {
               onClickPrevButton={prevButtonClickHandler}
               onClickNextButton={nextButtonClickHandler}
             />
-          </React.Fragment>
+          </>
           : <Text text="Нет такой категории."/>
       }
     </Promo>

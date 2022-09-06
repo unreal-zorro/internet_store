@@ -106,10 +106,9 @@ router.delete('/remove',
         })
       }
 
-      const name = category.name
       await category.remove()
 
-      res.json({ message: `Категория ${name} удалена!` })
+      res.json({ message: `Категория удалена!` })
     } catch (e) {
       res.status(500).json({
         message: 'Что-то пошло не так, попробуйте снова.'

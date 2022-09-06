@@ -17,49 +17,15 @@ import Loader from "../../components/Loader/Loader";
 import Container from "../../components/Container/Container";
 
 function MainLayout() {
+  const categories = useSelector(state => state.categories.categories)
+
   const [searchValue, setSearchValue] = useState('');
   const [searchActive, setSearchActive] = useState(false);
-  const categories = useSelector(state => state.categories.categories)
   const [isSidebarActive, setIsSidebarActive] = useState(
     categories.length === 0
       ? false
       : window.innerWidth > 767
   );
-
-  useEffect(() => {
-    if (window.innerWidth > 767 && categories.length !== 0) {
-      setIsSidebarActive(true)
-    }
-  }, [categories.length]);
-
-  const dispatch = useDispatch()
-
-  const burgerClickHandler = () => {
-    categories.length === 0
-      ? setIsSidebarActive(false)
-      : setIsSidebarActive(!isSidebarActive)
-  }
-
-  const searchChangeHandler = value => {
-    setSearchValue(value)
-  }
-
-  const searchClickHandler = () => {
-    if (searchValue) {
-      setSearchActive(true)
-    }
-  }
-
-  useEffect(() => {
-    setSearchValue('')
-    setSearchActive(false)
-  }, [searchActive]);
-
-  const searchOnKeyDownHandler = key => {
-    if (key === 'Enter') {
-      searchClickHandler()
-    }
-  }
 
   const auth = useContext(AuthContext);
   const isAuth = !!auth.token
@@ -69,6 +35,21 @@ function MainLayout() {
 
   const message = useMessage()
   const { loading, request, error, clearError } = useHttp()
+  const dispatch = useDispatch()
+
+  const { cart, cartClear } = useContext(CartContext)
+  const count = cart.reduce((sum, item) => sum + item.count, 0)
+
+  useEffect(() => {
+    if (window.innerWidth > 767 && categories.length !== 0) {
+      setIsSidebarActive(true)
+    }
+  }, [categories.length]);
+
+  useEffect(() => {
+    setSearchValue('')
+    setSearchActive(false)
+  }, [searchActive]);
 
   useEffect(() => {
     async function fetchData() {
@@ -99,9 +80,6 @@ function MainLayout() {
     clearError()
   }, [error, message, clearError]);
 
-  const { cart, cartClear } = useContext(CartContext)
-  const count = cart.reduce((sum, item) => sum + item.count, 0)
-
   const logoutClickHandler = async () => {
     try {
       const data = await request('/api/auth/logout', 'POST', {userId, cart})
@@ -110,6 +88,28 @@ function MainLayout() {
       logout()
       message(data.message)
     } catch (e) {}
+  }
+
+  const burgerClickHandler = () => {
+    categories.length === 0
+      ? setIsSidebarActive(false)
+      : setIsSidebarActive(!isSidebarActive)
+  }
+
+  const searchChangeHandler = value => {
+    setSearchValue(value)
+  }
+
+  const searchClickHandler = () => {
+    if (searchValue) {
+      setSearchActive(true)
+    }
+  }
+
+  const searchOnKeyDownHandler = key => {
+    if (key === 'Enter') {
+      searchClickHandler()
+    }
   }
 
   return (
