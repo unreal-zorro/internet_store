@@ -87,11 +87,11 @@ router.get('/all',
       if (goods.length === 0) {
         return res.status(400).json({
           goods: [],
-          message: 'Товаров пока нет.'
+          message: 'Всех товаров пока нет.'
         })
       }
 
-      res.json({ goods, message: 'Товары загружены!' })
+      res.json({ goods, message: 'Все товары загружены!' })
     } catch (e) {
       res.status(500).json({
         message: 'Что-то пошло не так, попробуйте снова.'

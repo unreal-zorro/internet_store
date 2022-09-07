@@ -109,10 +109,7 @@ function CategoryPage() {
               amount: good.amount,
               categoryId: good.categoryId
             }
-            await dispatch(addGood({
-              categoryIndex,
-              completeGood
-            }))
+            await dispatch(addGood({ categoryIndex, completeGood }))
           }
         }
         await dispatch(addMessage(data.message))
