@@ -1,14 +1,13 @@
 import {useSearchParams} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 
 import {sortMap} from "../../../utils/sortMap";
 import {
-  currentSearchValueChange,
   currentPageChange,
   pagesChange,
   sortChange,
-  visibleChange
+  visibleChange, addMessage
 } from "../../../redux/mainSlice";
 
 import Visual from "../../../components/Visual/Visual";
@@ -19,45 +18,79 @@ import Card from "../../../components/Card/Card";
 import Pagination from "../../../components/Pagination/Pagination";
 import Promo from "../../../components/Promo/Promo";
 import Text from "../../../components/Text/Text";
+import {addGood} from "../../../redux/categoriesSlice";
+import {useHttp} from "../../../hooks/http.hook";
+import {useMessage} from "../../../hooks/message.hook";
+import Loader from "../../../components/Loader/Loader";
 
 function SearchPage() {
   const categories = useSelector(state => state.categories.categories)
+  const [goods, setGoods] = useState([]);
+
   const sortValue = useSelector(state => state.main.sortValue)
   const visibleValue = useSelector(state => state.main.visibleValue)
   const dispatch = useDispatch()
 
-  let [searchParams] = useSearchParams()
-
+  const [searchParams] = useSearchParams()
   const searchValue = searchParams.get("value")
 
-  let goods = []
-  categories.map(item => {
-      item.goods.map(goodItem => {
-        if (goodItem.name.toLowerCase().includes(searchValue.trim().toLowerCase())) {
-          goods.push({...goodItem, categoryTitle: item.title})
-        }
-        return undefined
-      })
-      return undefined
-    }
-  )
+  const message = useMessage()
+  const { loading, request, error, clearError } = useHttp()
 
-  goods.sort(sortMap[sortValue])
-
-  let currentPage = useSelector(state => state.main.currentPage)
-  let pages = useSelector(state => state.main.pages)
-
-  let currentSearchValue = useSelector(state => state.main.currentSearchValue)
+  const currentPage = useSelector(state => state.main.currentPage)
+  const pages = useSelector(state => state.main.pages)
 
   useEffect(() => {
-    if (currentSearchValue !== searchValue) {
-      dispatch(currentPageChange(1))
-      dispatch(currentSearchValueChange(searchValue))
+    message(error)
+    clearError()
+  }, [error, message, clearError]);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const dataCategories = await request('/api/categories/all')
+        const dataGoods = await request('/api/goods/search', 'POST', { searchValue })
+
+        const newGoods = []
+
+        for (let good of dataGoods.goods) {
+          const currentCategoryId = dataCategories.categories.find(itemCategory => itemCategory._id === good.categoryId).id
+          const currentCategory = categories.find(item => item.id === currentCategoryId)
+
+          newGoods.push({...good, categoryTitle: currentCategory.title})
+
+          if (!currentCategory.goods.find(item => item.id === good.id)) {
+            const categoryIndex = categories.findIndex(item => item.id === currentCategory.id)
+            const completeGood = {
+              id: +good.id,
+              url: good.url,
+              name: good.name,
+              descr: good.descr,
+              rating: good.rating,
+              price: good.price,
+              amount: good.amount,
+              categoryId: good.categoryId
+            }
+            await dispatch(addGood({ categoryIndex, completeGood }))
+          }
+        }
+
+        setGoods(newGoods)
+        await dispatch(addMessage(dataGoods.message))
+      } catch (e) {}
     }
+
+    if (searchValue) {
+      fetchData().then()
+    }
+    dispatch(currentPageChange(1))
+  }, [])
+
+  useEffect(() => {
     if (visibleValue === "all") {
       dispatch(pagesChange(1))
     } else {
-      let pagesValue = Math.ceil(goods.length / visibleValue)
+      const pagesValue = Math.ceil(goods.length / visibleValue)
       dispatch(pagesChange(pagesValue))
     }
   })
@@ -73,18 +106,14 @@ function SearchPage() {
 
   function prevButtonClickHandler() {
     dispatch(pagesChange(pages))
-    if (currentPage === 1) {
-      return undefined
-    } else {
+    if (currentPage !== 1) {
       dispatch(currentPageChange(currentPage - 1))
     }
   }
 
   function nextButtonClickHandler() {
     dispatch(pagesChange(pages))
-    if (currentPage === pages) {
-      return undefined
-    } else {
+    if (currentPage !== pages) {
       dispatch(currentPageChange(currentPage + 1))
     }
   }
@@ -92,56 +121,58 @@ function SearchPage() {
   return (
     <Promo>
       {
-        goods.length !== 0
-          ? <React.Fragment>
-            <Visual>
-              <Sort
-                value={sortValue}
-                onChange={sortSelectChangeHandler}
-              />
-              <Visible
-                value={visibleValue}
-                onChange={visibleSelectChangeHandler}
-              />
-            </Visual>
-            <Cards>
-              {
-                goods
-                  .sort(sortMap[sortValue])
-                  .slice(
-                    (currentPage - 1) * visibleValue,
-                    currentPage === 1 && pages === 1
-                      ? goods.length
-                      : currentPage === pages
-                        ? goods.length < pages * visibleValue
-                          ? goods.length
-                          : pages * visibleValue
-                        : currentPage * visibleValue
-                  )
-                  .map((item) => {
-                    return (
-                      <Card
-                        key={item.id}
-                        url={item.url}
-                        name={item.name}
-                        categoryTitle={item.categoryTitle}
-                        id={item.id}
-                        rating={item.rating}
-                        price={item.price}
-                      />
+        loading
+          ? <Loader />
+          : goods
+            ? <>
+              <Visual>
+                <Sort
+                  value={sortValue}
+                  onChange={sortSelectChangeHandler}
+                />
+                <Visible
+                  value={visibleValue}
+                  onChange={visibleSelectChangeHandler}
+                />
+              </Visual>
+              <Cards>
+                {
+                  goods
+                    .sort(sortMap[sortValue])
+                    .slice(
+                      (currentPage - 1) * visibleValue,
+                      currentPage === 1 && pages === 1
+                        ? goods.length
+                        : currentPage === pages
+                          ? goods.length < pages * visibleValue
+                            ? goods.length
+                            : pages * visibleValue
+                          : currentPage * visibleValue
                     )
-                  })
-              }
-            </Cards>
+                    .map(item => {
+                      return (
+                        <Card
+                          key={item.id}
+                          url={item.url}
+                          name={item.name}
+                          categoryTitle={item.categoryTitle}
+                          id={item.id}
+                          rating={item.rating}
+                          price={item.price}
+                        />
+                      )
+                    })
+                }
+              </Cards>
 
-            <Pagination
-              currentPage={currentPage}
-              pages={pages}
-              onClickPrevButton={prevButtonClickHandler}
-              onClickNextButton={nextButtonClickHandler}
-            />
-          </React.Fragment>
-          : <Text text="Ничего не найдено."/>
+              <Pagination
+                currentPage={currentPage}
+                pages={pages}
+                onClickPrevButton={prevButtonClickHandler}
+                onClickNextButton={nextButtonClickHandler}
+              />
+            </>
+            : <Text text="Ничего не найдено."/>
       }
     </Promo>
   )

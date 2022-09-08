@@ -43,28 +43,62 @@ import EditCardAdd from "../../components/Edit/EditCardAdd/EditCardAdd";
 import Pagination from "../../components/Pagination/Pagination";
 import Loader from "../../components/Loader/Loader";
 
-function AdminLayout(
-  // props
-) {
-  const { isSidebarActive, searchActive, searchValue } = useOutletContext()
+function AdminLayout() {
+  const { isSidebarActive, searchActive, setSearchActive, searchValue, setSearchValue } = useOutletContext()
   const dispatch = useDispatch()
   const message = useMessage()
   const { loading, request, error, clearError } = useHttp()
 
   const categories = useSelector(state => state.categories.categories)
   const [currentCategoryTitle, setCurrentCategoryTitle] = useState('');
-  // const [goods, setGoods] = useState([]);
-  // const [category, setCategory] = useState({id: 0, title: '', name: '', goods: []});
 
   const category = (currentCategoryTitle !== '' && currentCategoryTitle !== 'all' && currentCategoryTitle !== 'search')
     ? categories.find(item => item.title === currentCategoryTitle)
-    : {id: 0, title: '', name: '', goods: []}
+    : currentCategoryTitle === 'all' || currentCategoryTitle === 'search'
+      ? categories
+      : {id: 0, title: '', name: '', goods: []}
+
+  async function fetchData() {
+    try {
+      const dataCategories = await request('/api/categories/all')
+      const dataGoods = await request('/api/goods/search', 'POST', { searchValue })
+
+      const newGoods = []
+
+      for (let good of dataGoods.goods) {
+        const currentCategoryId = dataCategories.categories.find(itemCategory => itemCategory._id === good.categoryId).id
+        const currentCategory = categories.find(item => item.id === currentCategoryId)
+
+        newGoods.push({...good, categoryTitle: currentCategory.title})
+
+        if (!currentCategory.goods.find(item => item.id === good.id)) {
+          const categoryIndex = categories.findIndex(item => item.id === currentCategory.id)
+          const completeGood = {
+            id: +good.id,
+            url: good.url,
+            name: good.name,
+            descr: good.descr,
+            rating: good.rating,
+            price: good.price,
+            amount: good.amount,
+            categoryId: good.categoryId
+          }
+          await dispatch(addGood({ categoryIndex, completeGood }))
+        }
+      }
+
+      await dispatch(addMessage(dataGoods.message))
+      return newGoods
+    } catch (e) {}
+  }
 
   const goods = (currentCategoryTitle !== '' && currentCategoryTitle !== 'all' && currentCategoryTitle !== 'search')
     ? categories.find(item => item.title === currentCategoryTitle).goods
     : currentCategoryTitle === 'all'
       ? [].concat(...categories.map(item => item.goods))
-      : []
+      : currentCategoryTitle === 'search'
+        ? fetchData().then()
+        : []
 
   const [editGoodAction, setEditGoodAction] = useState('');
   const [editAction, setEditAction] = useState('');
@@ -93,8 +127,6 @@ function AdminLayout(
   const [currentPage, setCurrentPage] = useState(1);
   const [pages, setPages] = useState(10);
 
-  // const location = useLocation()
-
   useEffect(() => {
     message(error)
     clearError()
@@ -102,107 +134,52 @@ function AdminLayout(
 
   // useEffect(() => {
   //   const currentCategory = categories.find(item => item.title === currentCategoryTitle)
+  //     ? categories.find(item => item.title === currentCategoryTitle)
+  //     : (currentCategoryTitle === 'all' || currentCategoryTitle === 'search')
+  //       ? categories
+  //       : {id: 0, title: '', name: '', goods: []}
   //
-  //   if (currentCategory) {
-  //     const newGoods = currentCategory.goods
-  //     setGoods(newGoods)
-  //   }
-  // }, [currentCategoryTitle]);
-
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     try {
-  //       const currentCategory = categories.find(item => item.title === currentCategoryTitle)
-  //       const data = await request(`/api/goods/category/${currentCategory.id}`)
-  //       const categoryIndex = categories.findIndex(item => item.id === currentCategory.id)
+  //   let goods = []
   //
-  //       for (let good of data.goods) {
-  //         if (!goods.find(item => item.id === good.id)) {
-  //           const completeGood = {
-  //             id: +good.id,
-  //             url: good.url,
-  //             name: good.name,
-  //             descr: good.descr,
-  //             rating: good.rating,
-  //             price: good.price,
-  //             amount: good.amount,
-  //             categoryId: good.categoryId
-  //           }
-  //           await dispatch(addGood({ categoryIndex, completeGood }))
+  //   if (searchActive) {
+  //     categories.map(item => {
+  //       item.goods.map(goodItem => {
+  //         if (goodItem.name.toLowerCase().includes(searchValue.trim().toLowerCase())) {
+  //           goods.push({...goodItem})
   //         }
-  //       }
-  //       const newGoods = currentCategory.goods
-  //       setGoods(newGoods)
-  //       await dispatch(addMessage(data.message))
-  //     } catch (e) {
-  //       setGoods([])
-  //       setCategory({id: 0, title: '', name: '', goods: []})
-  //     }
+  //         return undefined
+  //       })
+  //       return undefined
+  //     })
+  //   } else {
+  //     goods = currentCategory.length === 0
+  //       ? []
+  //       : currentCategory.length === 1
+  //         ? currentCategory.goods.length === 0
+  //           ? []
+  //           : [].concat(currentCategory.goods)
+  //         : [].concat(...categories.map(item => item.goods))
   //   }
   //
-  //   if (goods.length === 0 && category.id !== 0) {
-  //     fetchData().then()
-  //   }
-  // }, [currentCategoryTitle])
-
-  // const ourProps = {
-  //   children: 'example JSX element',
-  //   isSidebarActive, searchActive, searchValue, currentCategory, setCurrentCategory, goods
-  // }
+  //   goods.sort(sortMap[sortValue])
   //
-  // const newProps = Object.assign({}, ourProps);
-  // delete newProps.children;
+  //   goods.slice(
+  //     (currentPage - 1) * visibleValue,
+  //     currentPage === 1 && pages === 1
+  //       ? goods.length
+  //       : currentPage === pages
+  //         ? goods.length < pages * visibleValue
+  //           ? goods.length
+  //           : pages * visibleValue
+  //         : currentPage * visibleValue
+  //   )
   //
-  // const children = React.cloneElement(props.children, newProps)
-
-  useEffect(() => {
-    const currentCategory = categories.find(item => item.title === currentCategoryTitle)
-      ? categories.find(item => item.title === currentCategoryTitle)
-      : (currentCategoryTitle === 'all' || currentCategoryTitle === 'search')
-        ? categories
-        : {id: 0, title: '', name: '', goods: []}
-
-    let goods = []
-
-    if (searchActive) {
-      categories.map(item => {
-        item.goods.map(goodItem => {
-          if (goodItem.name.toLowerCase().includes(searchValue.trim().toLowerCase())) {
-            goods.push({...goodItem})
-          }
-          return undefined
-        })
-        return undefined
-      })
-    } else {
-      goods = currentCategory.length === 0
-        ? []
-        : currentCategory.length === 1
-          ? currentCategory.goods.length === 0
-            ? []
-            : [].concat(currentCategory.goods)
-          : [].concat(...categories.map(item => item.goods))
-    }
-
-    goods.sort(sortMap[sortValue])
-
-    goods.slice(
-      (currentPage - 1) * visibleValue,
-      currentPage === 1 && pages === 1
-        ? goods.length
-        : currentPage === pages
-          ? goods.length < pages * visibleValue
-            ? goods.length
-            : pages * visibleValue
-          : currentPage * visibleValue
-    )
-
-    const newPages = visibleValue !== 'all'
-      ? Math.ceil(goods.length / visibleValue)
-      : 1
-
-    setPages(newPages)
-  }, [currentCategoryTitle, searchActive, pages, sortValue, currentPage, visibleValue, searchValue, categories]);
+  //   const newPages = visibleValue !== 'all'
+  //     ? Math.ceil(goods.length / visibleValue)
+  //     : 1
+  //
+  //   setPages(newPages)
+  // }, [currentCategoryTitle, searchActive, pages, sortValue, currentPage, visibleValue, searchValue, categories]);
 
   useEffect(() => {
     const newPages = visibleValue !== 'all'
@@ -215,32 +192,88 @@ function AdminLayout(
     setCurrentPage(1)
   }, [currentCategoryTitle]);
 
+  useEffect(() => {
+    if (searchActive) {
+      setCurrentCategoryTitle('search')
+    }
+
+    // async function fetchData() {
+    //   try {
+    //     const dataCategories = await request('/api/categories/all')
+    //     const dataGoods = await request('/api/goods/search', 'POST', { searchValue })
+    //
+    //     const newGoods = []
+    //
+    //     for (let good of dataGoods.goods) {
+    //       const currentCategoryId = dataCategories.categories.find(itemCategory => itemCategory._id === good.categoryId).id
+    //       const currentCategory = categories.find(item => item.id === currentCategoryId)
+    //
+    //       newGoods.push({...good, categoryTitle: currentCategory.title})
+    //
+    //       if (!currentCategory.goods.find(item => item.id === good.id)) {
+    //         const categoryIndex = categories.findIndex(item => item.id === currentCategory.id)
+    //         const completeGood = {
+    //           id: +good.id,
+    //           url: good.url,
+    //           name: good.name,
+    //           descr: good.descr,
+    //           rating: good.rating,
+    //           price: good.price,
+    //           amount: good.amount,
+    //           categoryId: good.categoryId
+    //         }
+    //         await dispatch(addGood({ categoryIndex, completeGood }))
+    //       }
+    //     }
+    //
+    //     setGoods(newGoods)
+    //     await dispatch(addMessage(dataGoods.message))
+    //   } catch (e) {}
+    // }
+    //
+    // if (searchValue) {
+    //   fetchData().then()
+    // }
+    setCurrentPage(1)
+    // setSearchValue('')
+    setSearchActive(false)
+  }, [searchActive]);
+
   const allCategoriesClickHandler = async () => {
     setCurrentCategoryTitle('all')
-    try {
-      const data = await request('/api/goods/all')
 
-      for (const good of data.goods) {
-        console.log("good: ", good)
+    const idxEmptyCategory = categories.findIndex(item => item.goods.length === 0)
 
-        const categoryIndex = categories.findIndex(itemCategory => itemCategory._id === good.categoryId);
-        if (!goods.find(itemGood => itemGood.id === good.id)) {
-          const completeGood = {
-            id: +good.id,
-            url: good.url,
-            name: good.name,
-            descr: good.descr,
-            rating: good.rating,
-            price: good.price,
-            amount: good.amount,
-            categoryId: good.categoryId
+    if (idxEmptyCategory !== -1) {
+      try {
+        const dataCategories = await request('/api/categories/all')
+        const dataGoods = await request('/api/goods/all')
+
+        for (let good of dataGoods.goods) {
+          const currentCategoryId = dataCategories.categories.find(itemCategory => itemCategory._id === good.categoryId).id
+          const currentCategory = categories.find(item => item.id === currentCategoryId)
+
+          if (currentCategory.goods.length === 0) {
+            const categoryIndex = dataCategories.categories.findIndex(itemCategory => itemCategory._id === good.categoryId);
+
+            if (!goods.find(itemGood => itemGood.id === good.id)) {
+              const completeGood = {
+                id: +good.id,
+                url: good.url,
+                name: good.name,
+                descr: good.descr,
+                rating: good.rating,
+                price: good.price,
+                amount: good.amount
+              }
+              await dispatch(addGood({ categoryIndex, completeGood }))
+            }
           }
-          await dispatch(addGood({ categoryIndex, completeGood }))
         }
-      }
 
-      await dispatch(addMessage(data.message))
-    } catch (e) {}
+        await dispatch(addMessage(dataGoods.message))
+      } catch (e) {}
+    }
   }
 
   const categoryClickHandler = async (title) => {
@@ -261,24 +294,13 @@ function AdminLayout(
               descr: good.descr,
               rating: good.rating,
               price: good.price,
-              amount: good.amount,
-              categoryId: good.categoryId
+              amount: good.amount
             }
             await dispatch(addGood({ categoryIndex, completeGood }))
-            // setGoods(prevState => [].concat(prevState, completeGood))
-            // setCategory(currentCategory)
           }
         }
-        // const newGoods = currentCategory.goods
-        // setGoods(newGoods)
         await dispatch(addMessage(data.message))
-      } catch (e) {
-        // setGoods([])
-        // setCategory({id: 0, title: '', name: '', goods: []})
-      }
-    } else {
-      // setGoods(currentCategory.goods)
-      // setCategory(currentCategory)
+      } catch (e) {}
     }
   }
 
@@ -648,17 +670,13 @@ function AdminLayout(
   }
 
   const prevButtonClickHandler = () => {
-    if (currentPage === 1) {
-      return undefined
-    } else {
+    if (currentPage !== 1) {
       setCurrentPage(currentPage - 1)
     }
   }
 
   const nextButtonClickHandler = () => {
-    if (currentPage === pages) {
-      return undefined
-    } else {
+    if (currentPage !== pages) {
       setCurrentPage(currentPage + 1)
     }
   }
@@ -792,7 +810,7 @@ function AdminLayout(
 
             {
               currentCategoryTitle
-                ? !(currentCategoryTitle === 'search' && goods.length === 0)
+                ? !(goods.length === 0)
                   ? <>
                     <Visual
                       className="edit"
@@ -814,65 +832,60 @@ function AdminLayout(
                     <EditContent>
                       <EditCards>
                         {
-                          category.title === currentCategoryTitle
-                            ? goods.slice()
-                              .sort(sortMap[sortValue])
-                              .slice(
-                                (currentPage - 1) * visibleValue,
-                                currentPage === 1 && pages === 1
-                                  ? goods.length
-                                  : currentPage === pages
-                                    ? goods.length < pages * visibleValue
-                                      ? goods.length
-                                      : pages * visibleValue
-                                    : currentPage * visibleValue
-                              )
-                              .map(item => {
-                                return (
-                                  <EditCard
-                                    key={item.id}
-                                    id={item.id}
-                                    url={item.url}
-                                    name={item.name}
-                                    rating={item.rating}
-                                    descr={item.descr}
-                                    category={(currentCategoryTitle === 'all' ||
-                                      currentCategoryTitle === 'search')
-                                      ? categories.find(
+                          goods.slice()
+                            .sort(sortMap[sortValue])
+                            .slice(
+                              (currentPage - 1) * visibleValue,
+                              currentPage === 1 && pages === 1
+                                ? goods.length
+                                : currentPage === pages
+                                  ? goods.length < pages * visibleValue
+                                    ? goods.length
+                                    : pages * visibleValue
+                                  : currentPage * visibleValue
+                            )
+                            .map(item => {
+                              return (
+                                <EditCard
+                                  key={item.id}
+                                  id={item.id}
+                                  url={item.url}
+                                  name={item.name}
+                                  rating={item.rating}
+                                  descr={item.descr}
+                                  category={currentCategoryTitle === 'all'
+                                    ? category.find(
+                                      itemCategories => itemCategories.goods.find(
+                                        itemGood => itemGood.id === item.id
+                                      )
+                                    ).name
+                                    : category.name
+                                  }
+                                  amount={item.amount}
+                                  price={item.price}
+                                  onEditClick={() => editGoodClickHandler(
+                                    item.id,
+                                    currentCategoryTitle === 'all'
+                                      ? category.find(
                                         itemCategories => itemCategories.goods.find(
                                           itemGood => itemGood.id === item.id
                                         )
-                                      ).name
-                                      : category.name
-                                    }
-                                    amount={item.amount}
-                                    price={item.price}
-                                    onEditClick={() => editGoodClickHandler(
-                                      item.id,
-                                      (currentCategoryTitle === 'all' ||
-                                        currentCategoryTitle === 'search')
-                                        ? categories.find(
-                                          itemCategories => itemCategories.goods.find(
-                                            itemGood => itemGood.id === item.id
-                                          )
-                                        ).id
-                                        : category.id
-                                    )}
-                                    onDeleteClick={() => deleteGoodClickHandler(
-                                      item.id,
-                                      (currentCategoryTitle === 'all' ||
-                                        currentCategoryTitle === 'search')
-                                        ? categories.find(
-                                          itemCategories => itemCategories.goods.find(
-                                            itemGood => itemGood.id === item.id
-                                          )
-                                        ).id
-                                        : category.id
-                                    )}
-                                  />
-                                )
-                              })
-                            : null
+                                      ).id
+                                      : category.id
+                                  )}
+                                  onDeleteClick={() => deleteGoodClickHandler(
+                                    item.id,
+                                    currentCategoryTitle === 'all'
+                                      ? category.find(
+                                        itemCategories => itemCategories.goods.find(
+                                          itemGood => itemGood.id === item.id
+                                        )
+                                      ).id
+                                      : category.id
+                                  )}
+                                />
+                              )
+                            })
                         }
                         <EditCardAdd
                           onClick={() => addGoodClickHandler(

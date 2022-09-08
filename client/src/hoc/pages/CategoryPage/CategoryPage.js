@@ -55,6 +55,9 @@ function CategoryPage() {
       dispatch(currentPageChange(1))
       dispatch(currentCategoryTitleChange(categoryTitle))
     }
+  })
+
+  useEffect(() => {
     if (visibleValue === "all") {
       dispatch(pagesChange(1))
     } else {
@@ -62,33 +65,6 @@ function CategoryPage() {
       dispatch(pagesChange(pagesValue))
     }
   })
-
-  function sortSelectChangeHandler(value) {
-    dispatch(sortChange(value.target.value))
-  }
-
-  function visibleSelectChangeHandler(value) {
-    dispatch(currentPageChange(1))
-    dispatch(visibleChange(value.target.value))
-  }
-
-  function prevButtonClickHandler() {
-    dispatch(pagesChange(pages))
-    if (currentPage === 1) {
-      return undefined
-    } else {
-      dispatch(currentPageChange(currentPage - 1))
-    }
-  }
-
-  function nextButtonClickHandler() {
-    dispatch(pagesChange(pages))
-    if (currentPage === pages) {
-      return undefined
-    } else {
-      dispatch(currentPageChange(currentPage + 1))
-    }
-  }
 
   useEffect(() => {
     async function fetchData() {
@@ -116,7 +92,7 @@ function CategoryPage() {
       } catch (e) {}
     }
 
-    if (goods.length === 0 && category.id !== 0) {
+    if (category.id !== 0) {
       fetchData().then()
     }
   }, [categoryTitle])
@@ -125,6 +101,33 @@ function CategoryPage() {
     message(error)
     clearError()
   }, [error, message, clearError]);
+
+  function sortSelectChangeHandler(value) {
+    dispatch(sortChange(value.target.value))
+  }
+
+  function visibleSelectChangeHandler(value) {
+    dispatch(currentPageChange(1))
+    dispatch(visibleChange(value.target.value))
+  }
+
+  function prevButtonClickHandler() {
+    dispatch(pagesChange(pages))
+    if (currentPage === 1) {
+      return undefined
+    } else {
+      dispatch(currentPageChange(currentPage - 1))
+    }
+  }
+
+  function nextButtonClickHandler() {
+    dispatch(pagesChange(pages))
+    if (currentPage === pages) {
+      return undefined
+    } else {
+      dispatch(currentPageChange(currentPage + 1))
+    }
+  }
 
   return (
     <Promo>

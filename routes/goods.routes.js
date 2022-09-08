@@ -3,7 +3,6 @@ const router = Router()
 const {body, validationResult} = require('express-validator')
 const Good = require('../models/Good')
 const Category = require('../models/Category')
-const {Types} = require("mongoose");
 
 // /api/goods/create
 router.post('/create',
@@ -64,7 +63,7 @@ router.get('/category/:id',
 
       const goods = await Good.find({ categoryId: category._id })
 
-      if (goods.length === 0) {
+      if (!goods) {
         return res.status(400).json({
           message: 'Товаров в данной категории пока нет.'
         })
@@ -189,5 +188,43 @@ router.put('/update',
       })
     }
 })
+
+// /api/goods/search
+router.post('/search',
+  body('searchValue', 'Некорректное выражение для поиска.').not().isEmpty().trim(),
+  async (req, res) => {
+    try {
+      const errors = validationResult(req)
+
+      if (!errors.isEmpty()) {
+        return res.status(400).json({
+          errors: errors.array(),
+          message: 'Некорректные данные при поиске товаров.'
+        })
+      }
+
+      const { searchValue } = req.body
+      const allGoods = await Good.find({})
+      const regexp = new RegExp(`${searchValue}`, 'i')
+      const goods = allGoods.filter(item => regexp.test(item.name))
+
+      if (!goods) {
+        return res.status(400).json({
+          goods: [],
+          message: 'Ничего не найдено.'
+        })
+      }
+
+      if (goods.length) {
+        res.json({ goods, message: 'Товары найдены!' })
+      } else {
+        res.json({ goods, message: 'Один товар найден!' })
+      }
+    } catch (e) {
+      res.status(500).json({
+        message: 'Что-то пошло не так, попробуйте снова.'
+      })
+    }
+  })
 
 module.exports = router

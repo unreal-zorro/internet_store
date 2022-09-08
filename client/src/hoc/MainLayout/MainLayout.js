@@ -46,10 +46,10 @@ function MainLayout() {
     }
   }, [categories.length]);
 
-  useEffect(() => {
-    setSearchValue('')
-    setSearchActive(false)
-  }, [searchActive]);
+  // useEffect(() => {
+  //   setSearchValue('')
+  //   setSearchActive(false)
+  // }, [searchActive]);
 
   useEffect(() => {
     async function fetchData() {
@@ -134,7 +134,7 @@ function MainLayout() {
         loading
           ? <Container><Loader /></Container>
           : <Outlet
-            context={{ isSidebarActive, searchActive, searchValue }}
+            context={{ isSidebarActive, searchActive, setSearchActive, searchValue, setSearchValue }}
           />
       }
 
