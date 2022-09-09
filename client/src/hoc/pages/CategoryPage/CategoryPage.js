@@ -92,7 +92,7 @@ function CategoryPage() {
       } catch (e) {}
     }
 
-    if (category.id !== 0) {
+    if (goods.length === 0 && category.id !== 0) {
       fetchData().then()
     }
   }, [categoryTitle])

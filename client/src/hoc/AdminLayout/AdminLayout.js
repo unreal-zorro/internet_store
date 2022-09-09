@@ -45,6 +45,7 @@ import Loader from "../../components/Loader/Loader";
 
 function AdminLayout() {
   const { isSidebarActive, searchActive, setSearchActive, searchValue, setSearchValue } = useOutletContext()
+
   const dispatch = useDispatch()
   const message = useMessage()
   const { loading, request, error, clearError } = useHttp()
@@ -52,52 +53,25 @@ function AdminLayout() {
   const categories = useSelector(state => state.categories.categories)
   const [currentCategoryTitle, setCurrentCategoryTitle] = useState('');
 
-  const category = (currentCategoryTitle !== '' && currentCategoryTitle !== 'all' && currentCategoryTitle !== 'search')
+  const category = (currentCategoryTitle !== '' &&
+    currentCategoryTitle !== 'all' &&
+    currentCategoryTitle !== 'search')
     ? categories.find(item => item.title === currentCategoryTitle)
     : currentCategoryTitle === 'all' || currentCategoryTitle === 'search'
       ? categories
       : {id: 0, title: '', name: '', goods: []}
 
-  async function fetchData() {
-    try {
-      const dataCategories = await request('/api/categories/all')
-      const dataGoods = await request('/api/goods/search', 'POST', { searchValue })
+  const [searchGoods, setSearchGoods] = useState([]);
+  const [lastSearchValue, setLastSearchValue] = useState('');
 
-      const newGoods = []
-
-      for (let good of dataGoods.goods) {
-        const currentCategoryId = dataCategories.categories.find(itemCategory => itemCategory._id === good.categoryId).id
-        const currentCategory = categories.find(item => item.id === currentCategoryId)
-
-        newGoods.push({...good, categoryTitle: currentCategory.title})
-
-        if (!currentCategory.goods.find(item => item.id === good.id)) {
-          const categoryIndex = categories.findIndex(item => item.id === currentCategory.id)
-          const completeGood = {
-            id: +good.id,
-            url: good.url,
-            name: good.name,
-            descr: good.descr,
-            rating: good.rating,
-            price: good.price,
-            amount: good.amount,
-            categoryId: good.categoryId
-          }
-          await dispatch(addGood({ categoryIndex, completeGood }))
-        }
-      }
-
-      await dispatch(addMessage(dataGoods.message))
-      return newGoods
-    } catch (e) {}
-  }
-
-  const goods = (currentCategoryTitle !== '' && currentCategoryTitle !== 'all' && currentCategoryTitle !== 'search')
+  const goods = (currentCategoryTitle !== '' &&
+    currentCategoryTitle !== 'all' &&
+    currentCategoryTitle !== 'search')
     ? categories.find(item => item.title === currentCategoryTitle).goods
     : currentCategoryTitle === 'all'
       ? [].concat(...categories.map(item => item.goods))
       : currentCategoryTitle === 'search'
-        ? fetchData().then()
+        ? searchGoods
         : []
 
   const [editGoodAction, setEditGoodAction] = useState('');
@@ -128,58 +102,14 @@ function AdminLayout() {
   const [pages, setPages] = useState(10);
 
   useEffect(() => {
+    setSearchValue('')
+    setSearchActive(false)
+  }, [searchActive]);
+
+  useEffect(() => {
     message(error)
     clearError()
   }, [error, message, clearError]);
-
-  // useEffect(() => {
-  //   const currentCategory = categories.find(item => item.title === currentCategoryTitle)
-  //     ? categories.find(item => item.title === currentCategoryTitle)
-  //     : (currentCategoryTitle === 'all' || currentCategoryTitle === 'search')
-  //       ? categories
-  //       : {id: 0, title: '', name: '', goods: []}
-  //
-  //   let goods = []
-  //
-  //   if (searchActive) {
-  //     categories.map(item => {
-  //       item.goods.map(goodItem => {
-  //         if (goodItem.name.toLowerCase().includes(searchValue.trim().toLowerCase())) {
-  //           goods.push({...goodItem})
-  //         }
-  //         return undefined
-  //       })
-  //       return undefined
-  //     })
-  //   } else {
-  //     goods = currentCategory.length === 0
-  //       ? []
-  //       : currentCategory.length === 1
-  //         ? currentCategory.goods.length === 0
-  //           ? []
-  //           : [].concat(currentCategory.goods)
-  //         : [].concat(...categories.map(item => item.goods))
-  //   }
-  //
-  //   goods.sort(sortMap[sortValue])
-  //
-  //   goods.slice(
-  //     (currentPage - 1) * visibleValue,
-  //     currentPage === 1 && pages === 1
-  //       ? goods.length
-  //       : currentPage === pages
-  //         ? goods.length < pages * visibleValue
-  //           ? goods.length
-  //           : pages * visibleValue
-  //         : currentPage * visibleValue
-  //   )
-  //
-  //   const newPages = visibleValue !== 'all'
-  //     ? Math.ceil(goods.length / visibleValue)
-  //     : 1
-  //
-  //   setPages(newPages)
-  // }, [currentCategoryTitle, searchActive, pages, sortValue, currentPage, visibleValue, searchValue, categories]);
 
   useEffect(() => {
     const newPages = visibleValue !== 'all'
@@ -197,46 +127,36 @@ function AdminLayout() {
       setCurrentCategoryTitle('search')
     }
 
-    // async function fetchData() {
-    //   try {
-    //     const dataCategories = await request('/api/categories/all')
-    //     const dataGoods = await request('/api/goods/search', 'POST', { searchValue })
-    //
-    //     const newGoods = []
-    //
-    //     for (let good of dataGoods.goods) {
-    //       const currentCategoryId = dataCategories.categories.find(itemCategory => itemCategory._id === good.categoryId).id
-    //       const currentCategory = categories.find(item => item.id === currentCategoryId)
-    //
-    //       newGoods.push({...good, categoryTitle: currentCategory.title})
-    //
-    //       if (!currentCategory.goods.find(item => item.id === good.id)) {
-    //         const categoryIndex = categories.findIndex(item => item.id === currentCategory.id)
-    //         const completeGood = {
-    //           id: +good.id,
-    //           url: good.url,
-    //           name: good.name,
-    //           descr: good.descr,
-    //           rating: good.rating,
-    //           price: good.price,
-    //           amount: good.amount,
-    //           categoryId: good.categoryId
-    //         }
-    //         await dispatch(addGood({ categoryIndex, completeGood }))
-    //       }
-    //     }
-    //
-    //     setGoods(newGoods)
-    //     await dispatch(addMessage(dataGoods.message))
-    //   } catch (e) {}
-    // }
-    //
-    // if (searchValue) {
-    //   fetchData().then()
-    // }
+    async function fetchData() {
+      try {
+        const dataCategories = await request('/api/categories/all')
+        const dataGoods = await request('/api/goods/search', 'POST', { searchValue })
+
+        const newGoods = []
+
+        for (let good of dataGoods.goods) {
+          const currentCategoryId = dataCategories.categories
+            .find(itemCategory => itemCategory._id === good.categoryId).id
+          const currentCategory = categories.find(item => item.id === currentCategoryId)
+
+          newGoods.push({
+            ...good,
+            categoryTitle: currentCategory.title,
+            categoryName: currentCategory.name,
+            categoryId: currentCategory.id
+          })
+        }
+
+        setSearchGoods(newGoods)
+        await dispatch(addMessage(dataGoods.message))
+      } catch (e) {}
+    }
+
+    if (searchValue) {
+      setLastSearchValue(searchValue)
+      fetchData().then()
+    }
     setCurrentPage(1)
-    // setSearchValue('')
-    setSearchActive(false)
   }, [searchActive]);
 
   const allCategoriesClickHandler = async () => {
@@ -250,13 +170,15 @@ function AdminLayout() {
         const dataGoods = await request('/api/goods/all')
 
         for (let good of dataGoods.goods) {
-          const currentCategoryId = dataCategories.categories.find(itemCategory => itemCategory._id === good.categoryId).id
+          const currentCategoryId = dataCategories.categories
+            .find(itemCategory => itemCategory._id === good.categoryId).id
           const currentCategory = categories.find(item => item.id === currentCategoryId)
 
           if (currentCategory.goods.length === 0) {
-            const categoryIndex = dataCategories.categories.findIndex(itemCategory => itemCategory._id === good.categoryId);
+            const categoryIndex = dataCategories.categories
+              .findIndex(itemCategory => itemCategory._id === good.categoryId);
 
-            if (!goods.find(itemGood => itemGood.id === good.id)) {
+            if (!currentCategory.goods.find(itemGood => itemGood.id === good.id)) {
               const completeGood = {
                 id: +good.id,
                 url: good.url,
@@ -286,7 +208,7 @@ function AdminLayout() {
         const categoryIndex = categories.findIndex(item => item.id === currentCategory.id)
 
         for (let good of data.goods) {
-          if (!goods.find(item => item.id === good.id)) {
+          if (!currentCategory.goods.find(item => item.id === good.id)) {
             const completeGood = {
               id: +good.id,
               url: good.url,
@@ -415,8 +337,21 @@ function AdminLayout() {
         const data = await request('/api/goods/create', 'POST', { ...completeGood })
         dispatch(addMessage(data.message))
         dispatch(addGood({ categoryIndex, completeGood }))
+
+        if (currentCategoryTitle === 'search' &&
+          completeGood.name.toLowerCase().includes(lastSearchValue.toLowerCase())
+        ) {
+          const newGoods = [].concat(goods, {
+            ...completeGood,
+            categoryTitle: currentCategory.title,
+            categoryName: currentCategory.name,
+            categoryId: currentCategory.id
+          })
+          setSearchGoods(newGoods)
+        }
       } else if (action === 'edit') {
-        const data = await request('/api/goods/update', 'PUT', { ...completeGood, currentId: currentGoodId })
+        const data = await request('/api/goods/update', 'PUT',
+          { ...completeGood, currentId: currentGoodId })
         dispatch(addMessage(data.message))
 
         const goodIndex = categories[categoryIndex].goods.findIndex(item => item.id === currentGoodId)
@@ -429,25 +364,27 @@ function AdminLayout() {
           dispatch(addGood({ categoryIndex, completeGood }))
           dispatch(deleteGood({ categoryIndex: currentCategoryIndex, goodIndex: currentGoodIndex }))
         }
+
+        const searchValue = lastSearchValue.toLowerCase()
+        const goodSearchIndex = searchGoods.findIndex(item => item.name.toLowerCase().includes(searchValue))
+        const isNewGood = completeGood.name.toLowerCase().includes(searchValue)
+        const newGoods = searchGoods.slice()
+
+        if (currentCategoryTitle === 'search') {
+          if (isNewGood) {
+            newGoods.splice(goodSearchIndex, 1, {
+              ...completeGood,
+              categoryTitle: currentCategory.title,
+              categoryName: currentCategory.name,
+              categoryId: currentCategory.id
+            })
+          } else {
+            newGoods.splice(goodSearchIndex, 1)
+          }
+        }
+        setSearchGoods(newGoods)
       }
 
-      // const category = categories.find(item => item.name === currentCategory)
-      //   ? categories.find(item => item.name === currentCategory)
-      //   : currentCategory === 'all'
-      //     ? categories
-      //     : {id: 0, title: '', name: '', goods: []}
-
-      // const newGoods = (currentCategoryTitle === 'all' || currentCategoryTitle === 'search')
-      //   ? [].concat(...categories.map(item => item.goods))
-      //   : categories.find(category => category.title === currentCategoryTitle).goods
-
-      // const goods = category.length
-      //   ? [].concat(...mainStore.getState().categories.categories.map(item => item.goods))
-      //   : category.goods.length === 0
-      //     ? []
-      //     : [].concat(category.goods)
-
-      // setGoods(newGoods)
       setEditGoodAction('')
       setCurrentEditedGoodId('')
       setCurrentEditedGoodCategoryId('')
@@ -461,11 +398,6 @@ function AdminLayout() {
       setEditedGoodDescr('')
       setEditedGoodAmount('')
       setEditedGoodPrice('')
-
-      // }
-      // if (this.state.currentCategory === 'search') {
-      //   await this.searchClickHandler(this.state.tempSearchValue)
-      // }
     }
   }
 
@@ -598,14 +530,16 @@ function AdminLayout() {
 
   const editGoodClickHandler = (goodId, categoryId) => {
     const editedCategory = categories.find(item => item.id === +categoryId)
-    const good = editedCategory.goods.find(item => item.id === +goodId)
+    const good = currentCategoryTitle === 'search'
+      ? goods.find(item => item.id === goodId)
+      : editedCategory.goods.find(item => item.id === +goodId)
     setEditGoodAction('edit')
     setCurrentEditedGoodId(goodId)
     setCurrentEditedGoodCategoryId(categoryId)
     setEditedGoodId(goodId)
     setErrorEditedGoodId('')
     setEditedGoodRating(good.rating)
-    setEditedGoodCategory(good.title)
+    setEditedGoodCategory(editedCategory.title)
     setEditedGoodUrl(good.url)
     setEditedGoodName(good.name)
     setErrorEditedGoodName('')
@@ -621,32 +555,17 @@ function AdminLayout() {
     try {
       const data = await request('/api/goods/remove', 'DELETE', { id: goodId })
       dispatch(addMessage(data.message))
-      dispatch(deleteGood({ categoryIndex, goodIndex }))
 
-      // const currentCategory = (currentCategoryTitle !== '' || currentCategoryTitle !== 'all' || currentCategoryTitle !== 'search')
-      //   ? categories.find(item => item.title === currentCategoryTitle)
-      //   : (currentCategoryTitle === 'all' || currentCategoryTitle === 'search')
-      //     ? categories
-      //     : {id: 0, title: '', name: '', goods: []}
+      if (currentCategoryTitle === 'search') {
+        if (goods.length) {
+          setSearchGoods(goods.filter(item => item.id !== +goodId))
+        }
+      }
 
-      // const category = categories.find(item => item.title === currentCategoryTitle)
-      //   ? categories.find(item => item.title === currentCategoryTitle)
-      //   : currentCategoryTitle === 'all'
-      //     ? categories
-      //     : {id: 0, title: '', name: '', goods: []}
-
-      // const newGoods = currentCategory.length !== 0
-      //   ? [].concat(...categories.map(item => item.goods))
-      //   : category.goods.length === 0
-      //     ? []
-      //     : [].concat(category.goods)
-
-      // setGoods(newGoods)
+      if (goodIndex !== -1) {
+        dispatch(deleteGood({ categoryIndex, goodIndex }))
+      }
     } catch (e) {}
-
-    // if (this.state.currentCategory === 'search') {
-    //   await this.searchClickHandler(this.state.tempSearchValue)
-    // }
   }
 
   const addGoodClickHandler = (categoryId = 0) => {
@@ -855,11 +774,13 @@ function AdminLayout() {
                                   descr={item.descr}
                                   category={currentCategoryTitle === 'all'
                                     ? category.find(
-                                      itemCategories => itemCategories.goods.find(
+                                      itemCategory => itemCategory.goods.find(
                                         itemGood => itemGood.id === item.id
                                       )
                                     ).name
-                                    : category.name
+                                    : currentCategoryTitle === 'search'
+                                      ? item.categoryName
+                                      : category.name
                                   }
                                   amount={item.amount}
                                   price={item.price}
@@ -871,17 +792,21 @@ function AdminLayout() {
                                           itemGood => itemGood.id === item.id
                                         )
                                       ).id
-                                      : category.id
+                                      : currentCategoryTitle === 'search'
+                                        ? item.categoryId
+                                        : category.id
                                   )}
                                   onDeleteClick={() => deleteGoodClickHandler(
                                     item.id,
                                     currentCategoryTitle === 'all'
-                                      ? category.find(
+                                      ? categories.find(
                                         itemCategories => itemCategories.goods.find(
                                           itemGood => itemGood.id === item.id
                                         )
                                       ).id
-                                      : category.id
+                                      : currentCategoryTitle === 'search'
+                                        ? item.categoryId
+                                        : category.id
                                   )}
                                 />
                               )

@@ -180,8 +180,11 @@ router.put('/update',
         }
       }
 
-      await Good.findByIdAndUpdate( good._id, { id, url, name, descr, rating, price, amount, categoryId })
-      res.json({ message: `Товар обновлён!` })
+      const newCategory = await Category.findOne({ id: categoryId })
+      const newCategoryId = newCategory._id
+
+      await Good.findByIdAndUpdate( good._id, { id, url, name, descr, rating, price, amount, categoryId: newCategoryId })
+      res.json({ message: 'Товар обновлён!' })
     } catch (e) {
       res.status(500).json({
         message: 'Что-то пошло не так, попробуйте снова.'
@@ -225,6 +228,6 @@ router.post('/search',
         message: 'Что-то пошло не так, попробуйте снова.'
       })
     }
-  })
+})
 
 module.exports = router

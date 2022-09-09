@@ -40,9 +40,6 @@ export const mainSlice = createSlice({
     currentCategoryTitleChange: (state, action) => {
       state.currentCategoryTitle = action.payload
     },
-    currentSearchValueChange: (state, action) => {
-      state.currentSearchValue = action.payload
-    },
     addOrder: (state, action) => {
       state.orders.push({...action.payload})
     },
@@ -61,7 +58,6 @@ export const {
   currentPageChange,
   pagesChange,
   currentCategoryTitleChange,
-  currentSearchValueChange,
   addOrder,
   addMessage
 } = mainSlice.actions

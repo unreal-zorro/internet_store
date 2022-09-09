@@ -46,10 +46,10 @@ function MainLayout() {
     }
   }, [categories.length]);
 
-  // useEffect(() => {
-  //   setSearchValue('')
-  //   setSearchActive(false)
-  // }, [searchActive]);
+  useEffect(() => {
+    setSearchValue('')
+    setSearchActive(false)
+  }, [searchActive]);
 
   useEffect(() => {
     async function fetchData() {

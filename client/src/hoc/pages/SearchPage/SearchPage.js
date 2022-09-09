@@ -9,7 +9,8 @@ import {
   sortChange,
   visibleChange, addMessage
 } from "../../../redux/mainSlice";
-
+import {useHttp} from "../../../hooks/http.hook";
+import {useMessage} from "../../../hooks/message.hook";
 import Visual from "../../../components/Visual/Visual";
 import Sort from "../../../components/Sort/Sort";
 import Visible from "../../../components/Visible/Visible";
@@ -18,9 +19,6 @@ import Card from "../../../components/Card/Card";
 import Pagination from "../../../components/Pagination/Pagination";
 import Promo from "../../../components/Promo/Promo";
 import Text from "../../../components/Text/Text";
-import {addGood} from "../../../redux/categoriesSlice";
-import {useHttp} from "../../../hooks/http.hook";
-import {useMessage} from "../../../hooks/message.hook";
 import Loader from "../../../components/Loader/Loader";
 
 function SearchPage() {
@@ -50,29 +48,12 @@ function SearchPage() {
       try {
         const dataCategories = await request('/api/categories/all')
         const dataGoods = await request('/api/goods/search', 'POST', { searchValue })
-
         const newGoods = []
 
         for (let good of dataGoods.goods) {
           const currentCategoryId = dataCategories.categories.find(itemCategory => itemCategory._id === good.categoryId).id
           const currentCategory = categories.find(item => item.id === currentCategoryId)
-
           newGoods.push({...good, categoryTitle: currentCategory.title})
-
-          if (!currentCategory.goods.find(item => item.id === good.id)) {
-            const categoryIndex = categories.findIndex(item => item.id === currentCategory.id)
-            const completeGood = {
-              id: +good.id,
-              url: good.url,
-              name: good.name,
-              descr: good.descr,
-              rating: good.rating,
-              price: good.price,
-              amount: good.amount,
-              categoryId: good.categoryId
-            }
-            await dispatch(addGood({ categoryIndex, completeGood }))
-          }
         }
 
         setGoods(newGoods)
