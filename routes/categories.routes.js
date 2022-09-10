@@ -2,6 +2,8 @@ const {Router} = require('express')
 const router = Router()
 const {body, validationResult} = require('express-validator')
 const Category = require('../models/Category')
+const auth = require('../middleware/auth.middleware')
+const config = require('config')
 
 // /api/categories/create
 router.post('/create',
@@ -19,17 +21,8 @@ router.post('/create',
         })
       }
 
+      const baseUrl = config.get('baseUrl')
       const { id, title, name } = req.body
-
-      // const categoryId = +id
-      // const categoryTitle = title.toLowerCase()
-      // const categoryName = name.toLowerCase()
-      //
-      // if (!isFinite(categoryId)) {
-      //   return res.status(400).json({
-      //     message: 'Идентификатор категории должен быть числом.'
-      //   })
-      // }
 
       const candidateWithLikeName = await Category.findOne({ name })
       if (candidateWithLikeName) {

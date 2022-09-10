@@ -3,6 +3,8 @@ const router = Router()
 const {body, validationResult} = require('express-validator')
 const Good = require('../models/Good')
 const Category = require('../models/Category')
+const auth = require('../middleware/auth.middleware')
+const config = require('config')
 
 // /api/goods/create
 router.post('/create',
@@ -79,8 +81,11 @@ router.get('/category/:id',
 
 // /api/goods/all
 router.get('/all',
+  // auth,
   async (req, res) => {
     try {
+      // const userId = req.user.userId
+
       const goods = await Good.find()
 
       if (goods.length === 0) {
