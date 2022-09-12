@@ -1,7 +1,10 @@
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {useLocation} from "react-router-dom";
-import React, {useContext} from "react";
+import React, {useContext, useEffect} from "react";
 
+import {CartContext} from "../../../context/cart.context";
+import {useMessage} from "../../../hooks/message.hook";
+import {useHttp} from "../../../hooks/http.hook";
 import Navigation from "../../../components/Navigation/Navigation";
 import NavigationTitle from "../../../components/Navigation/NavigationTitle/NavigationTitle";
 import NavigationLink from "../../../components/Navigation/NavigationLink/NavigationLink";
@@ -9,18 +12,18 @@ import NavigationDivider from "../../../components/Navigation/NavigationDiveder/
 import Description from "../../../components/Description/Description";
 import Promo from "../../../components/Promo/Promo";
 import Text from "../../../components/Text/Text";
-import {CartContext} from "../../../context/cart.context";
-import {useMessage} from "../../../hooks/message.hook";
+import {addGood} from "../../../redux/categoriesSlice";
+import {addMessage} from "../../../redux/mainSlice";
 
 function CardPage() {
   const categories = useSelector(state => state.categories.categories)
   const location = useLocation()
 
-  const categoryTitleAndGoodId = location.pathname
-    .slice(location.pathname.indexOf('/catalog/') + 1)
+  const categoryTitleAndGoodId = location.pathname[location.pathname.length - 1] === '/'
+    ? location.pathname.slice(location.pathname.indexOf('/catalog/') + 1, -1)
+    : location.pathname.slice(location.pathname.indexOf('/catalog/') + 1)
 
-  const goodId = location.pathname.slice(location.pathname.lastIndexOf('/') + 1)
-
+  const goodId = categoryTitleAndGoodId.slice(categoryTitleAndGoodId.lastIndexOf('/') + 1)
   const categoryTitle = categoryTitleAndGoodId
     .slice("catalog/".length, categoryTitleAndGoodId.length - goodId.length - 1)
 
@@ -37,6 +40,43 @@ function CardPage() {
   const { cart, cartAddNewCount, cartAddNewGood } = useContext(CartContext);
   const message = useMessage()
   let count = 1
+
+  const {request, error, clearError} = useHttp()
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await request(`/api/goods/${categoryTitle}/${goodId}`)
+        const categoryIndex = categories.findIndex(item => item.id === category.id)
+
+        if (!category.goods.find(item => item.id === data.good.id) && data.good.id === +goodId) {
+          const completeGood = {
+            id: +data.good.id,
+            url: data.good.url,
+            name: data.good.name,
+            descr: data.good.descr,
+            rating: data.good.rating,
+            price: data.good.price,
+            amount: data.good.amount,
+            categoryId: data.good.categoryId
+          }
+
+          await dispatch(addGood({ categoryIndex, completeGood }))
+        }
+        await dispatch(addMessage(data.message))
+      } catch (e) {}
+    }
+
+    if (category.goods.length === 0 && category.id !== 0) {
+      fetchData().then()
+    }
+  }, [categoryTitle])
+
+  useEffect(() => {
+    message(error)
+    clearError()
+  }, [error, message, clearError]);
 
   function inputCountChangeHandler(value) {
     count = +value.target.value
@@ -82,7 +122,7 @@ function CardPage() {
       {
         category.title
           ? good.name
-            ? <React.Fragment>
+            ? <>
               <Navigation>
                 <NavigationTitle>
                   <NavigationLink
@@ -118,7 +158,7 @@ function CardPage() {
                 inputCountChangeHandler={inputCountChangeHandler}
                 addToCartClickHandler={addToCartClickHandler}
               />
-            </React.Fragment>
+            </>
             : <Text text="Нет такого товара."/>
           : <Text text="Нет такой категории."/>
       }

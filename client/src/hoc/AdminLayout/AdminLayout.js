@@ -43,8 +43,10 @@ import EditCardAdd from "../../components/Edit/EditCardAdd/EditCardAdd";
 import Pagination from "../../components/Pagination/Pagination";
 import Loader from "../../components/Loader/Loader";
 
-function AdminLayout() {
+function AdminLayout(props) {
   const { isSidebarActive, searchActive, setSearchActive, searchValue, setSearchValue } = useOutletContext()
+
+  const { token } = props.authContext
 
   const dispatch = useDispatch()
   const message = useMessage()
@@ -237,7 +239,8 @@ function AdminLayout() {
 
   const deleteCategoryClickHandler = async (id) => {
     try {
-      const data = await request('/api/categories/remove', 'DELETE', {id})
+      const data = await request('/api/categories/remove', 'DELETE', {id},
+        {Authorization: `Bearer ${token}`})
       dispatch(addMessage(data.message))
       const categoryIndex = categories.findIndex(item => item.id === id)
       dispatch(deleteCategory({categoryIndex}))
@@ -334,7 +337,8 @@ function AdminLayout() {
       const categoryIndex = categories.findIndex(item => item.title === goodCategoryTitle)
 
       if (action === 'add') {
-        const data = await request('/api/goods/create', 'POST', { ...completeGood })
+        const data = await request('/api/goods/create', 'POST', { ...completeGood },
+          {Authorization: `Bearer ${token}`})
         dispatch(addMessage(data.message))
         dispatch(addGood({ categoryIndex, completeGood }))
 
@@ -351,7 +355,8 @@ function AdminLayout() {
         }
       } else if (action === 'edit') {
         const data = await request('/api/goods/update', 'PUT',
-          { ...completeGood, currentId: currentGoodId })
+          { ...completeGood, currentId: currentGoodId },
+          {Authorization: `Bearer ${token}`})
         dispatch(addMessage(data.message))
 
         const goodIndex = categories[categoryIndex].goods.findIndex(item => item.id === currentGoodId)
@@ -456,12 +461,14 @@ function AdminLayout() {
 
       if (action === 'add') {
         const data = await request('/api/categories/create', 'POST',
-          {id: categoryId, title: categoryTitle, name: categoryName})
+          {id: categoryId, title: categoryTitle, name: categoryName},
+          {Authorization: `Bearer ${token}`})
         dispatch(addMessage(data.message))
         dispatch(addCategory(completeCategory))
       } else if (action === 'edit') {
         const data = await request('/api/categories/update', 'PUT',
-          {currentId: currentCategoryId, id: categoryId, title: categoryTitle, name: categoryName})
+          {currentId: currentCategoryId, id: categoryId, title: categoryTitle, name: categoryName},
+          {Authorization: `Bearer ${token}`})
         dispatch(addMessage(data.message))
         const index = categories.findIndex(item => item.id === currentCategoryId)
         dispatch(editCategory({index, completeCategory}))
@@ -553,7 +560,8 @@ function AdminLayout() {
     const goodIndex = categories[categoryIndex].goods.findIndex(item => item.id === +goodId)
 
     try {
-      const data = await request('/api/goods/remove', 'DELETE', { id: goodId })
+      const data = await request('/api/goods/remove', 'DELETE', { id: goodId },
+        {Authorization: `Bearer ${token}`})
       dispatch(addMessage(data.message))
 
       if (currentCategoryTitle === 'search') {
@@ -829,8 +837,14 @@ function AdminLayout() {
                       onClickNextButton={nextButtonClickHandler}
                     />
                   </>
+                  : <Text
+                    text="В данной категории товаров пока нет."
+                  />
+                : categories.length === 0
+                  ? <Text
+                    text="Категорий пока нет."
+                  />
                   : undefined
-                : undefined
             }
           </Edit>
         </Container>

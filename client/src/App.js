@@ -8,15 +8,20 @@ import {useAuth} from "./hooks/auth.hook";
 import {AuthContext} from "./context/auth.context";
 import {useCart} from "./hooks/cart.hook";
 import {CartContext} from "./context/cart.context";
+import Loader from "./components/Loader/Loader";
 
 function App() {
   const isOrdering = useSelector(state => state.main.isOrdering)
 
-  const {token, login, logout, userId, isAdmin} = useAuth()
+  const {token, login, logout, userId, isAdmin, ready} = useAuth()
   const isAuthenticated = !!token
   const routes = useRoutes(isOrdering, isAuthenticated, isAdmin)
 
   const {cart, cartInit, cartAddNewGood, cartAddNewCount, cartDeleteGood, cartClear} = useCart()
+
+  if (!ready) {
+    return <Loader />
+  }
 
   return (
     <AuthContext.Provider value={{

@@ -34,7 +34,10 @@ function CategoryPage() {
   const sortValue = useSelector(state => state.main.sortValue)
   const visibleValue = useSelector(state => state.main.visibleValue)
   const dispatch = useDispatch()
-  const categoryTitle = location.pathname.slice(location.pathname.lastIndexOf('/') + 1)
+  const categoryTitle = location.pathname[location.pathname.length - 1] === '/'
+    ? location.pathname.slice("/catalog/".length, -1)
+    : location.pathname.slice("/catalog/".length)
+
   const category = categories.find((item) => item.title === categoryTitle)
       ? categories.find((item) => item.title === categoryTitle)
       : {id: 0, title: '', name: '', goods: []}
@@ -92,7 +95,7 @@ function CategoryPage() {
       } catch (e) {}
     }
 
-    if (goods.length === 0 && category.id !== 0) {
+    if ((goods.length === 0 || goods.length === 1) && category.id !== 0) {
       fetchData().then()
     }
   }, [categoryTitle])

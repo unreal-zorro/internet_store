@@ -4,7 +4,7 @@ const {body, validationResult} = require('express-validator')
 const Good = require('../models/Good')
 const Category = require('../models/Category')
 const auth = require('../middleware/auth.middleware')
-const config = require('config')
+const User = require("../models/User");
 
 // /api/goods/create
 router.post('/create',
@@ -16,6 +16,7 @@ router.post('/create',
   body('price', 'Некорректная цена.').exists().trim(),
   body('amount', 'Некорректное количество.').exists().trim(),
   body('categoryId', 'Категория не существует.').exists(),
+  auth,
   async (req, res) => {
     try {
       const errors = validationResult(req)
@@ -25,6 +26,13 @@ router.post('/create',
           errors: errors.array(),
           message: 'Некорректные данные при создании товара.'
         })
+      }
+
+      const adminId = req.user.userId
+      const admin = await User.findOne({ name: 'admin' })
+
+      if (adminId !== admin.id) {
+        return res.status(400).json({message: 'Администратор не найден.'})
       }
 
       const { id, url, name, descr, rating, price, amount, categoryId } = req.body
@@ -65,7 +73,7 @@ router.get('/category/:id',
 
       const goods = await Good.find({ categoryId: category._id })
 
-      if (!goods) {
+      if (!goods || goods.length === 0) {
         return res.status(400).json({
           message: 'Товаров в данной категории пока нет.'
         })
@@ -78,6 +86,44 @@ router.get('/category/:id',
       })
     }
 })
+
+// /api/goods/:categoryTitle/:id
+router.get('/:categoryTitle/:id',
+  async (req, res) => {
+    try {
+      const categoryTitle = req.params.categoryTitle
+      const category = await Category.findOne({ title: categoryTitle })
+
+      if (!category) {
+        return res.status(400).json({
+          message: 'Категории с таким заголовком не существует.'
+        })
+      }
+
+      const goodId = req.params.id
+      const good = await Good.findOne({ id: goodId })
+
+      if (!good) {
+        return res.status(400).json({
+          message: 'Товара с таким идентификатором не существует.'
+        })
+      }
+
+      const goods = await Good.find({ categoryId: category._id })
+
+      if (!goods.find(item => item.id === good.id)) {
+        return res.status(400).json({
+          message: 'Товара с таким идентификатором в данной категории не существует.'
+        })
+      }
+
+      res.json({ good, message: 'Товар загружен!' })
+    } catch (e) {
+      res.status(500).json({
+        message: 'Что-то пошло не так, попробуйте снова.'
+      })
+    }
+  })
 
 // /api/goods/all
 router.get('/all',
@@ -106,6 +152,7 @@ router.get('/all',
 // /api/goods/remove
 router.delete('/remove',
   body('id', 'Некорректный идентификатор.').not().isEmpty().trim(),
+  auth,
   async (req, res) => {
     try {
       const errors = validationResult(req)
@@ -115,6 +162,13 @@ router.delete('/remove',
           errors: errors.array(),
           message: 'Некорректные данные при удалении товара.'
         })
+      }
+
+      const adminId = req.user.userId
+      const admin = await User.findOne({ name: 'admin' })
+
+      if (adminId !== admin.id) {
+        return res.status(400).json({message: 'Администратор не найден.'})
       }
 
       const { id } = req.body
@@ -147,6 +201,7 @@ router.put('/update',
   body('price', 'Некорректная цена.').exists().trim(),
   body('amount', 'Некорректное количество.').exists().trim(),
   body('categoryId', 'Категория не существует.').exists(),
+  auth,
   async (req, res) => {
     try {
       const errors = validationResult(req)
@@ -156,6 +211,13 @@ router.put('/update',
           errors: errors.array(),
           message: 'Некорректные данные при обновлении товара.'
         })
+      }
+
+      const adminId = req.user.userId
+      const admin = await User.findOne({ name: 'admin' })
+
+      if (adminId !== admin.id) {
+        return res.status(400).json({message: 'Администратор не найден.'})
       }
 
       const { currentId, id, url, name, descr, rating, price, amount, categoryId } = req.body

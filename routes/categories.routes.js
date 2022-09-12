@@ -3,13 +3,14 @@ const router = Router()
 const {body, validationResult} = require('express-validator')
 const Category = require('../models/Category')
 const auth = require('../middleware/auth.middleware')
-const config = require('config')
+const User = require("../models/User");
 
 // /api/categories/create
 router.post('/create',
   body('id', 'Некорректный идентификатор.').not().isEmpty().trim(),
   body('title', 'Некорректный заголовок.').exists().trim(),
   body('name', 'Некорректное имя.').exists().trim(),
+  auth,
   async (req, res) => {
     try {
       const errors = validationResult(req)
@@ -21,7 +22,13 @@ router.post('/create',
         })
       }
 
-      const baseUrl = config.get('baseUrl')
+      const adminId = req.user.userId
+      const admin = await User.findOne({ name: 'admin' })
+
+      if (adminId !== admin.id) {
+        return res.status(400).json({message: 'Администратор не найден.'})
+      }
+
       const { id, title, name } = req.body
 
       const candidateWithLikeName = await Category.findOne({ name })
@@ -79,6 +86,7 @@ router.get('/all',
 // /api/categories/remove
 router.delete('/remove',
   body('id', 'Некорректный идентификатор.').not().isEmpty().trim(),
+  auth,
   async (req, res) => {
     try {
       const errors = validationResult(req)
@@ -88,6 +96,13 @@ router.delete('/remove',
           errors: errors.array(),
           message: 'Некорректные данные при удалении категории.'
         })
+      }
+
+      const adminId = req.user.userId
+      const admin = await User.findOne({ name: 'admin' })
+
+      if (adminId !== admin.id) {
+        return res.status(400).json({message: 'Администратор не найден.'})
       }
 
       const { id } = req.body
@@ -115,6 +130,7 @@ router.put('/update',
   body('id', 'Некорректный идентификатор.').not().isEmpty().trim(),
   body('title', 'Некорректный заголовок.').exists().trim(),
   body('name', 'Некорректное имя.').exists().trim(),
+  auth,
   async (req, res) => {
     try {
       const errors = validationResult(req)
@@ -124,6 +140,13 @@ router.put('/update',
           errors: errors.array(),
           message: 'Некорректные данные при обновлении категории.'
         })
+      }
+
+      const adminId = req.user.userId
+      const admin = await User.findOne({ name: 'admin' })
+
+      if (adminId !== admin.id) {
+        return res.status(400).json({message: 'Администратор не найден.'})
       }
 
       const { currentId, id, title, name } = req.body

@@ -53,7 +53,7 @@ export const useRoutes = (isOrdering, isAuth, isAdmin) => {
                   {authContext => (
                     <CartContext.Consumer>
                       {cartContext => (
-                        <AdminLayout><EditCatalogPage /></AdminLayout>
+                        <AdminLayout authContext={authContext}><EditCatalogPage /></AdminLayout>
                       )}
                     </CartContext.Consumer>
                   )}
