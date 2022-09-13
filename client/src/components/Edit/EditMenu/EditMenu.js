@@ -70,18 +70,38 @@ function EditMenu(props) {
         </div>
 
         <div className="edit__menu-row">
+          {/*<div className="edit__menu-str">*/}
+            {/*<label*/}
+            {/*  htmlFor="url"*/}
+            {/*  className="edit__menu-label"*/}
+            {/*>URL фото:</label>*/}
+            {/*<input*/}
+            {/*  type="url"*/}
+            {/*  id="url"*/}
+            {/*className="edit__menu-input"*/}
+            {/*  value={props.goodUrl}*/}
+            {/*  onChange={props.onChangeGoodUrl}*/}
+            {/*  required*/}
+            {/*/>*/}
+          {/*</div>*/}
           <div className="edit__menu-str">
             <label
               htmlFor="url"
               className="edit__menu-label"
             >URL фото:</label>
             <input
-              type="url"
+              type="file"
               id="url"
-              className="edit__menu-input"
-              value={props.goodUrl}
+              className="edit__menu-input-file"
               onChange={props.onChangeGoodUrl}
               required
+            />
+          </div>
+          <div className="edit__menu-str">
+            <img
+              src={props.goodUrl}
+              alt='Нет фото.'
+              className="edit__menu-img"
             />
           </div>
         </div>

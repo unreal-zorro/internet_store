@@ -1,18 +1,24 @@
 import '../Edit.scss'
 
+import {Link} from "react-router-dom";
+
 function EditCard(props) {
   return (
     <div className="edit__card">
       <div className="edit-id">
         <span>{props.id}</span>
       </div>
-      <div className="edit-img">
-        <img src={props.url} alt="img" />
-      </div>
-      <div className="edit-info">
-        <div className="edit-name">
-          {props.name}
+      <Link to={"/catalog/" + props.categoryTitle + "/" + props.id}>
+        <div className="edit-img">
+          <img src={props.url} alt="img" />
         </div>
+      </Link>
+      <div className="edit-info">
+        <Link to={"/catalog/" + props.categoryTitle + "/" + props.id}>
+          <div className="edit-name">
+            {props.name}
+          </div>
+        </Link>
         <div className="edit-rating">
           Рейтинг: <span>{props.rating}</span>
         </div>

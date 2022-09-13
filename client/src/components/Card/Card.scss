@@ -32,9 +32,12 @@
   }
   &-name {
     font-size: 18px;
-    span {
-      font-weight: 900;
-      color: $auth-color;
+    a {
+      text-decoration: none;
+      span {
+        font-weight: 900;
+        color: $auth-color;
+      }
     }
   }
   &-id {

@@ -8,6 +8,8 @@
     "start": "node app.js",
     "server": "nodemon app.js",
     "client": "npm run start --prefix client",
+    "client:install": "npm install --prefix client",
+    "client:build": "npm run build --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "author": "",
@@ -22,6 +24,7 @@
   },
   "devDependencies": {
     "concurrently": "^7.3.0",
+    "cross-env": "^7.0.3",
     "nodemon": "^2.0.19"
   }
 }

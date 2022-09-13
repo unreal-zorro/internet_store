@@ -32,7 +32,10 @@
 .card-name {
   font-size: 18px;
 }
-.card-name span {
+.card-name a {
+  text-decoration: none;
+}
+.card-name a span {
   font-weight: 900;
   color: #164107;
 }
