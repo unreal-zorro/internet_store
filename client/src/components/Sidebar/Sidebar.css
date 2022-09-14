@@ -99,7 +99,7 @@
   transition: all 1s;
 }
 
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 819px) {
   .sidebar.active {
     background-color: #fff;
     position: fixed;

@@ -105,8 +105,15 @@ function EditPage(props) {
   const [currentPage, setCurrentPage] = useState(1);
   const [pages, setPages] = useState(10);
 
-  // const [goodPhoto, setGoodPhoto] = useState(null);
+  const [scrollY, setScrollY] = useState(0);
 
+  useEffect(() => {
+    const editMenu = document.getElementById("edit__menu")
+    if (editMenu) {
+      editMenu.scrollIntoView()
+    }
+  }, [editGoodAction]);
+  
   useEffect(() => {
     setSearchValue('')
     setSearchActive(false)
@@ -288,22 +295,6 @@ function EditPage(props) {
     setEditedGoodUrl(value)
   }
 
-  // const goodPhotoChangeHandler = value => {
-  //   const file = value.target.files[0]
-  //   const reader = new FileReader()
-  //   reader.readAsDataURL(file)
-  //   reader.addEventListener('load', () => {
-  //     // console.log("result: ", reader.result)
-  //     setGoodPhoto(reader.result)
-  //   })
-  //   reader.addEventListener('error', () => {
-  //     console.log("error: ", reader.error)
-  //   })
-  //   // const url = URL.createObjectURL(file)
-  //   // console.log("url: ", url)
-  //   // setGoodPhoto(url)
-  // }
-
   const goodNameChangeHandler = value => {
     setEditedGoodName(value)
   }
@@ -451,6 +442,8 @@ function EditPage(props) {
     setEditedGoodDescr('')
     setEditedGoodAmount('')
     setEditedGoodPrice('')
+
+    window.scrollTo(0, scrollY)
   }
 
   const okCategoryClickHandler = async (event) => {
@@ -583,6 +576,11 @@ function EditPage(props) {
     setEditedGoodDescr(good.descr)
     setEditedGoodAmount(good.amount)
     setEditedGoodPrice(good.price)
+
+    const editMenu = document.getElementById("edit__menu")
+    editMenu.scrollIntoView()
+
+    setScrollY(window.pageYOffset)
   }
 
   const deleteGoodClickHandler = async (goodId, categoryId) => {
@@ -914,8 +912,6 @@ function EditPage(props) {
           onChangeGoodCategory={event => goodCategoryChangeHandler(event.target.value)}
           goodUrl={editedGoodUrl}
           onChangeGoodUrl={event => goodUrlChangeHandler(event)}
-          // onChangeGoodPhoto={event => goodPhotoChangeHandler(event)}
-          // goodPhoto={goodPhoto}
           goodName={editedGoodName}
           onChangeGoodName={event => goodNameChangeHandler(event.target.value)}
           goodDescr={editedGoodDescr}

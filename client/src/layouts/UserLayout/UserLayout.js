@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {useSelector} from "react-redux";
 import {Navigate, Outlet, useOutletContext} from "react-router-dom";
 
@@ -8,8 +8,18 @@ import SidebarLink from "../../components/Sidebar/SidebarLink/SidebarLink";
 import Container from "../../components/Container/Container";
 
 function UserLayout() {
-  const { isSidebarActive, searchActive, searchValue } = useOutletContext()
+  const { isSidebarActive, setIsSidebarActive, searchActive, searchValue } = useOutletContext()
   const categories = useSelector(state => state.categories.categories)
+
+  const sidebar = document.getElementById("sidebar")
+
+  useEffect(() => {
+    if (sidebar && window.innerWidth < 820) {
+      sidebar.addEventListener("click", () => {
+        setIsSidebarActive(false)
+      })
+    }
+  }, [setIsSidebarActive, sidebar]);
 
   return (
     <Container>

@@ -8,11 +8,11 @@ function EditCard(props) {
       <div className="edit-id">
         <span>{props.id}</span>
       </div>
-      <Link to={"/catalog/" + props.categoryTitle + "/" + props.id}>
-        <div className="edit-img">
+      <div className="edit-img">
+        <Link to={"/catalog/" + props.categoryTitle + "/" + props.id}>
           <img src={props.url} alt="img" />
-        </div>
-      </Link>
+        </Link>
+      </div>
       <div className="edit-info">
         <Link to={"/catalog/" + props.categoryTitle + "/" + props.id}>
           <div className="edit-name">

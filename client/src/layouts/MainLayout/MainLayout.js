@@ -24,7 +24,7 @@ function MainLayout() {
   const [isSidebarActive, setIsSidebarActive] = useState(
     categories.length === 0
       ? false
-      : window.innerWidth > 767
+      : window.innerWidth > 819
   );
 
   const auth = useContext(AuthContext);
@@ -41,7 +41,7 @@ function MainLayout() {
   const count = cart.reduce((sum, item) => sum + item.count, 0)
 
   useEffect(() => {
-    if (window.innerWidth > 767 && categories.length !== 0) {
+    if (window.innerWidth > 819 && categories.length !== 0) {
       setIsSidebarActive(true)
     }
   }, [categories.length]);
@@ -134,7 +134,7 @@ function MainLayout() {
         loading
           ? <Container><Loader /></Container>
           : <Outlet
-            context={{ isSidebarActive, searchActive, setSearchActive, searchValue, setSearchValue }}
+            context={{ isSidebarActive, setIsSidebarActive, searchActive, setSearchActive, searchValue, setSearchValue }}
           />
       }
 

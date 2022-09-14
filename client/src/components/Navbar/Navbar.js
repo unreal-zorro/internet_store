@@ -57,7 +57,7 @@ function Navbar(props) {
           {
             props.isAdmin
               ? <li className="navbar__menu-item navbar__user">
-                <NavLink to="/edit" className="navbar__edit">
+                <NavLink to="/edit" className="navbar__menu-img">
                   <img src="/icons/edit.png" alt="edit" />
                 </NavLink>
               </li>
