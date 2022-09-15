@@ -40,6 +40,16 @@ function MainLayout() {
   const { cart, cartClear } = useContext(CartContext)
   const count = cart.reduce((sum, item) => sum + item.count, 0)
 
+  const sidebar = document.querySelector("#sidebar")
+
+  useEffect(() => {
+    if (isSidebarActive && window.innerWidth < 820) {
+      sidebar.addEventListener("click", () => {
+        setIsSidebarActive(false)
+      })
+    }
+  }, [isSidebarActive, setIsSidebarActive, sidebar]);
+
   useEffect(() => {
     if (window.innerWidth > 819 && categories.length !== 0) {
       setIsSidebarActive(true)

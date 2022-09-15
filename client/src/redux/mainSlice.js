@@ -43,6 +43,9 @@ export const mainSlice = createSlice({
     addOrder: (state, action) => {
       state.orders.push({...action.payload})
     },
+    addOrders: (state, action) => {
+      state.orders.splice(state.orders.length, 0, ...action.payload)
+    },
     addMessage: (state, action) => {
       state.message = action.payload
     }
@@ -59,6 +62,7 @@ export const {
   pagesChange,
   currentCategoryTitleChange,
   addOrder,
+  addOrders,
   addMessage
 } = mainSlice.actions
 

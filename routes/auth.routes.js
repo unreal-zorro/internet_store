@@ -6,6 +6,7 @@ const {body, validationResult} = require('express-validator')
 const jwt = require('jsonwebtoken')
 const config = require('config')
 const {Types} = require("mongoose");
+const auth = require('../middleware/auth.middleware')
 
 // /api/auth/register
 router.post(
@@ -124,7 +125,9 @@ router.post(
             })
             .concat(userCart)
 
-      res.json({ token, userId: user.id, isAdmin, cart: newCart, message })
+      const userOrders = user.orders.slice()
+
+      res.json({ token, userId: user.id, isAdmin, cart: newCart, orders: userOrders, message })
 
     } catch (e) {
       res.status(500).json({
@@ -147,18 +150,6 @@ router.post(
       })
 
       const user = await User.findById(userId)
-      // (err, user) => {
-        // if (err) {
-        //   return
-        // }
-        // let message = "Вы вышли из системы."
-        //
-        // if (user.name === 'admin') {
-        //   message = "Вы вышли из системы, администратор."
-        // }
-        //
-        // res.json({ message })
-      // })
 
       let message = "Вы вышли из системы."
 
@@ -178,6 +169,7 @@ router.post(
 // /api/auth/order
 router.post(
   '/order',
+  auth,
   async (req, res) => {
     try {
       const {userId, cart: newCart, order} = req.body
@@ -193,24 +185,13 @@ router.post(
       })
 
       const user = await User.findById(userId)
-      // (err, user) => {
-      //   if (err) {
-      //     return
-      //   }
-      //   const ordersLength = user.orders.length
-      //   const number = user.orders[ordersLength - 1].number
-      //
-      //   let message = `Ваш заказ № ${number} оформлен!`
-      //
-      //   if (user.name === 'admin') {
-      //     message = `Ваш заказ № ${number} оформлен, администратор!`
-      //   }
-      //
-      //   res.json({ message })
-      // })
+
+      console.log("user: ", user)
 
       const ordersLength = user.orders.length
       const number = user.orders[ordersLength - 1].number
+
+      console.log("number: ", number)
 
       let message = `Ваш заказ № ${number} оформлен!`
 

@@ -31,7 +31,7 @@ function OrderingPage() {
   const categories = mainStore.getState().categories.categories
   const {count, amount} = cartCountAndAmount(cart, categories)
 
-  const { userId } = useContext(AuthContext);
+  const { userId, token } = useContext(AuthContext);
   const message = useMessage()
   const {request, error, clearError} = useHttp()
 
@@ -86,22 +86,23 @@ function OrderingPage() {
       }
     }
 
-    mainStore.dispatch(addOrder(newCurrentOrder))
-    mainStore.dispatch(currentOrderNumberChange(newCurrentOrder.number))
-    mainStore.dispatch(currentOrderPhoneChange(newCurrentOrder.orderingInfo.phone))
-
-    cartClear()
-
-    setDelivery("removal")
-    setPayment("cash")
-    setPhone("")
-    setComment("")
-    setIsOrdering(true)
-
     try {
-      const order = mainStore.getState().main.orders[mainStore.getState().main.orders.length - 1]
+      const data = await request('/api/auth/order', 'POST',
+        {userId, cart: [], order: newCurrentOrder},
+        {Authorization: `Bearer ${token}`})
 
-      const data = await request('/api/auth/order', 'POST', {userId, cart: [], order})
+      mainStore.dispatch(addOrder(newCurrentOrder))
+      mainStore.dispatch(currentOrderNumberChange(newCurrentOrder.number))
+      mainStore.dispatch(currentOrderPhoneChange(newCurrentOrder.orderingInfo.phone))
+
+      cartClear()
+
+      setDelivery("removal")
+      setPayment("cash")
+      setPhone("")
+      setComment("")
+      setIsOrdering(true)
+
       message(data.message)
     } catch (e) {}
   }

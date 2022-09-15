@@ -1,5 +1,7 @@
 import React from "react";
 
+import mainStore from "../../redux/mainStore";
+import {addOrders} from "../../redux/mainSlice";
 import Container from "../../components/Container/Container";
 import HomeLink from "../../components/HomeLink/HomeLink";
 import Message from "../../components/Message/Message";
@@ -84,6 +86,7 @@ function AuthLayout(props) {
       const data = await request('/api/auth/login', 'POST', {...form, cart: userCart})
       auth.login(data.token, data.userId, data.isAdmin)
       cartInit(data.cart)
+      mainStore.dispatch(addOrders(data.orders))
       message(data.message)
       navigate('/')
     } catch (e) {}
