@@ -421,6 +421,7 @@
     &__menu {
       &.active {
         padding: 0 5px 5px 5px;
+        height: $edit__menu-height_767;
       }
       &-form {
         width: calc(100% - 15px);
@@ -446,6 +447,10 @@
         margin: 0 5px 0 5px;
       }
       &-input {
+        min-height: 20px;
+        margin-right: 5px;
+      }
+      &-input-file {
         min-height: 20px;
         margin-right: 5px;
       }
