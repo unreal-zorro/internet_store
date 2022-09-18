@@ -13,7 +13,7 @@ module.exports = (req, res, next) => {
       return res.status(401).json({ message: 'Нет авторизации.' })
     }
 
-    const decoded = jwt.verify(token, config.get('jwtSecret'))
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || config.get('jwtSecret'))
     req.user = decoded
     next()
   } catch (e) {

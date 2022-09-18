@@ -19,11 +19,11 @@ if (process.env.NODE_ENV === 'production') {
   })
 }
 
-const PORT = config.get('port') || 5000
+const PORT = process.env.PORT || config.get('port') || 5000
 
 async function start() {
   try {
-    await mongoose.connect(config.get('mongoUri'), {
+    await mongoose.connect(process.env.MONGODB_URI || config.get('mongoUri'), {
       useNewUrlParser: true,
       useUnifiedTopology: true
     })
@@ -34,4 +34,4 @@ async function start() {
   }
 }
 
-start()
+start().then()
