@@ -1,0 +1,11 @@
+.payment {
+  width: 100%;
+  text-align: left;
+  &__title {
+    font-size: 18px;
+    font-weight: 900;
+  }
+  &__item {
+    font-size: 16px;
+  }
+}
