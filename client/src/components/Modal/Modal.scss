@@ -83,6 +83,11 @@
       &__label {
         min-width: 80px;
         font-size: 10px;
+        margin: 0;
+        padding-right: 5px;
+        &-left {
+          text-align: left;
+        }
         &.error {
           font-size: 10px;
         }

@@ -81,6 +81,11 @@
   .modal-form__label {
     min-width: 80px;
     font-size: 10px;
+    margin: 0;
+    padding-right: 5px;
+  }
+  .modal-form__label-left {
+    text-align: left;
   }
   .modal-form__label.error {
     font-size: 10px;

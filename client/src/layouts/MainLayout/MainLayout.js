@@ -21,11 +21,7 @@ function MainLayout() {
 
   const [searchValue, setSearchValue] = useState('');
   const [searchActive, setSearchActive] = useState(false);
-  const [isSidebarActive, setIsSidebarActive] = useState(
-    categories.length === 0
-      ? false
-      : window.innerWidth > 819
-  );
+  const [isSidebarActive, setIsSidebarActive] = useState(window.innerWidth > 819);
 
   const auth = useContext(AuthContext);
   const isAuth = !!auth.token
@@ -49,12 +45,6 @@ function MainLayout() {
       })
     }
   }, [isSidebarActive, setIsSidebarActive, sidebar]);
-
-  useEffect(() => {
-    if (window.innerWidth > 819 && categories.length !== 0) {
-      setIsSidebarActive(true)
-    }
-  }, [categories.length]);
 
   useEffect(() => {
     setSearchValue('')
@@ -101,9 +91,7 @@ function MainLayout() {
   }
 
   const burgerClickHandler = () => {
-    categories.length === 0
-      ? setIsSidebarActive(false)
-      : setIsSidebarActive(!isSidebarActive)
+    setIsSidebarActive(!isSidebarActive)
   }
 
   const searchChangeHandler = value => {
