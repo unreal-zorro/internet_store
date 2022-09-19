@@ -16,18 +16,28 @@ function UserLayout() {
       <Sidebar
         className={isSidebarActive ? 'active' : ''}
       >
-        {categories.map(item => {
-          return (
-            <SidebarItem
-              key={item.id}
-            >
+        {categories.length
+          ? categories.map(item => {
+            return (
+              <SidebarItem
+                key={item.id}
+              >
+                <SidebarLink
+                  link={"/catalog/" + item.title}
+                  linkText={item.name}
+                />
+              </SidebarItem>
+            )
+          })
+          : (
+            <SidebarItem>
               <SidebarLink
-                link={"/catalog/" + item.title}
-                linkText={item.name}
+                link="/"
+                linkText="Категорий нет"
               />
             </SidebarItem>
           )
-        })}
+        }
       </Sidebar>
 
       {

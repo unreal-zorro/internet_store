@@ -646,39 +646,47 @@ function EditPage(props) {
           <EditSidebar
             className={isSidebarActive ? 'active' : ''}
           >
-            <EditSidebarItem>
-              <EditSidebarLink
-                className={currentCategoryTitle === "all" ? "active" : ""}
-                text="Все категории"
-                onClick={allCategoriesClickHandler}
-              />
-            </EditSidebarItem>
+            {
+              categories.length
+                ? <>
+                  <EditSidebarItem>
+                    <EditSidebarLink
+                      className={currentCategoryTitle === "all" ? "active" : ""}
+                      text="Все категории"
+                      onClick={allCategoriesClickHandler}
+                    />
+                  </EditSidebarItem>
 
-            {categories.map(item => {
-              return (
-                <EditSidebarItem
-                  key={item.id}
-                >
-                  <EditSidebarLink
-                    className={currentCategoryTitle === item.title ? "active" : ""}
-                    text={item.name}
-                    onClick={() => categoryClickHandler(item.title)}
-                  />
-                  <EditSidebarEdit>
-                    <EditSidebarLinkEdit
-                      url="/icons/edit.png"
-                      alt="edit"
-                      onClick={() => editCategoryClickHandler(item.id)}
-                    />
-                    <EditSidebarLinkEdit
-                      url="/icons/delete.png"
-                      alt="delete"
-                      onClick={() => deleteCategoryClickHandler(item.id)}
-                    />
-                  </EditSidebarEdit>
-                </EditSidebarItem>
-              )
-            })}
+                  {
+                    categories.map(item => {
+                      return (
+                        <EditSidebarItem
+                          key={item.id}
+                        >
+                          <EditSidebarLink
+                            className={currentCategoryTitle === item.title ? "active" : ""}
+                            text={item.name}
+                            onClick={() => categoryClickHandler(item.title)}
+                          />
+                          <EditSidebarEdit>
+                            <EditSidebarLinkEdit
+                              url="/icons/edit.png"
+                              alt="edit"
+                              onClick={() => editCategoryClickHandler(item.id)}
+                            />
+                            <EditSidebarLinkEdit
+                              url="/icons/delete.png"
+                              alt="delete"
+                              onClick={() => deleteCategoryClickHandler(item.id)}
+                            />
+                          </EditSidebarEdit>
+                        </EditSidebarItem>
+                      )
+                    })
+                  }
+                </>
+                : undefined
+            }
 
             <EditSidebarItem>
               <EditSidebarLink
@@ -691,213 +699,229 @@ function EditPage(props) {
           </EditSidebar>
 
           <Edit>
-            <Promo
-              className="edit"
-            >
-              <Navigation>
-                <NavigationTitle>
-                  <EditNavigationLink
-                    linkName="Каталог"
-                    onClick={catalogClickHandler}
-                  />
-                </NavigationTitle>
-                <NavigationDivider />
-                {
-                  currentCategoryTitle
-                    ? currentCategoryTitle === "all"
-                      ? <>
-                        <NavigationTitle>
-                          <EditNavigationLink
-                            linkName="Все категории"
-                            onClick={allCategoriesClickHandler}
-                          />
-                        </NavigationTitle>
-                        <NavigationDivider />
-                      </>
-                      : currentCategoryTitle === "search"
+            {!categories.length
+            ? <>
+              <Text
+                text="Категорий пока нет."
+              />
+              <button
+                className="btn"
+                onClick={addCategoryClickHandler}
+              >
+                Добавить категорию
+              </button>
+            </>
+            : <>
+              <Promo
+                className="edit"
+              >
+                <Navigation>
+                  <NavigationTitle>
+                    <EditNavigationLink
+                      linkName="Каталог"
+                      onClick={catalogClickHandler}
+                    />
+                  </NavigationTitle>
+                  <NavigationDivider />
+                  {
+                    currentCategoryTitle
+                      ? currentCategoryTitle === "all"
                         ? <>
                           <NavigationTitle>
                             <EditNavigationLink
-                              linkName="Поиск по всем категориям"
+                              linkName="Все категории"
+                              onClick={allCategoriesClickHandler}
                             />
                           </NavigationTitle>
                           <NavigationDivider />
                         </>
-                        : <>
-                          <NavigationTitle>
-                            <EditNavigationLink
-                              linkName={categories.find(item => item.title === currentCategoryTitle).name}
-                              onClick={() => categoryClickHandler(currentCategoryTitle)}
+                        : currentCategoryTitle === "search"
+                          ? <>
+                            <NavigationTitle>
+                              <EditNavigationLink
+                                linkName="Поиск по всем категориям"
+                              />
+                            </NavigationTitle>
+                            <NavigationDivider />
+                          </>
+                          : <>
+                            <NavigationTitle>
+                              <EditNavigationLink
+                                linkName={categories.find(item => item.title === currentCategoryTitle).name}
+                                onClick={() => categoryClickHandler(currentCategoryTitle)}
+                              />
+                            </NavigationTitle>
+                            <NavigationDivider />
+                          </>
+                      : undefined
+                  }
+                </Navigation>
+
+                {
+                  !currentCategoryTitle
+                    ? <Catalog>
+                      <EditCatalogItem
+                        linkText="Все категории"
+                        onClick={allCategoriesClickHandler}
+                      />
+                      {
+                        categories.map(item => {
+                          return (
+                            <EditCatalogItem
+                              key={item.id}
+                              linkText={item.name}
+                              onClick={() => categoryClickHandler(item.title)}
                             />
-                          </NavigationTitle>
-                          <NavigationDivider />
-                        </>
-                    : undefined
+                          )
+                        })
+                      }
+                    </Catalog>
+                    : currentCategoryTitle === 'search' && goods.length === 0
+                      ? <Text
+                        text="Ничего не найдено."
+                      />
+                      : undefined
                 }
-              </Navigation>
+              </Promo>
 
               {
-                !currentCategoryTitle
-                  ? <Catalog>
-                    <EditCatalogItem
-                      linkText="Все категории"
-                      onClick={allCategoriesClickHandler}
-                    />
-                    {
-                      categories.map(item => {
-                        return (
-                          <EditCatalogItem
-                            key={item.id}
-                            linkText={item.name}
-                            onClick={() => categoryClickHandler(item.title)}
-                          />
-                        )
-                      })
-                    }
-                  </Catalog>
-                  : currentCategoryTitle === 'search' && goods.length === 0
-                    ? <Text
-                      text="Ничего не найдено."
-                    />
-                    : undefined
-              }
-            </Promo>
+                currentCategoryTitle
+                  ? !(goods.length === 0)
+                    ? <>
+                      <Visual
+                        className="edit"
+                      >
+                        <Sort
+                          value={sortValue}
+                          onChange={sortSelectChangeHandler}
+                        />
+                        <Visible
+                          value={visibleValue}
+                          onChange={visibleSelectChangeHandler}
+                        />
+                      </Visual>
 
-            {
-              currentCategoryTitle
-                ? !(goods.length === 0)
-                  ? <>
-                    <Visual
-                      className="edit"
-                    >
-                      <Sort
-                        value={sortValue}
-                        onChange={sortSelectChangeHandler}
+                      <EditEmpty
+                        className={goods.length === 0 ? "active" : ""}
                       />
-                      <Visible
-                        value={visibleValue}
-                        onChange={visibleSelectChangeHandler}
-                      />
-                    </Visual>
 
-                    <EditEmpty
-                      className={goods.length === 0 ? "active" : ""}
-                    />
-
-                    <EditContent>
-                      <EditCards>
-                        {
-                          goods.slice()
-                            .sort(sortMap[sortValue])
-                            .slice(
-                              (currentPage - 1) * visibleValue,
-                              currentPage === 1 && pages === 1
-                                ? goods.length
-                                : currentPage === pages
-                                  ? goods.length < pages * visibleValue
-                                    ? goods.length
-                                    : pages * visibleValue
-                                  : currentPage * visibleValue
-                            )
-                            .map(item => {
-                              return (
-                                <EditCard
-                                  key={item.id}
-                                  id={item.id}
-                                  url={item.url}
-                                  name={item.name}
-                                  rating={item.rating}
-                                  descr={item.descr}
-                                  categoryTitle={
-                                    currentCategoryTitle === 'all'
+                      <EditContent>
+                        <EditCards>
+                          {
+                            goods.slice()
+                              .sort(sortMap[sortValue])
+                              .slice(
+                                (currentPage - 1) * visibleValue,
+                                currentPage === 1 && pages === 1
+                                  ? goods.length
+                                  : currentPage === pages
+                                    ? goods.length < pages * visibleValue
+                                      ? goods.length
+                                      : pages * visibleValue
+                                    : currentPage * visibleValue
+                              )
+                              .map(item => {
+                                return (
+                                  <EditCard
+                                    key={item.id}
+                                    id={item.id}
+                                    url={item.url}
+                                    name={item.name}
+                                    rating={item.rating}
+                                    descr={item.descr}
+                                    categoryTitle={
+                                      currentCategoryTitle === 'all'
+                                        ? category.find(
+                                          itemCategory => itemCategory.goods.find(
+                                            itemGood => itemGood.id === item.id
+                                          )
+                                        ).title
+                                        : currentCategoryTitle === 'search'
+                                          ? item.categoryTitle
+                                          : category.title
+                                    }
+                                    category={currentCategoryTitle === 'all'
                                       ? category.find(
                                         itemCategory => itemCategory.goods.find(
                                           itemGood => itemGood.id === item.id
                                         )
-                                      ).title
+                                      ).name
                                       : currentCategoryTitle === 'search'
-                                        ? item.categoryTitle
-                                        : category.title
-                                  }
-                                  category={currentCategoryTitle === 'all'
-                                    ? category.find(
-                                      itemCategory => itemCategory.goods.find(
-                                        itemGood => itemGood.id === item.id
-                                      )
-                                    ).name
-                                    : currentCategoryTitle === 'search'
-                                      ? item.categoryName
-                                      : category.name
-                                  }
-                                  amount={item.amount}
-                                  price={item.price}
-                                  onEditClick={() => editGoodClickHandler(
-                                    item.id,
-                                    currentCategoryTitle === 'all'
-                                      ? category.find(
-                                        itemCategories => itemCategories.goods.find(
-                                          itemGood => itemGood.id === item.id
-                                        )
-                                      ).id
-                                      : currentCategoryTitle === 'search'
-                                        ? item.categoryId
-                                        : category.id
-                                  )}
-                                  onDeleteClick={() => deleteGoodClickHandler(
-                                    item.id,
-                                    currentCategoryTitle === 'all'
-                                      ? categories.find(
-                                        itemCategories => itemCategories.goods.find(
-                                          itemGood => itemGood.id === item.id
-                                        )
-                                      ).id
-                                      : currentCategoryTitle === 'search'
-                                        ? item.categoryId
-                                        : category.id
-                                  )}
-                                />
-                              )
-                            })
-                        }
-                        <EditCardAdd
-                          onClick={() => addGoodClickHandler(
-                            (currentCategoryTitle === 'all' || currentCategoryTitle === 'search')
-                              ? 0
-                              : categories.find(item => item.title === currentCategoryTitle).id
-                          )}
-                        />
-                      </EditCards>
-                    </EditContent>
+                                        ? item.categoryName
+                                        : category.name
+                                    }
+                                    amount={item.amount}
+                                    price={item.price}
+                                    onEditClick={() => editGoodClickHandler(
+                                      item.id,
+                                      currentCategoryTitle === 'all'
+                                        ? category.find(
+                                          itemCategories => itemCategories.goods.find(
+                                            itemGood => itemGood.id === item.id
+                                          )
+                                        ).id
+                                        : currentCategoryTitle === 'search'
+                                          ? item.categoryId
+                                          : category.id
+                                    )}
+                                    onDeleteClick={() => deleteGoodClickHandler(
+                                      item.id,
+                                      currentCategoryTitle === 'all'
+                                        ? categories.find(
+                                          itemCategories => itemCategories.goods.find(
+                                            itemGood => itemGood.id === item.id
+                                          )
+                                        ).id
+                                        : currentCategoryTitle === 'search'
+                                          ? item.categoryId
+                                          : category.id
+                                    )}
+                                  />
+                                )
+                              })
+                          }
+                          <EditCardAdd
+                            onClick={() => addGoodClickHandler(
+                              (currentCategoryTitle === 'all' || currentCategoryTitle === 'search')
+                                ? 0
+                                : categories.find(item => item.title === currentCategoryTitle).id
+                            )}
+                          />
+                        </EditCards>
+                      </EditContent>
 
-                    <Pagination
-                      currentPage={currentPage}
-                      pages={pages}
-                      onClickPrevButton={prevButtonClickHandler}
-                      onClickNextButton={nextButtonClickHandler}
-                    />
-                  </>
-                  : <>
-                    <EditContent>
-                      <EditCards>
-                        <EditCardAdd
-                          onClick={() => addGoodClickHandler(
-                            (currentCategoryTitle === 'all' || currentCategoryTitle === 'search')
-                              ? 0
-                              : categories.find(item => item.title === currentCategoryTitle).id
-                          )}
-                        />
-                      </EditCards>
-                    </EditContent>
-                    <Text
-                      text="В данной категории товаров пока нет."
-                    />
-                  </>
-                : categories.length === 0
-                  ? <Text
-                    text="Категорий пока нет."
-                  />
+                      <Pagination
+                        currentPage={currentPage}
+                        pages={pages}
+                        onClickPrevButton={prevButtonClickHandler}
+                        onClickNextButton={nextButtonClickHandler}
+                      />
+                    </>
+                    : <>
+                      <EditContent>
+                        <EditCards>
+                          <EditCardAdd
+                            onClick={() => addGoodClickHandler(
+                              (currentCategoryTitle === 'all' || currentCategoryTitle === 'search')
+                                ? 0
+                                : categories.find(item => item.title === currentCategoryTitle).id
+                            )}
+                          />
+                        </EditCards>
+                      </EditContent>
+                      {
+                        (currentCategoryTitle === 'all' || currentCategoryTitle === 'search')
+                          ? <Text
+                            text="Товаров пока нет."
+                          />
+                          : <Text
+                            text="В данной категории товаров пока нет."
+                          />
+                      }
+                    </>
                   : undefined
-            }
+              }
+            </>}
           </Edit>
         </Container>
 

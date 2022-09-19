@@ -1,4 +1,5 @@
 import "../Modal.scss"
+
 import {Link} from "react-router-dom";
 
 function ModalEditCategory(props) {
