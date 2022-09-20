@@ -1,20 +1,20 @@
 # Internet store
 
-This is frontend of internet store.
+This project is internet store. This is fullstack app.
 
 ## Technologies
 
-Applied technologies:
+MERN stack:
 
-### React JS
+### MongoDb
 
-### Redux
+### Express
 
-### React router v6
+### React
 
-## Styles
+### NodeJS
 
-Using styles:
+## Using styles:
 
 ### Scss
 
@@ -22,14 +22,6 @@ Using styles:
 
 Hosting addresses:
 
-### https://internet-store-frontend.web.app
+### https://internet777store.herokuapp.com
 
-### https://internet-store-frontend.firebaseapp.com
-
-## Login information
-
-Login on test:
-
-### Administrator: name: admin; login: 123456
-
-### User: name: user; login: 123456
+### https://internet777store.vercel.app

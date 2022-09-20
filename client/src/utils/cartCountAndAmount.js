@@ -1,4 +1,8 @@
 function cartCountAndAmount(cart, categories) {
+  if (!cart.length || !categories.length) {
+    return {count: 0, amount: 0}
+  }
+
   const count = cart.reduce((sum, item) => {
     return sum + item.count
   }, 0)

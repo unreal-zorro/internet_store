@@ -123,7 +123,7 @@ router.get('/:categoryTitle/:id',
         message: 'Что-то пошло не так, попробуйте снова.'
       })
     }
-  })
+})
 
 // /api/goods/all
 router.get('/all',
