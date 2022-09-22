@@ -71,7 +71,7 @@ function CardPage() {
     if (category.goods.length === 0 && category.id !== 0) {
       fetchData().then()
     }
-  }, [categoryTitle])
+  }, [categories, category.goods, category.id, categoryTitle, dispatch, goodId, request])
 
   useEffect(() => {
     message(error)

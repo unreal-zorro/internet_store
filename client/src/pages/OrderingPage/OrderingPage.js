@@ -1,6 +1,8 @@
 import React, {useContext, useEffect, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
 
 import {
+  addMessage,
   addOrder,
   currentOrderNumberChange,
   currentOrderPhoneChange,
@@ -25,15 +27,58 @@ function OrderingPage() {
   const { cart, cartClear } = useContext(CartContext);
 
   const [isOrdering, setIsOrdering] = useState(
-    (mainStore.getState().main.isOrdering && cart.length === 0)
+    useSelector(state => state.main.isOrdering) && cart.length === 0
   );
 
-  const categories = mainStore.getState().categories.categories
-  const {count, amount} = cartCountAndAmount(cart, categories)
+  const categories = useSelector(state => state.categories.categories)
+  // const {count, amount} = cartCountAndAmount(cart, categories)
 
+  const [count, setCount] = useState(0);
+  const [amount, setAmount] = useState(0);
+
+  const [goods, setGoods] = useState([]);
+
+  const dispatch = useDispatch()
   const { userId, token } = useContext(AuthContext);
   const message = useMessage()
   const {request, error, clearError} = useHttp()
+
+  useEffect(() => {
+    async function fetchData(cart) {
+      for (let goodInCart of cart) {
+        try {
+          const category = categories.find(item => +item.id === +goodInCart.categoryId)
+          const data = await request(`/api/goods/${category.title}/${goodInCart.id}`)
+
+          if (!goods.find(item => item.id === data.good.id) && data.good.id === +goodInCart.id) {
+            const completeGood = {
+              id: +data.good.id,
+              url: data.good.url,
+              name: data.good.name,
+              descr: data.good.descr,
+              rating: data.good.rating,
+              price: data.good.price,
+              amount: data.good.amount,
+              categoryId: data.good.categoryId,
+              categoryTitle: category.title,
+              count: goodInCart.count
+            }
+
+            setGoods(goods.concat(completeGood))
+          }
+
+          const calcCount = cart.reduce((sum, item) => sum + item.count, 0)
+          const calcAmount = goods.reduce((sum, item) => sum + item.count * +(item.price), 0)
+          setCount(calcCount)
+          setAmount(calcAmount)
+        } catch (e) {}
+      }
+    }
+
+    if (cart.length && categories.length) {
+      fetchData(cart).then()
+    }
+  }, [amount, cart, categories, count, dispatch, goods, request])
 
   useEffect(() => {
     message(error)
@@ -64,7 +109,7 @@ function OrderingPage() {
     event.preventDefault()
 
     if (cart.length === 0) {
-      mainStore.dispatch(isOrderingChange(false))
+      dispatch(isOrderingChange(false))
 
       setDelivery("removal")
       setPayment("cash")
@@ -91,9 +136,9 @@ function OrderingPage() {
         {userId, cart: [], order: newCurrentOrder},
         {Authorization: `Bearer ${token}`})
 
-      mainStore.dispatch(addOrder(newCurrentOrder))
-      mainStore.dispatch(currentOrderNumberChange(newCurrentOrder.number))
-      mainStore.dispatch(currentOrderPhoneChange(newCurrentOrder.orderingInfo.phone))
+      dispatch(addOrder(newCurrentOrder))
+      dispatch(currentOrderNumberChange(newCurrentOrder.number))
+      dispatch(currentOrderPhoneChange(newCurrentOrder.orderingInfo.phone))
 
       cartClear()
 
@@ -133,8 +178,8 @@ function OrderingPage() {
         className={isOrdering ? 'active' : ''}
       >
         <ModalOrdering
-          order={mainStore.getState().main.currentOrderNumber}
-          phone={mainStore.getState().main.currentOrderPhone}
+          order={useSelector(state => state.main.currentOrderNumber)}
+          phone={useSelector(state => state.main.currentOrderPhone)}
           onClick={modalClickHandler}
         />
       </Modal>

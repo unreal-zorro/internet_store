@@ -4,19 +4,19 @@ This project is internet store. This is fullstack app.
 
 ## Technologies
 
-MERN stack:
+### MERN stack:
 
-### MongoDb
+#### MongoDb
 
-### Express
+#### Express
 
-### React
+#### React
 
-### NodeJS
+#### NodeJS
 
 ## Using styles:
 
-### Scss
+#### Scss
 
 ## Internet addresses
 

@@ -1,9 +1,7 @@
-import {useContext, useEffect} from "react";
+import {useContext, useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 
-import {addCategory, addGood} from "../../redux/categoriesSlice";
-import {isOrderingChange} from "../../redux/mainSlice";
-import cartCountAndAmount from "../../utils/cartCountAndAmount";
+import {addMessage, isOrderingChange} from "../../redux/mainSlice";
 import {AuthContext} from "../../context/auth.context";
 import {CartContext} from "../../context/cart.context";
 import {useMessage} from "../../hooks/message.hook";
@@ -19,39 +17,51 @@ function CartPage() {
   const isAdmin = auth.isAdmin
   const { cart, cartAddNewCount, cartDeleteGood } = useContext(CartContext)
   const categories = useSelector(state => state.categories.categories)
-  const {count, amount} = cartCountAndAmount(cart, categories)
+  const [count, setCount] = useState(0);
+  const [amount, setAmount] = useState(0);
   const dispatch = useDispatch()
   const message = useMessage()
   const { request } = useHttp()
 
+  const [goods, setGoods] = useState([]);
+
   useEffect(() => {
     async function fetchData(cart) {
-      try {
-        for (let goodInCart of cart) {
+      for (let goodInCart of cart) {
+        try {
           const category = categories.find(item => +item.id === +goodInCart.categoryId)
-          const dataGood = await request(`/api/goods/${category.title}/${goodInCart.id}`)
-          const categoryIndex = categories.findIndex(item => item.id === category.id)
+          const data = await request(`/api/goods/${category.title}/${goodInCart.id}`)
 
-          const completeGood = {
-            id: +dataGood.good.id,
-            url: dataGood.good.url,
-            name: dataGood.good.name,
-            descr: dataGood.good.descr,
-            rating: dataGood.good.rating,
-            price: dataGood.good.price,
-            amount: dataGood.good.amount,
-            categoryId: dataGood.good.categoryId
+          if (!goods.find(item => item.id === data.good.id) && data.good.id === +goodInCart.id) {
+            const completeGood = {
+              id: +data.good.id,
+              url: data.good.url,
+              name: data.good.name,
+              descr: data.good.descr,
+              rating: data.good.rating,
+              price: data.good.price,
+              amount: data.good.amount,
+              categoryId: data.good.categoryId,
+              categoryTitle: category.title,
+              count: goodInCart.count
+            }
+
+            setGoods(goods.concat(completeGood))
           }
+          await dispatch(addMessage("Товары загружены в корзину!"))
 
-          await dispatch(addGood({ categoryIndex, completeGood }))
-        }
-      } catch (e) {}
+          const calcCount = cart.reduce((sum, item) => sum + item.count, 0)
+          const calcAmount = goods.reduce((sum, item) => sum + item.count * +(item.price), 0)
+          setCount(calcCount)
+          setAmount(calcAmount)
+        } catch (e) {}
+      }
     }
 
-    if (cart.length) {
+    if (cart.length && categories.length) {
       fetchData(cart).then()
     }
-  }, [cart, categories, dispatch, request])
+  }, [amount, cart, categories, count, dispatch, goods, request])
 
   function inputChangeHandler(value, id) {
     let goodIndex = -1
@@ -95,7 +105,7 @@ function CartPage() {
         className={count > 0 ? "active" : ""}
       />
       {
-        count > 0
+        count && amount
           ? <CartContent
             className={count > 0
               ? (isAuth || isAdmin)
@@ -108,31 +118,23 @@ function CartPage() {
             isAdmin={isAdmin}
             onClick={cartOrderingClickHandler}
           >
-            {cart.map(item => {
-              const category = categories.find(catItem =>
-                catItem.id === item.categoryId
-              )
-
-              const good = category.goods.find(goodItem =>
-                goodItem.id === item.id
-              )
-
-              return (
+            {goods.map(good =>
+              (
                 <CartCard
-                  key={item.id}
+                  key={good.id}
                   url={good.url}
                   name={good.name}
-                  categoryId={category.id}
-                  categoryTitle={category.title}
+                  categoryId={good.categoryId}
+                  categoryTitle={good.categoryTitle}
                   id={good.id}
                   rating={good.rating}
-                  count={item.count}
+                  count={good.count}
                   price={good.price}
-                  onChange={(event) => {inputChangeHandler(+event.target.value, item.id)}}
-                  onClick={() => {deleteButtonClickHandler(item.id)}}
+                  onChange={(event) => {inputChangeHandler(+event.target.value, good.id)}}
+                  onClick={() => {deleteButtonClickHandler(good.id)}}
                 />
               )
-            })}
+            )}
           </CartContent>
           : undefined
       }
