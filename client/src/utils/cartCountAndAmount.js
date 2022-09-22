@@ -1,17 +1,13 @@
 function cartCountAndAmount(cart, categories) {
-  const count = cart.reduce((sum, item) => {
-    return sum + item.count
-  }, 0)
+  if (!cart.length || !categories.length) {
+    return {count: 0, amount: 0}
+  }
+
+  const count = cart.reduce((sum, item) => sum + item.count, 0)
 
   const amount = cart.reduce((sum, item) => {
-    const cat = categories.find((catItem) => {
-      return catItem.id === item.categoryId
-    })
-
-    const good = cat.goods.find((goodItem) => {
-      return goodItem.id === item.id
-    })
-
+    const cat = categories.find((catItem) => catItem.id === item.categoryId)
+    const good = cat.goods.find((goodItem) => goodItem.id === item.id)
     return sum + item.count * +(good.price)
   }, 0)
 
