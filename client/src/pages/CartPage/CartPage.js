@@ -27,30 +27,35 @@ function CartPage() {
 
   useEffect(() => {
     async function fetchData(cart) {
-      for (let goodInCart of cart) {
-        try {
-          const category = categories.find(item => +item.id === +goodInCart.categoryId)
-          const data = await request(`/api/goods/${category.title}/${goodInCart.id}`)
+      if (cart.length > 0) {
+        for (let goodInCart of cart) {
+          try {
+            const category = categories.find(item => +item.id === +goodInCart.categoryId)
+            const data = await request(`/api/goods/${category.title}/${goodInCart.id}`)
 
-          if (!goods.find(item => item.id === data.good.id) && data.good.id === +goodInCart.id) {
-            const completeGood = {
-              id: +data.good.id,
-              url: data.good.url,
-              name: data.good.name,
-              descr: data.good.descr,
-              rating: data.good.rating,
-              price: data.good.price,
-              amount: data.good.amount,
-              categoryId: data.good.categoryId,
-              categoryTitle: category.title,
-              count: goodInCart.count
+            if (!goods.find(item => item.id === data.good.id) && data.good.id === +goodInCart.id) {
+              const completeGood = {
+                id: +data.good.id,
+                url: data.good.url,
+                name: data.good.name,
+                descr: data.good.descr,
+                rating: data.good.rating,
+                price: data.good.price,
+                amount: data.good.amount,
+                categoryId: data.good.categoryId,
+                categoryTitle: category.title,
+                count: goodInCart.count
+              }
+
+              setGoods(goods.concat(completeGood))
             }
+          } catch (e) {}
+        }
 
-            setGoods(goods.concat(completeGood))
-          }
+        try {
           await dispatch(addMessage("Товары загружены в корзину!"))
 
-          const calcCount = cart.reduce((sum, item) => sum + item.count, 0)
+          const calcCount = goods.reduce((sum, item) => sum + item.count, 0)
           const calcAmount = goods.reduce((sum, item) => sum + item.count * +(item.price), 0)
           setCount(calcCount)
           setAmount(calcAmount)
@@ -58,10 +63,17 @@ function CartPage() {
       }
     }
 
-    if (cart.length && categories.length) {
+    if (categories.length) {
       fetchData(cart).then()
     }
-  }, [amount, cart, categories, count, dispatch, goods, request])
+  }, [cart, categories, dispatch, goods, request])
+
+  useEffect(() => {
+    const calcCount = goods.reduce((sum, item) => sum + item.count, 0)
+    const calcAmount = goods.reduce((sum, item) => sum + item.count * +(item.price), 0)
+    setCount(calcCount)
+    setAmount(calcAmount)
+  }, [goods]);
 
   function inputChangeHandler(value, id) {
     let goodIndex = -1
@@ -80,18 +92,25 @@ function CartPage() {
       return
     }
 
-    const goodWithNewCount = {
+    const goodInCartWithNewCount = {
       ...good,
       count: value
     }
 
-    cartAddNewCount(goodIndex, goodWithNewCount)
+    cartAddNewCount(goodIndex, goodInCartWithNewCount)
+
+    const goodWithNewCount = {
+      ...goods[goodIndex],
+      count: value
+    }
+    setGoods(goods.splice(goodIndex, 1, goodWithNewCount))
     message("Количество товаров изменено.")
   }
 
   function deleteButtonClickHandler(id) {
     const goodIndex = cart.findIndex((item) => item.id === id)
     cartDeleteGood(goodIndex)
+    setGoods(goods.splice(goodIndex, 1))
     message("Товар удалён из корзины.")
   }
 
