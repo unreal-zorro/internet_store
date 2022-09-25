@@ -125,6 +125,62 @@ router.get('/:categoryTitle/:id',
     }
 })
 
+// /api/goods/cart
+router.post('/cart',
+  async (req, res) => {
+    try {
+      const cart = req.body
+      const goods = []
+
+      if (cart.length) {
+        for (let goodInCart of cart) {
+          const categoryId = +goodInCart.categoryId
+          const category = await Category.findOne({ id: categoryId })
+
+          if (!category) {
+            return res.status(400).json({
+              message: 'Категории с таким идентификатором не существует.'
+            })
+          }
+
+          const goodId = +goodInCart.id
+          const good = await Good.findOne({ id: goodId })
+
+          if (!good) {
+            return res.status(400).json({
+              message: 'Товара с таким идентификатором не существует.'
+            })
+          }
+          const goodInCurrentCategory = await Good.find({ categoryId: category._id })
+
+          if (!goodInCurrentCategory.find(item => item.id === good.id)) {
+            return res.status(400).json({
+              message: 'Товара с таким идентификатором в данной категории не существует.'
+            })
+          }
+
+          goods.push({
+            id: good.id,
+            url: good.url,
+            name: good.name,
+            descr: good.descr,
+            rating: good.rating,
+            price: good.price,
+            amount: good.amount,
+            categoryTitle: category.title,
+            categoryId: goodInCart.categoryId,
+            count: goodInCart.count})
+        }
+
+        res.json({ goods, message: 'Товары из корзины загружены!' })
+      }
+    } catch (e) {
+      res.status(500).json({
+        message: 'Что-то пошло не так, попробуйте снова.'
+      })
+    }
+  })
+
 // /api/goods/all
 router.get('/all',
   // auth,
